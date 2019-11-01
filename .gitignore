@@ -1,0 +1,12 @@
+images
+venv
+env
+*cache*
+*.txt
+*.css
+*.js
+*.js.*
+*png
+*html
+.vscode
+testing

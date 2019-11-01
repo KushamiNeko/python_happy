@@ -1,0 +1,95 @@
+@import "../../_common_scss/material_design_style/layout";
+@import "../../_common_scss/material_design_style/typography";
+@import "../../_common_scss/my_style/my_style";
+
+@mixin h-margin {
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+@mixin border-outline {
+  border-radius: 0.35em;
+  border-style: none;
+  outline: none;
+}
+
+.-chart-inputs-container {
+  @include layout-vertical;
+  @include layout-around-justified;
+}
+
+.-chart-inputs-separator {
+  @include my-style-separator;
+  background-color: white;
+  width: 85%;
+  color: white;
+}
+
+.-chart-inputs-table {
+  cursor: pointer;
+}
+
+.-chart-inputs-set {
+  @include font-body1;
+  @include layout-vertical;
+  @include layout-around-justified;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+.-chart-inputs-label {
+  @include font-body1;
+  @include my-style-font-family;
+  @include h-margin;
+  color: white;
+  margin-bottom: 0.1em;
+}
+
+.-chart-inputs-table-selected {
+  color: $paper-amber-300;
+}
+
+.-chart-inputs-text {
+  @include font-body1;
+  @include my-style-font-family;
+  @include h-margin;
+  @include border-outline;
+  color: white;
+  background-color: $paper-blue-grey-400;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+}
+
+.-chart-inputs-text-error {
+  background-color: $paper-red-400;
+}
+
+.-chart-inputs-text:focus {
+  color: black;
+  background-color: $paper-grey-200;
+}
+
+.-chart-inputs-text-hidden {
+  display: none;
+}
+
+.-chart-inputs-button {
+  @include font-button;
+  @include my-style-font-family;
+  @include h-margin;
+  @include border-outline;
+  color: white;
+  background-color: $paper-blue-grey-700;
+  margin-top: 1em;
+  margin-bottom: 0.25em;
+}
+
+.-chart-inputs-button:focus,
+.-chart-inputs-button:hover {
+  background-color: $paper-grey-500;
+}
+
+.-chart-inputs-button:active {
+  color: black;
+  background-color: $paper-grey-200;
+}
