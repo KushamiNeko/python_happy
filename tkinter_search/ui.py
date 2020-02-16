@@ -316,6 +316,14 @@ class MyApp:
     def _plot_chart(self):
         src = self._src.selected
         tar = self._tar.selected
+        # src = None
+        # tar = None
+        # if len(self._src.selected) > len(self._tar.selected):
+        #     src = self._src.selected
+        #     tar = self._tar.selected
+        # else:
+        #     src = self._tar.selected
+        #     tar = self._src.selected
 
         x = self._df[src]
         y = self._df[tar]
@@ -326,12 +334,12 @@ class MyApp:
         win = tkinter.Toplevel()
         win.wm_title("plot")
 
-        fig, ax = plt.subplots(figsize=(12, 6))
+        fig, ax = plt.subplots(figsize=(7, 7))
         win.protocol("WM_DELETE_WINDOW", lambda: self._clear_plot(win, fig, ax))
         win.bind("<Escape>", lambda event: self._clear_plot(win, fig, ax))
 
-        ax.scatter(x, y, s=35)
-        ax.plot(xl, xl * s + i, color="r")
+        ax.scatter(x, y, s=40, color="k")
+        ax.plot(xl, xl * s + i, color="k")
 
         prop = fm.FontProperties(fname="fonts/Kosugi/Kosugi-Regular.ttf", size=12)
 
