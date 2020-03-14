@@ -11,71 +11,53 @@ import config
 from chart import Charts
 from cover import Cover
 
+from fun.utils import pretty, colors
 
-def main():
 
+def parse_arg():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--symbols",
-        metavar="",
-        type=str,
-        nargs="+",
-        help="symbols to compare",
+        "--symbols", metavar="", type=str, nargs="+", help="symbols to compare",
     )
 
     parser.add_argument(
-        "--year",
-        metavar="",
-        type=str,
-        help="year of the chart",
+        "--year", metavar="", type=str, help="year of the chart",
     )
 
     parser.add_argument(
-        "--period",
-        metavar="",
-        type=str,
-        help="chart period",
-    )
-
-    parser.add_argument(
-        "--records",
-        metavar="",
-        type=bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="show records",
+        "--frequency", metavar="", type=str, help="chart frequency",
     )
 
     args = vars(parser.parse_args())
 
     symbols = args.get("symbols", None)
     if symbols is None:
-        print("invalid symbols")
+        pretty.color_print(colors.PAPER_RED_400, "invalid symbols")
         exit(1)
 
     if len(symbols) < 2:
-        print("need at least 2 symbols")
+        pretty.color_print(colors.PAPER_RED_400, "need at least 2 symbols")
         exit(1)
 
-    regex = re.compile(r"\d{4}", re.MULTILINE)
-
-    y = args.get("year", None)
-    if y is None or not regex.match(y):
-        print("invalid year")
+    year = args.get("year", None)
+    if year is None or not re.match(r"\d{4}", year):
+        pretty.color_print(colors.PAPER_RED_400, "invalid year")
         exit(1)
 
-    regex = re.compile("h|d|w|m", re.MULTILINE)
-
-    p = args.get("period", None)
-    if p is None or not regex.match(p):
-        print("invalid period")
+    frequency = args.get("frequency", None)
+    if frequency is None or not re.match(r"d|w", frequency):
+        pretty.color_print(colors.PAPER_RED_400, "invalid frequency")
         exit(1)
 
-    records = args.get("records", False)
+    return symbols, year, frequency
 
-    charts = Charts(symbols, y, p, records=records)
+
+def main():
+
+    symbols, year, frequency = parse_arg()
+
+    charts = Charts(symbols, year, frequency)
     cover = Cover(charts.studying.image.shape, config.COVER_COLOR)
 
     cv2.namedWindow("Chart")
@@ -84,6 +66,9 @@ def main():
 
     while True:
         k = cv2.waitKey(1) & 0xFF
+
+        if k == 32:
+            cover.next_function()
 
         if k == 27:
             break
@@ -95,35 +80,34 @@ def main():
                 i = charts.length - 1
 
             charts.set_studying_with_index(i)
-            cv2.setWindowTitle("Chart",
-                               os.path.basename(charts.studying.file_path))
+            cv2.setWindowTitle("Chart", os.path.basename(charts.studying.file_path))
 
         studying_symbol = charts.studying.symbol
 
-        new_period = None
+        new_frequency = None
 
         if k == 100:
-            new_period = "d"
+            new_frequency = "d"
         elif k == 119:
-            new_period = "w"
+            new_frequency = "w"
         elif k == 109:
-            # new_period = "m"
+            # new_frequency = "m"
             pass
         elif k == 104:
-            # new_period = "h"
+            # new_frequency = "h"
             pass
 
-        if new_period:
-            charts = Charts(symbols,
-                            charts.studying.year,
-                            new_period,
-                            records=records)
+        if new_frequency:
+            try:
+                charts = Charts(symbols, charts.studying.year, new_frequency)
+            except ValueError as err:
+                pretty.color_print(colors.PAPER_RED_400, err)
 
         new_year = None
 
-        if k == 44:
+        if k == 81:
             new_year = charts.studying.year - 1
-        if k == 46:
+        if k == 83:
             new_year = charts.studying.year + 1
 
         if new_year:
@@ -132,15 +116,14 @@ def main():
             elif new_year > config.END_YEAR:
                 new_year = config.END_YEAR
 
-            charts = Charts(symbols,
-                            new_year,
-                            charts.studying.period,
-                            records=records)
+            try:
+                charts = Charts(symbols, new_year, charts.studying.frequency)
+            except ValueError as err:
+                pretty.color_print(colors.PAPER_RED_400, err)
 
-        if new_period or new_year:
+        if new_frequency or new_year:
             charts.set_studying_with_symbol(studying_symbol)
-            cv2.setWindowTitle("Chart",
-                               os.path.basename(charts.studying.file_path))
+            cv2.setWindowTitle("Chart", os.path.basename(charts.studying.file_path))
 
         if cv2.getWindowProperty("Chart", cv2.WND_PROP_VISIBLE) < 1:
             break

@@ -1,13 +1,11 @@
-ROOT = "/home/neko/Documents/trading_studies/charts"
-ROOT_RECORDS = "/home/neko/Documents/trading_studies/records"
+from datetime import datetime
+
+ROOT = "/home/neko/Documents/trading_studies"
 
 RATIO = 107
 SIZE = (16 * RATIO, 9 * RATIO)
 
-RUS = "russell_2000"
-SPX = "sp_500"
-
-START_YEAR = 1992
-END_YEAR = 2018
+START_YEAR = 1999
+END_YEAR = datetime.now().year - 1
 
 COVER_COLOR = 180
