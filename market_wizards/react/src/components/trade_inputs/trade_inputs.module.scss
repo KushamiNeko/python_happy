@@ -6,14 +6,12 @@
 .container {
   @include layout-vertical;
   @include layout-start-justified;
-
   position: absolute;
-
   z-index: 3;
 }
 
-.hide {
-  //display: none;
+.hidden {
+  display: none;
 }
 
 @mixin btn {

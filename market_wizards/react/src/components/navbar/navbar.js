@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styles from "./navbar.module.scss";
 
+import { GlobalContext } from "../../context/global_state";
+
 function Navbar() {
+  const { recordsRequest } = useContext(GlobalContext);
+
   const [showRecords, setShowRecords] = useState(false);
 
-  function clickRecords() {
-    setShowRecords(!showRecords);
-  }
+  //function clickRecords() {
+  //setShowRecords(!showRecords);
+  //}
 
   return (
     <div className={styles.container}>
@@ -18,7 +22,10 @@ function Navbar() {
             ? `${styles.button} ${styles.buttonActive}`
             : styles.button
         }
-        onClick={clickRecords}
+        onClick={() => {
+          recordsRequest(!showRecords);
+          setShowRecords(!showRecords);
+        }}
       >
         Records
       </button>

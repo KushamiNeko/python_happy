@@ -3,7 +3,7 @@ import styles from "./trade_inputs.module.scss";
 
 function TradeInputs() {
   return (
-    <div className={`${styles.container} ${styles.hide}`}>
+    <div className={`${styles.container} ${styles.hidden}`}>
       <div className={styles.set}>
         <span className={styles.label}>Book</span>
         <input type="text" className={styles.text} />
