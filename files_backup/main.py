@@ -62,9 +62,9 @@ def args_parse() -> Dict[str, Any]:
     if not args.get("syncfile"):
         if args.get("from") and args.get("to"):
 
-            pretty.color_print(colors.PAPER_PURPLE_300, f"from: {args.get('from')}")
+            pretty.color_print(colors.PAPER_INDIGO_300, f"from: {args.get('from')}")
 
-            pretty.color_print(colors.PAPER_PURPLE_300, f"to: {args.get('to')}")
+            pretty.color_print(colors.PAPER_INDIGO_300, f"to: {args.get('to')}")
         else:
             pretty.color_print(
                 colors.PAPER_RED_500,
@@ -74,12 +74,12 @@ def args_parse() -> Dict[str, Any]:
             exit(1)
 
     else:
-        pretty.color_print(colors.PAPER_PURPLE_300, f"syncfile: {args.get('syncfile')}")
+        pretty.color_print(colors.PAPER_INDIGO_300, f"syncfile: {args.get('syncfile')}")
 
-    pretty.color_print(colors.PAPER_PURPLE_300, f"refresh: {args.get('refresh')}")
-    pretty.color_print(colors.PAPER_PURPLE_300, f"ensure: {args.get('ensure')}")
+    pretty.color_print(colors.PAPER_INDIGO_300, f"refresh: {args.get('refresh')}")
+    pretty.color_print(colors.PAPER_INDIGO_300, f"ensure: {args.get('ensure')}")
 
-    pretty.color_print(colors.PAPER_PURPLE_300, f"safeguard: {args.get('safeguard')}")
+    pretty.color_print(colors.PAPER_INDIGO_300, f"safeguard: {args.get('safeguard')}")
 
     return args
 

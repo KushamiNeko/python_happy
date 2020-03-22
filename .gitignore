@@ -1,12 +1,10 @@
 images
 venv
 env
-*cache*
+.*cache*
+_*cache*
 *.txt
-*.css
-*.js
-*.js.*
-*png
-*html
+*.png
 .vscode
 testing
+
