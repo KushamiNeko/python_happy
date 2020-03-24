@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import styles from "./chart_input.module.scss";
 import { GlobalContext } from "../../context/global_state";
 
@@ -6,76 +6,75 @@ function ChartInput() {
   const {
     forward,
     backward,
-    symbolRequest,
-    freqRequest,
-    inputsRequest
+    symbolRequest
+    //freqRequest,
+    //inputsRequest
   } = useContext(GlobalContext);
 
-  const [symbols, setSymbols] = useState([
-    "ES",
-    "VIX",
-    "NQ",
-    "VXN",
-    "QR",
-    "RVX",
-    "VLE",
-    "SML",
-    "ZN",
-    //"TYVIX",
-    "FX",
-    "VSTX",
-    "NP",
-    "JNIV",
-    "GSY",
-    "NEAR",
-    "ICSH",
-    "SHV",
-    "HYG",
-    "EMB",
-    "LQD",
-    "IEF",
-    //"MB",
-    //"RXES",
-    //"VX",
-    "CL",
-    //"OVX",
-    "GC",
-    //"GVZ",
-    "DX",
-    "E6",
-    "J6"
-  ]);
+  const [state, setState] = useState({
+    symbols: [
+      "ES",
+      "VIX",
+      "NQ",
+      "VXN",
+      "QR",
+      "RVX",
+      "VLE",
+      "SML",
+      "ZN",
+      //"TYVIX",
+      "FX",
+      "VSTX",
+      "NP",
+      "JNIV",
+      "GSY",
+      "NEAR",
+      "ICSH",
+      "SHV",
+      "HYG",
+      "EMB",
+      "LQD",
+      "IEF",
+      //"MB",
+      //"RXES",
+      //"VX",
+      "CL",
+      //"OVX",
+      "GC",
+      //"GVZ",
+      "DX",
+      "E6",
+      "J6"
+    ],
+    symbolID: null,
+    error: {
+      symbol: false,
+      date: false,
+      freq: false,
+      book: false
+    }
+  });
 
-  const [symbolID, setSymbolID] = useState(null);
-
-  const [inputs, setInputs] = useState({
+  const params = useRef({
+    symbol: null,
     date: null,
     frequency: null,
     book: null
   });
 
-  const [newSymbol, setNewSymbol] = useState(null);
-
-  const [error, setError] = useState({
-    newSymbol: false,
-    date: false,
-    freq: false,
-    book: false
-  });
-
   function keyboardSelect(e) {
     if (e === null) return;
-    if (symbolID === null) return;
+    if (state.symbolID === null) return;
 
     let id;
     if (e.which === 38) {
-      id = symbolID - 1;
+      id = state.symbolID - 1;
       if (id < 0) {
-        id = symbols.length - 1;
+        id = state.symbols.length - 1;
       }
     } else if (e.which === 40) {
-      id = symbolID + 1;
-      if (id > symbols.length - 1) {
+      id = state.symbolID + 1;
+      if (id > state.symbols.length - 1) {
         id = 0;
       }
     }
@@ -84,8 +83,11 @@ function ChartInput() {
   }
 
   function selectSymbolId(id) {
-    setSymbolID(id);
-    symbolRequest(symbols[id]);
+    setState({
+      ...state,
+      symbolID: id
+    });
+    symbolRequest(state.symbols[id]);
   }
 
   function keyboardHandler(e) {
@@ -94,9 +96,7 @@ function ChartInput() {
     } else {
       if (e.which === 37) {
         backward();
-      }
-
-      if (e.which === 39) {
+      } else if (e.which === 39) {
         forward();
       }
     }
@@ -106,7 +106,7 @@ function ChartInput() {
     console.log("chart inputs");
     window.addEventListener("keydown", keyboardHandler);
     return () => window.removeEventListener("keydown", keyboardHandler);
-  }, [symbols, symbolID]);
+  }, [state.symbols, state.symbolID]);
 
   return (
     <div className={styles.container}>
@@ -118,10 +118,10 @@ function ChartInput() {
           className={`${styles.text} ${styles.table}`}
         >
           <tbody>
-            {symbols.map((symbol, index) => (
+            {state.symbols.map((symbol, index) => (
               <tr
                 key={index}
-                className={index === symbolID ? styles.tableSelected : ""}
+                className={index === state.symbolID ? styles.tableSelected : ""}
                 onClick={() => selectSymbolId(index)}
               >
                 <td>{symbol}</td>
@@ -139,16 +139,33 @@ function ChartInput() {
           onChange={e => {
             const regex = RegExp("^[a-zA-Z0-9]*$");
             if (!regex.test(e.target.value)) {
-              setError({
-                ...error,
-                newSymbol: true
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  symbol: true
+                }
               });
             } else {
-              setError({
-                ...error,
-                newSymbol: false
+              if (state.symbols.includes(e.target.value.toUpperCase())) {
+                setState({
+                  ...state,
+                  error: {
+                    ...state.error,
+                    symbol: true
+                  }
+                });
+                return;
+              }
+
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  symbol: false
+                }
               });
-              setNewSymbol(e.target.value);
+              params.current.symbol = e.target.value;
             }
           }}
         />
@@ -156,12 +173,25 @@ function ChartInput() {
 
       <button
         className={
-          error.newSymbol ? `${styles.button} ${styles.error}` : styles.button
+          state.error.symbol
+            ? `${styles.button} ${styles.error}`
+            : styles.button
         }
         onClick={() => {
-          if (newSymbol === null) return;
-          const symbol = newSymbol.toUpperCase();
-          if (!symbols.includes(symbol)) setSymbols([...symbols, symbol]);
+          if (params.current.symbol === null) {
+            return;
+          }
+          const symbol = params.current.symbol.toUpperCase();
+          if (!state.symbols.includes(symbol)) {
+            setState({
+              ...state,
+              symbols: [...state.symbols, symbol],
+              error: {
+                ...state.error,
+                symbol: false
+              }
+            });
+          }
         }}
       >
         add
@@ -177,16 +207,22 @@ function ChartInput() {
           onChange={e => {
             const regex = RegExp("^[0-9]*$");
             if (!regex.test(e.target.value)) {
-              setError({
-                ...error,
-                date: true
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  date: true
+                }
               });
             } else {
-              setError({
-                ...error,
-                date: false
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  date: false
+                }
               });
-              setInputs({ ...inputs, date: e.target.value });
+              params.current.date = e.target.value;
             }
           }}
         />
@@ -200,16 +236,22 @@ function ChartInput() {
           onChange={e => {
             const regex = RegExp("^[dw]{0,1}$");
             if (!regex.test(e.target.value)) {
-              setError({
-                ...error,
-                freq: true
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  freq: true
+                }
               });
             } else {
-              setError({
-                ...error,
-                freq: false
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  freq: false
+                }
               });
-              setInputs({ ...inputs, frequency: e.target.value });
+              params.current.frequency = e.target.value;
             }
           }}
         />
@@ -223,16 +265,22 @@ function ChartInput() {
           onChange={e => {
             const regex = RegExp("^[a-zA-Z0-9]*$");
             if (!regex.test(e.target.value)) {
-              setError({
-                ...error,
-                book: true
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  book: true
+                }
               });
             } else {
-              setError({
-                ...error,
-                book: false
+              setState({
+                ...state,
+                error: {
+                  ...state.error,
+                  book: false
+                }
               });
-              setInputs({ ...inputs, book: e.target.value });
+              params.current.book = e.target.value;
             }
           }}
         />
@@ -240,7 +288,7 @@ function ChartInput() {
 
       <button
         className={
-          !error.date && !error.freq && !error.book
+          !state.error.date && !state.error.freq && !state.error.book
             ? styles.button
             : `${styles.button} ${styles.error}`
         }

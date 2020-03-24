@@ -1,4 +1,4 @@
-import React, { createContext, useReducer, useState, useEffect } from "react";
+import React, { createContext, useRef, useState } from "react";
 //import GlobalReducer from "./global_reducer";
 
 //const initialState = {
@@ -12,6 +12,12 @@ export const GlobalProvider = ({ children }) => {
   //const [state, dispatch] = useReducer(GlobalReducer, initialState);
 
   const now = new Date();
+  const refs = useRef({
+    working: false,
+    quote: null,
+    src: ""
+  });
+
   const [params, setParams] = useState({
     symbol: "es",
     freq: "d",
@@ -24,46 +30,67 @@ export const GlobalProvider = ({ children }) => {
       .padStart(2, "0")}`,
     book: "",
     records: false,
-    working: false,
-    imgSrc: "",
-    info: {}
+    timestamp: 0
+    //working: false,
+    //imgSrc: null,
+    //quote: null
   });
 
-  useEffect(() => {
-    console.log("provider");
-    imageSrc();
-  });
-
+  //useEffect(() => {
+  ////console.log(params.currrent);
+  //imageSrc();
+  ////params.current.imgSrc = requestUrl();
+  //},
   //[
   //params.symbol,
   //params.freq,
   //params.func,
   //params.date,
   //params.book,
-  //params.records
-  //]
+  //params.records,
+  //params.timestamp,
+  ////////params.working
+  ////////imageSrc
+  //],
+  //);
 
   function requestUrl() {
+    const origin = "http://127.0.0.1:5000";
+    //const origin = "http://localhost:8080";
     const now = new Date();
 
-    let url = `${window.location.origin}/service/chart`;
-    url = `${url}&symbol=${params.symbol}&frequency=${params.freq}&function=${params.func}&date=${params.date}`;
-    url = `${url}&book=${params.book}&records=${params.records.toString()}`;
+    let url = `${origin}/service/chart`;
+    //let url = `${origin}/service/plot/practice`;
     url = `${url}?timestemp=${Math.round(now.getTime() / 1000)}`;
+    //url = `${url}&symbol=${params.symbol}&frequency=${params.freq}&function=${params.func}&date=${params.date}`;
+    url = `${url}&symbol=${params.symbol}&frequency=${params.freq}&function=${params.func}&time=${params.date}`;
+    url = `${url}&book=${params.book}&records=${params.records.toString()}`;
 
     return url;
   }
 
   function imageSrc() {
+    if (refs.current.working) {
+      return refs.current.src;
+    }
+
+    refs.current.working = true;
+
     const url = requestUrl();
-    console.log(url);
+    refs.current.src = url;
+
+    return url;
+  }
+
+  function done() {
+    refs.current.working = false;
   }
 
   function forward() {
     setParams({
       ...params,
       func: "forward",
-      working: true
+      timestamp: Date.now()
     });
   }
 
@@ -71,7 +98,7 @@ export const GlobalProvider = ({ children }) => {
     setParams({
       ...params,
       func: "backward",
-      working: true
+      timestamp: Date.now()
     });
   }
 
@@ -79,18 +106,15 @@ export const GlobalProvider = ({ children }) => {
     setParams({
       ...params,
       symbol: symbol.toLowerCase(),
-      func: "refresh",
-      working: true
+      func: "refresh"
     });
   }
 
   function freqRequest(freq) {
-    //assert(new RegExp(r"h|d|w|m").hasMatch(freq));
     setParams({
       ...params,
       func: "simple",
-      freq: freq,
-      working: true
+      freq: freq
     });
   }
 
@@ -106,66 +130,54 @@ export const GlobalProvider = ({ children }) => {
       func: "refresh",
       freq: freq,
       date: date,
-      book: book,
-      working: true
+      book: book
     });
   }
 
   function recordsRequest(show) {
-    setParams({
-      ...params,
-      records: show,
-      working: true
-    });
+    //setParams({
+      //...params,
+      //records: show
+    //});
   }
 
   function randomDateRequest() {
-    setParams({
-      ...params,
-      func: "randomDate"
-    });
+    //setParams({
+    //...params,
+    //func: "randomDate"
+    //});
   }
 
-  function infoRequest() {
+  function quoteRequest() {
     //if (params.working) {
     //return;
     //}
-
-    setParams({
-      ...params,
-      func: "info"
-    });
-
-    let url = requestUrl();
-
+    //setParams({
+    //...params,
+    //func: "quote"
+    //});
+    //let url = requestUrl();
     //var info = await HttpRequest.getString(url);
     //var m = json.decode(info);
-
     //_$info.add(m);
     //_$time.add(m["Time"]);
     //_time = m["Time"];
   }
 
-  //function newKeyDownHandler(handler) {
-  //dispatch({
-  //type: "NEW_KEYDOWN_HANDLER",
-  //payload: handler
-  //});
-  //}
-
   return (
     <GlobalContext.Provider
       value={{
-        imgSrc: params.imgSrc,
-        info: params.info,
+        imgSrc: imageSrc(),
+        quote: refs.current.quote,
         symbolRequest,
         freqRequest,
         inputsRequest,
         forward,
         backward,
         recordsRequest,
-        randomDateRequest
-        //infoRequest,
+        done
+        //randomDateRequest
+        //quoteRequest,
       }}
     >
       {children}

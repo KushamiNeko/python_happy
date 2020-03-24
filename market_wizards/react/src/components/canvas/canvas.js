@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import styles from "./canvas.module.scss";
+import { GlobalContext } from "../../context/global_state";
 
 function Canvas() {
+  const { imgSrc, done } = useContext(GlobalContext);
+
   const coverColor = "rgba(0, 0, 0, 0.8)";
   const inspectColor = "rgba(255, 255, 255, 0.8)";
   const anchorColor = "rgba(255, 255, 255, 0.5)";
@@ -11,22 +14,17 @@ function Canvas() {
   const coverRef = useRef(null);
   const imageRef = useRef(null);
 
-  const [trigger, setTrigger] = useState({
+  const params = useRef({
     left: false,
     right: false,
     both: false,
     calc: false,
-    moving: false
-  });
-
-  const [anchor, setAnchor] = useState({
     calcX: 0,
     calcY: 0
   });
 
-  const [infoPos, setInfoPos] = useState({
-    left: "",
-    top: ""
+  const [state, setState] = useState({
+    moving: false
   });
 
   function eventXOffset(e) {
@@ -74,8 +72,8 @@ function Canvas() {
     cctx.clearRect(0, 0, coverRef.current.width, coverRef.current.height);
     cctx.fillStyle = coverColor;
 
-    if (eventXOffset(e) >= anchor.calcX) {
-      cctx.fillRect(0, 0, anchor.calcX, coverRef.current.height);
+    if (eventXOffset(e) >= params.current.calcX) {
+      cctx.fillRect(0, 0, params.current.calcX, coverRef.current.height);
 
       cctx.fillRect(
         eventXOffset(e),
@@ -87,9 +85,9 @@ function Canvas() {
       cctx.fillRect(0, 0, eventXOffset(e), coverRef.current.height);
 
       cctx.fillRect(
-        anchor.calcX,
+        params.current.calcX,
         0,
-        coverRef.current.width - anchor.calcX,
+        coverRef.current.width - params.current.calcX,
         coverRef.current.height
       );
     }
@@ -109,15 +107,15 @@ function Canvas() {
       0
     );
 
-    if (trigger.calc) {
+    if (params.current.calc) {
       const ax = Math.max(
-        Math.min(anchor.calcX / inspectRef.current.width, 1),
+        Math.min(params.current.calcX / inspectRef.current.width, 1),
         0
       );
 
       const ay = Math.max(
         Math.min(
-          (inspectRef.current.height - anchor.calcY) /
+          (inspectRef.current.height - params.current.calcY) /
             inspectRef.current.height,
           1
         ),
@@ -138,6 +136,8 @@ function Canvas() {
       l = `${e.clientX + offset}px`;
     }
 
+    infoRef.current.style.left = l;
+
     let t;
     if (eventYOffset(e) > inspectRef.current.height / 2) {
       t = `${e.clientY - infoRef.current.offsetHeight - offset}px`;
@@ -145,7 +145,7 @@ function Canvas() {
       t = `${e.clientY + offset}px`;
     }
 
-    setInfoPos({ left: l, top: t });
+    infoRef.current.style.top = t;
   }
 
   function inspect(e) {
@@ -178,51 +178,48 @@ function Canvas() {
     ictx.strokeStyle = anchorColor;
 
     ictx.beginPath();
-    ictx.moveTo(anchor.calcX, 0);
+    ictx.moveTo(params.current.calcX, 0);
 
-    ictx.lineTo(anchor.calcX, inspectRef.current.height);
+    ictx.lineTo(params.current.calcX, inspectRef.current.height);
 
     ictx.stroke();
     ictx.closePath();
 
     ictx.beginPath();
 
-    ictx.moveTo(0, anchor.calcY);
+    ictx.moveTo(0, params.current.calcY);
 
-    ictx.lineTo(inspectRef.current.width, anchor.calcY);
+    ictx.lineTo(inspectRef.current.width, params.current.calcY);
 
     ictx.stroke();
     ictx.closePath();
   }
 
   function handlerUp() {
-    setTrigger({
-      ...trigger,
-      left: false,
-      right: false,
-      both: false,
-      calc: false
-    });
+    params.current.left = false;
+    params.current.right = false;
+    params.current.both = false;
+    params.current.calc = false;
   }
 
   function handlerMove(e) {
-    if (!trigger.moving) {
-      setTrigger({ ...trigger, moving: true });
+    if (!state.moving) {
+      setState({ ...state, moving: true });
     }
 
     inspectInfo(e);
 
-    if (trigger.both) {
+    if (params.current.both) {
       doubleCover(e);
-    } else if (trigger.left) {
+    } else if (params.current.left) {
       singleCoverL(e);
-    } else if (trigger.right) {
+    } else if (params.current.right) {
       singleCoverR(e);
     }
 
     inspect(e);
 
-    if (trigger.calc) {
+    if (params.current.calc) {
       calcAnchor(e);
     }
   }
@@ -234,39 +231,39 @@ function Canvas() {
     ictx.clearRect(0, 0, inspectRef.current.width, inspectRef.current.height);
     cctx.clearRect(0, 0, inspectRef.current.width, inspectRef.current.height);
 
-    let l = false;
-    let r = false;
-    let d = false;
+    params.current.left = false;
+    params.current.right = false;
+    params.current.both = false;
+
     if (e.ctrlKey) {
-      l = true;
+      params.current.left = true;
     } else if (e.shiftKey) {
-      r = true;
+      params.current.right = true;
     } else if (e.altKey) {
-      d = true;
+      params.current.both = true;
     }
 
-    setTrigger({
-      ...trigger,
-      left: l,
-      right: r,
-      both: d,
-      calc: true,
-      moving: false
-    });
+    params.current.calc = true;
+    params.current.calcX = eventXOffset(e);
+    params.current.calcY = eventYOffset(e);
 
-    setAnchor({
-      ...anchor,
-      calcX: eventXOffset(e),
-      calcY: eventYOffset(e)
+    setState({
+      ...state,
+      moving: false
     });
   }
 
   useEffect(() => {
     const imgLoaded = () => {
       initCanvasSize();
+      done();
     };
 
     imageRef.current.addEventListener("load", imgLoaded);
+
+    window.addEventListener("resize", () => {
+      initCanvasSize();
+    });
 
     window.addEventListener("mouseup", handlerUp);
     window.addEventListener("mousemove", handlerMove);
@@ -280,13 +277,14 @@ function Canvas() {
     };
   });
 
+  console.log("render");
+
   return (
     <>
       <div
         ref={infoRef}
-        style={{ ...infoPos }}
         className={
-          trigger.moving
+          state.moving
             ? styles.chartInfo
             : `${styles.chartInfo} ${styles.chartInfoHidden}`
         }
@@ -298,12 +296,7 @@ function Canvas() {
           <canvas ref={inspectRef} className={styles.chartCover}></canvas>
           <canvas ref={coverRef} className={styles.chartCover}></canvas>
 
-          <img
-            ref={imageRef}
-            className={styles.chartImage}
-            alt=""
-            src="test.png"
-          />
+          <img ref={imageRef} className={styles.chartImage} src={imgSrc} />
         </div>
       </div>
     </>

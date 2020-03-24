@@ -6,11 +6,9 @@ import { GlobalContext } from "../../context/global_state";
 function Navbar() {
   const { recordsRequest } = useContext(GlobalContext);
 
-  const [showRecords, setShowRecords] = useState(false);
-
-  //function clickRecords() {
-  //setShowRecords(!showRecords);
-  //}
+  const [state, setState] = useState({
+    records: false
+  });
 
   return (
     <div className={styles.container}>
@@ -18,13 +16,16 @@ function Navbar() {
       <span className={styles.text}>/</span>
       <button
         className={
-          showRecords
+          state.records
             ? `${styles.button} ${styles.buttonActive}`
             : styles.button
         }
         onClick={() => {
-          recordsRequest(!showRecords);
-          setShowRecords(!showRecords);
+          recordsRequest(!state.records);
+          setState({
+            ...state,
+            records: !state.records
+          });
         }}
       >
         Records
