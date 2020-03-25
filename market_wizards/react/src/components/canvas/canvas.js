@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState, useContext } from "react";
 import styles from "./canvas.module.scss";
-import { GlobalContext } from "../../context/global_state";
+import { ChartContext } from "../../context/chart";
 
 function Canvas() {
-  const { imgSrc, done } = useContext(GlobalContext);
+  const { addImageCallback, inspectRequest } = useContext(ChartContext);
 
   const coverColor = "rgba(0, 0, 0, 0.8)";
   const inspectColor = "rgba(255, 255, 255, 0.8)";
@@ -122,9 +122,23 @@ function Canvas() {
         0
       );
 
-      //_server.inspectRequest(x, y, ax: ax, ay: ay);
+      inspectRequest(
+        data => {
+          infoRef.current.innerHTML = data;
+        },
+        x,
+        y,
+        ax,
+        ay
+      );
     } else {
-      //_server.inspectRequest(x, y);
+      inspectRequest(
+        data => {
+          infoRef.current.innerHTML = data;
+        },
+        x,
+        y
+      );
     }
 
     const offset = 20;
@@ -254,12 +268,18 @@ function Canvas() {
   }
 
   useEffect(() => {
+
+    addImageCallback("CANVAS", img => {
+      imageRef.current.src = img
+    })
+
     const imgLoaded = () => {
       initCanvasSize();
-      done();
     };
 
-    imageRef.current.addEventListener("load", imgLoaded);
+    const irf = imageRef.current;
+
+    irf.addEventListener("load", imgLoaded);
 
     window.addEventListener("resize", () => {
       initCanvasSize();
@@ -270,14 +290,14 @@ function Canvas() {
     window.addEventListener("mousedown", handlerDown);
 
     return () => {
-      imageRef.current.addEventListener("load", imgLoaded);
+      irf.addEventListener("load", imgLoaded);
       window.removeEventListener("mouseup", handlerUp);
       window.removeEventListener("mousemove", handlerMove);
       window.removeEventListener("mousedown", handlerDown);
     };
   });
 
-  console.log("render");
+  console.log("canvas");
 
   return (
     <>
@@ -296,11 +316,15 @@ function Canvas() {
           <canvas ref={inspectRef} className={styles.chartCover}></canvas>
           <canvas ref={coverRef} className={styles.chartCover}></canvas>
 
-          <img ref={imageRef} className={styles.chartImage} src={imgSrc} />
+          <img ref={imageRef} className={styles.chartImage} src="" />
         </div>
       </div>
     </>
   );
+}
+
+function shouldUpdate(prev, next) {
+  return prev.src !== next.src;
 }
 
 export default Canvas;

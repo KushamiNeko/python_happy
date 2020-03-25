@@ -1,4 +1,5 @@
 import io
+import base64
 import re
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -6,7 +7,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 import pandas as pd
 from flask import request, send_file
 
-from fun.chart.cache import QuotesCache
 from fun.chart.preset import ChartPreset
 from fun.data.source import HOURLY, DAILY, WEEKLY, MONTHLY, FREQUENCY
 
@@ -15,77 +15,6 @@ from fun.data.source import HOURLY, DAILY, WEEKLY, MONTHLY, FREQUENCY
 # from fun.trading.agent import Agent
 # from fun.trading.source import Barchart, DataSource, Yahoo
 # from fun.trading.transaction import FuturesTransaction
-
-
-# class DataCache:
-# def __init__(self, df: pd.DataFrame, stime: datetime, etime: datetime):
-# self._df = df
-
-# self.time_slice(stime, etime)
-# self._make_chart()
-
-# @property
-# def exstime(self) -> datetime:
-# return self._df.index[0].to_pydatetime()
-
-# @property
-# def exetime(self) -> datetime:
-# return self._df.index[-1].to_pydatetime()
-
-# @property
-# def stime(self) -> datetime:
-# return self._stime
-
-# @property
-# def etime(self) -> datetime:
-# return self._etime
-
-# @property
-# def slice(self) -> pd.DataFrame:
-# return self._df.loc[self._stime : self._etime]
-
-# @property
-# def chart(self) -> StaticChart:
-# return self._chart
-
-# def time_slice(self, stime: datetime, etime: datetime) -> None:
-# s = self._df.loc[stime:etime]
-
-# self._sindex = self._df.index.get_loc(s.index[0])
-# self._eindex = self._df.index.get_loc(s.index[-1])
-
-# self._index_time()
-
-# def _make_chart(self) -> None:
-# self._chart = StaticChart(self.slice, chart_size="m")
-
-# def _index_time(self) -> None:
-# self._stime = self._df.index[self._sindex]
-# self._etime = self._df.index[self._eindex]
-
-# def forward(self) -> Optional[StaticChart]:
-# if self._eindex + 1 >= len(self._df.index) or self._sindex + 1 >= self._eindex:
-# return None
-
-# self._sindex += 1
-# self._eindex += 1
-
-# self._index_time()
-# self._make_chart()
-
-# return self.chart
-
-# def backward(self) -> Optional[StaticChart]:
-# if self._sindex - 1 <= 0 or self._eindex - 1 <= self._sindex:
-# return None
-
-# self._sindex -= 1
-# self._eindex -= 1
-
-# self._index_time()
-# self._make_chart()
-
-# return self.chart
 
 
 class PlotHandler:
@@ -117,13 +46,10 @@ class PlotHandler:
                 ks.append(k)
 
         for k in ks:
-            # for k in cls._store.keys():
-            # if symbol in k:
             cls._store.pop(k)
 
     def __init__(self):
-        # date = request.args.get("date")
-        date = request.args.get("time")
+        date = request.args.get("date")
         symbol = request.args.get("symbol")
         frequency = request.args.get("frequency")
         function = request.args.get("function")
@@ -191,9 +117,7 @@ class PlotHandler:
         # self._store_write(self._store_key(), preset)
 
         preset = self._store_read(
-            self._store_key(),
-            dtime=self._date,
-            time_sliced=True,
+            self._store_key(), dtime=self._date, time_sliced=True,
         )
 
         if preset is None:
@@ -211,7 +135,6 @@ class PlotHandler:
         return preset.render()
 
     def _function_forward(self) -> io.BytesIO:
-        # print(self._store_key())
         preset = self._store_read(self._store_key())
         assert preset is not None
 
@@ -224,7 +147,6 @@ class PlotHandler:
         return preset.render()
 
     def _function_backward(self) -> io.BytesIO:
-        # print(self._store_key())
         preset = self._store_read(self._store_key())
         assert preset is not None
 
@@ -238,51 +160,34 @@ class PlotHandler:
         return preset.render()
 
     # def _function_inspect(self) -> Dict[str, str]:
-    #     cache = self._cache_store_read(self._cache_key())
-    #     if cache is None:
-    #         # return ""
-    #         return {}
+    def _function_inspect(self) -> str:
+        preset = self._store_read(self._store_key())
+        if preset is None:
+            return ""
+            # return {}
 
-    #     chart = cache.chart
+        x = request.args.get("x")
+        y = request.args.get("y")
 
-    #     assert chart is not None
+        ax = request.args.get("ax") if request.args.get("ax") != "" else None
+        ay = request.args.get("ay") if request.args.get("ay") != "" else None
 
-    #     x = request.args.get("x")
-    #     y = request.args.get("y")
+        if x is None or y is None:
+            return ""
+            # return {}
 
-    #     if x is None or y is None:
-    #         # return ""
-    #         return {}
+        info = preset.inspect(x, y, ax=ax, ay=ay)
+        assert info is not None
 
-    #     n = chart.to_data_coordinates(x, y)
-    #     if n is None:
-    #         # return ""
-    #         return {}
+        return "\n".join([f"{k}: {v}" for k, v in info.items()])
+        # return info
 
-    #     nx, ny = n
+    def _function_quote(self) -> Dict[str, Any]:
+        preset = self._store_read(self._store_key())
+        if preset is None:
+            return {}
 
-    #     rn = 2
-
-    #     info = {
-    #         "time": cache.slice.index[int(nx)].to_pydatetime().strftime("%Y-%m-%d"),
-    #         "price": f"{round(ny, rn):,}",
-    #         "open": f"{round(cache.slice.iloc[nx]['open'], rn):,}",
-    #         "high": f"{round(cache.slice.iloc[nx]['high'], rn):,}",
-    #         "low": f"{round(cache.slice.iloc[nx]['low'], rn):,}",
-    #         "close": f"{round(cache.slice.iloc[nx]['close'], rn):,}",
-    #         "volume": f"{round(cache.slice.iloc[nx].get('volume', 0), rn):,}",
-    #         "open interest": f"{round(cache.slice.iloc[nx].get('openinterest', 0), rn):,}",
-    #     }
-
-    #     # return "\n".join([f"{k}: {v}" for k, v in info.items()])
-    #     return info
-
-    # def _function_quote(self) -> str:
-    #     cache = self._cache_store_read(self._cache_key())
-    #     if cache is None:
-    #         return ""
-
-    #     return cache.slice.index[-1].to_pydatetime().strftime("%Y%m%d")
+        return preset.quote()
 
     def response(self) -> Any:
         if self._function == "simple":
@@ -294,14 +199,12 @@ class PlotHandler:
         elif self._function == "backward":
             buf = self._function_backward()
         elif self._function == "inspect":
-            return ""
-            # v = self._function_inspect()
-            # return v
+            return self._function_inspect()
         elif self._function == "quote":
-            return ""
-            # v = self._function_quote()
-            # return v
+            return self._function_quote()
         # elif self._function == "randomDate":
         # pass
 
-        return send_file(buf, mimetype="image/png", cache_timeout=-1)
+        # return send_file(buf, mimetype="image/png", cache_timeout=-1)
+        return base64.b64encode(buf.getvalue()).decode("utf-8")
+

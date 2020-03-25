@@ -1,15 +1,15 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import styles from "./chart_input.module.scss";
-import { GlobalContext } from "../../context/global_state";
+import { ChartContext } from "../../context/chart";
 
 function ChartInput() {
-  const {
-    forward,
-    backward,
-    symbolRequest
-    //freqRequest,
-    //inputsRequest
-  } = useContext(GlobalContext);
+  const { addInputsCallback, symbolRequest, forward, backward } = useContext(
+    ChartContext
+  );
+
+  const dateRef = useRef(null);
+  const freqRef = useRef(null);
+  const bookRef = useRef(null);
 
   const [state, setState] = useState({
     symbols: [
@@ -103,10 +103,39 @@ function ChartInput() {
   }
 
   useEffect(() => {
-    console.log("chart inputs");
+    if (state.symbolID === null) {
+      selectSymbolId(0);
+    }
+
+    addInputsCallback("CHART_INPUTS",(date, freq, book) => {
+      dateRef.current.value = date;
+      freqRef.current.value = freq;
+      bookRef.current.value = book;
+    })
+
+    //if (
+      //dateRef.current.value === "" ||
+      //dateRef.current.value !== params.current.date
+    //) {
+      //dateRef.current.value = date;
+    //}
+
+    //if (
+      //freqRef.current.value === "" ||
+      //freqRef.current.value !== params.current.freq
+    //) {
+      //freqRef.current.value = freq;
+    //}
+
+    //if (bookRef.current.value === "") {
+    //bookRef.current.value = book;
+    //}
+
     window.addEventListener("keydown", keyboardHandler);
     return () => window.removeEventListener("keydown", keyboardHandler);
-  }, [state.symbols, state.symbolID]);
+  });
+
+  console.log("chart inputs");
 
   return (
     <div className={styles.container}>
@@ -202,6 +231,7 @@ function ChartInput() {
       <div className={styles.set}>
         <span className={styles.label}>Date</span>
         <input
+          ref={dateRef}
           type="text"
           className={styles.text}
           onChange={e => {
@@ -215,13 +245,15 @@ function ChartInput() {
                 }
               });
             } else {
-              setState({
-                ...state,
-                error: {
-                  ...state.error,
-                  date: false
-                }
-              });
+              if (state.error.date) {
+                setState({
+                  ...state,
+                  error: {
+                    ...state.error,
+                    date: false
+                  }
+                });
+              }
               params.current.date = e.target.value;
             }
           }}
@@ -231,6 +263,7 @@ function ChartInput() {
       <div className={styles.set}>
         <span className={styles.label}>Frequency</span>
         <input
+          ref={freqRef}
           type="text"
           className={styles.text}
           onChange={e => {
@@ -244,13 +277,15 @@ function ChartInput() {
                 }
               });
             } else {
-              setState({
-                ...state,
-                error: {
-                  ...state.error,
-                  freq: false
-                }
-              });
+              if (state.error.freq) {
+                setState({
+                  ...state,
+                  error: {
+                    ...state.error,
+                    freq: false
+                  }
+                });
+              }
               params.current.frequency = e.target.value;
             }
           }}
@@ -260,6 +295,7 @@ function ChartInput() {
       <div className={styles.set}>
         <span className={styles.label}>Book</span>
         <input
+          ref={bookRef}
           type="text"
           className={styles.text}
           onChange={e => {
@@ -273,13 +309,15 @@ function ChartInput() {
                 }
               });
             } else {
-              setState({
-                ...state,
-                error: {
-                  ...state.error,
-                  book: false
-                }
-              });
+              if (state.error.book) {
+                setState({
+                  ...state,
+                  error: {
+                    ...state.error,
+                    book: false
+                  }
+                });
+              }
               params.current.book = e.target.value;
             }
           }}

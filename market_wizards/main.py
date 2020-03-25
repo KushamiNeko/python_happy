@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask_cors import cross_origin
 
 # from fun.utils import minify
 from handlers.plot import PlotHandler
@@ -19,11 +20,10 @@ def welcome():
 
 @app.route("/service/chart")
 # @app.route("/service/plot/practice")
+@cross_origin(allow_headers=['Content-Type'])
 def plot():
     print("plot")
-    # print(request.args.get("user"))
     return PlotHandler().response()
-    # return "hello world"
 
 
 if __name__ == "__main__":
