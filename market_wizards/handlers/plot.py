@@ -74,7 +74,7 @@ class PlotHandler:
 
         if function not in (
             "simple",
-            "refresh",
+            "slice",
             "forward",
             "backward",
             "inspect",
@@ -105,21 +105,15 @@ class PlotHandler:
         self._show_records = show_records
         self._book = book
 
-        print(self._store)
+        # print(self._store)
 
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
 
-    def _function_refresh(self) -> io.BytesIO:
-        # self._store_clear_symbol(self._symbol)
-
-        # preset = ChartPreset(self._date, self._symbol, self._frequency)
-        # self._store_write(self._store_key(), preset)
-
+    def _function_slice(self) -> io.BytesIO:
         preset = self._store_read(
             self._store_key(), dtime=self._date, time_sliced=True,
         )
-
         if preset is None:
             preset = ChartPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
@@ -192,8 +186,8 @@ class PlotHandler:
     def response(self) -> Any:
         if self._function == "simple":
             buf = self._function_simple()
-        elif self._function == "refresh":
-            buf = self._function_refresh()
+        elif self._function == "slice":
+            buf = self._function_slice()
         elif self._function == "forward":
             buf = self._function_forward()
         elif self._function == "backward":
@@ -207,4 +201,3 @@ class PlotHandler:
 
         # return send_file(buf, mimetype="image/png", cache_timeout=-1)
         return base64.b64encode(buf.getvalue()).decode("utf-8")
-

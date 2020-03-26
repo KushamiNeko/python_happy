@@ -8,7 +8,7 @@ export const ChartProvider = ({ children }) => {
     working: false,
     symbol: "es",
     freq: "d",
-    func: "refresh",
+    func: "slice",
     date: `${now.getFullYear()}${(now.getMonth() + 1)
       .toString()
       .padStart(2, "0")}${now
@@ -19,7 +19,8 @@ export const ChartProvider = ({ children }) => {
     records: false,
     imageCallback: {},
     inputsCallback: {},
-    quoteCallback: {}
+    quoteCallback: {},
+    workingCallback: {}
   });
 
   function requestUrl() {
@@ -44,7 +45,8 @@ export const ChartProvider = ({ children }) => {
       return;
     }
 
-    params.current.working = true;
+    //params.current.working = true;
+    working();
 
     const url = requestUrl();
     params.current.src = url;
@@ -77,9 +79,20 @@ export const ChartProvider = ({ children }) => {
               cb(params.current.date, params.current.freq, params.current.book)
             );
 
-            params.current.working = false;
+            //params.current.working = false;
+            done();
           });
       });
+  }
+
+  function working() {
+    params.current.working = true;
+    Object.values(params.current.workingCallback).map(cb => cb(true));
+  }
+
+  function done() {
+    params.current.working = false;
+    Object.values(params.current.workingCallback).map(cb => cb(false));
   }
 
   function forward() {
@@ -93,7 +106,7 @@ export const ChartProvider = ({ children }) => {
   }
 
   function symbolRequest(symbol) {
-    params.current.func = "refresh";
+    params.current.func = "slice";
     params.current.symbol = symbol.toLowerCase();
     imageSrc();
   }
@@ -104,11 +117,11 @@ export const ChartProvider = ({ children }) => {
     imageSrc();
   }
 
-  function inputsRequest(symbol, date, freq, book = "") {
-    params.current.func = "refresh";
+  function inputsRequest(date, symbol, freq, book = "") {
+    params.current.func = "slice";
     params.current.symbol = symbol.toLowerCase();
-    params.current.freq = freq;
     params.current.date = date;
+    params.current.freq = freq;
     params.current.book = book;
     imageSrc();
   }
@@ -159,6 +172,13 @@ export const ChartProvider = ({ children }) => {
     }
   }
 
+  function addWorkingCallback(key, callback) {
+    if (!params.current.workingCallback.hasOwnProperty(key)) {
+      params.current.workingCallback[key] = callback;
+      console.log(params.current.workingCallback);
+    }
+  }
+
   console.log("provider");
 
   return (
@@ -173,7 +193,8 @@ export const ChartProvider = ({ children }) => {
         backward,
         addImageCallback,
         addInputsCallback,
-        addQuoteCallback
+        addQuoteCallback,
+        addWorkingCallback
       }}
     >
       {children}

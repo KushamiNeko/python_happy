@@ -3,7 +3,9 @@ import styles from "./canvas.module.scss";
 import { ChartContext } from "../../context/chart";
 
 function Canvas() {
-  const { addImageCallback, inspectRequest } = useContext(ChartContext);
+  const { addImageCallback, addWorkingCallback, inspectRequest } = useContext(
+    ChartContext
+  );
 
   const coverColor = "rgba(0, 0, 0, 0.8)";
   const inspectColor = "rgba(255, 255, 255, 0.8)";
@@ -20,7 +22,8 @@ function Canvas() {
     both: false,
     calc: false,
     calcX: 0,
-    calcY: 0
+    calcY: 0,
+    working: false
   });
 
   const [state, setState] = useState({
@@ -122,23 +125,27 @@ function Canvas() {
         0
       );
 
-      inspectRequest(
-        data => {
-          infoRef.current.innerHTML = data;
-        },
-        x,
-        y,
-        ax,
-        ay
-      );
+      if (!params.current.working) {
+        inspectRequest(
+          data => {
+            infoRef.current.innerHTML = data;
+          },
+          x,
+          y,
+          ax,
+          ay
+        );
+      }
     } else {
-      inspectRequest(
-        data => {
-          infoRef.current.innerHTML = data;
-        },
-        x,
-        y
-      );
+      if (!params.current.working) {
+        inspectRequest(
+          data => {
+            infoRef.current.innerHTML = data;
+          },
+          x,
+          y
+        );
+      }
     }
 
     const offset = 20;
@@ -268,10 +275,14 @@ function Canvas() {
   }
 
   useEffect(() => {
-
     addImageCallback("CANVAS", img => {
-      imageRef.current.src = img
-    })
+      console.log("image update")
+      imageRef.current.src = img;
+    });
+
+    addWorkingCallback("CANVAS", working => {
+      params.current.working = working;
+    });
 
     const imgLoaded = () => {
       initCanvasSize();
@@ -309,7 +320,6 @@ function Canvas() {
             : `${styles.chartInfo} ${styles.chartInfoHidden}`
         }
       >
-        Info
       </div>
       <div className={styles.mainContainer}>
         <div className={styles.chartContainer}>

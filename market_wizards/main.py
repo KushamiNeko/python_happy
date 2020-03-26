@@ -22,7 +22,6 @@ def welcome():
 # @app.route("/service/plot/practice")
 @cross_origin(allow_headers=['Content-Type'])
 def plot():
-    print("plot")
     return PlotHandler().response()
 
 
