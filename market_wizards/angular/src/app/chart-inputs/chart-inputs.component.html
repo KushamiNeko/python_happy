@@ -1,0 +1,99 @@
+<div class="sidebar-container">
+  <div class="chart-inputs-container">
+    <div class="chart-inputs-set">
+      <span class="chart-inputs-label">Symbols</span>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        class="chart-inputs-text chart-inputs-table"
+      >
+        <tbody>
+          <tr
+            *ngFor="let symbol of symbols; let id = index"
+            [ngClass]="{
+              'chart-inputs-table': true,
+              'chart-inputs-table-active': id == selectedSymbolID
+            }"
+            (click)="selectedSymbolID = id"
+          >
+            <td>{{ symbol }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-inputs-set">
+      <span class="chart-inputs-separator"></span>
+      <input
+        type="text"
+        [ngClass]="{
+          'chart-inputs-text': true,
+          'chart-inputs-error': errors['newSymbol']
+        }"
+        [(ngModel)]="newSymbol"
+        (ngModelChange)="newSymbolChange()"
+        (focus)="isFocused['newSymbol'] = true"
+        (blur)="isFocused['newSymbol'] = false"
+      />
+    </div>
+
+    <button
+      [ngClass]="{
+        'chart-inputs-button': true,
+        'chart-inputs-button-active': showRecords
+      }"
+      (click)="showRecords = !showRecords"
+    >
+      show records
+    </button>
+
+    <button class="chart-inputs-button">
+      random date
+    </button>
+
+    <div class="chart-inputs-set">
+      <span class="chart-inputs-label">Date</span>
+      <input
+        type="text"
+        [ngClass]="{
+          'chart-inputs-text': true,
+          'chart-inputs-error': errors['date']
+        }"
+        [(ngModel)]="inputs['date']"
+        (ngModelChange)="dateChange()"
+        (focus)="isFocused['inputs'] = true"
+        (blur)="isFocused['inputs'] = false"
+      />
+    </div>
+
+    <div class="chart-inputs-set">
+      <span class="chart-inputs-label">Frequency</span>
+      <input
+        type="text"
+        [ngClass]="{
+          'chart-inputs-text': true,
+          'chart-inputs-error': errors['freq']
+        }"
+        [(ngModel)]="inputs['freq']"
+        (ngModelChange)="freqChange()"
+        (focus)="isFocused['inputs'] = true"
+        (blur)="isFocused['inputs'] = false"
+      />
+    </div>
+
+    <div class="chart-inputs-set">
+      <span class="chart-inputs-label">Book</span>
+      <input
+        type="text"
+        [ngClass]="{
+          'chart-inputs-text': true,
+          'chart-inputs-error': errors['book']
+        }"
+        [(ngModel)]="inputs['book']"
+        (ngModelChange)="bookChange()"
+        (focus)="isFocused['inputs'] = true"
+        (blur)="isFocused['inputs'] = false"
+      />
+    </div>
+  </div>
+</div>

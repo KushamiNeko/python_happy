@@ -79,7 +79,7 @@ class PlotHandler:
             "backward",
             "inspect",
             "quote",
-            # "randomDate",
+            "randomDate",
         ):
             raise ValueError("invalid function")
 
@@ -153,6 +153,9 @@ class PlotHandler:
 
         return preset.render()
 
+    def _function_randomDate(self) -> io.BytesIO:
+        pass
+
     # def _function_inspect(self) -> Dict[str, str]:
     def _function_inspect(self) -> str:
         preset = self._store_read(self._store_key())
@@ -183,6 +186,7 @@ class PlotHandler:
 
         return preset.quote()
 
+
     def response(self) -> Any:
         if self._function == "simple":
             buf = self._function_simple()
@@ -196,8 +200,8 @@ class PlotHandler:
             return self._function_inspect()
         elif self._function == "quote":
             return self._function_quote()
-        # elif self._function == "randomDate":
-        # pass
+        elif self._function == "randomDate":
+            pass
 
         # return send_file(buf, mimetype="image/png", cache_timeout=-1)
         return base64.b64encode(buf.getvalue()).decode("utf-8")
