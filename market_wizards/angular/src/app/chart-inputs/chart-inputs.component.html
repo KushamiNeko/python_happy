@@ -14,7 +14,7 @@
               'chart-inputs-table': true,
               'chart-inputs-table-active': id == selectedSymbolID
             }"
-            (click)="selectedSymbolID = id"
+            (click)="setSymbolID(id)"
           >
             <td>{{ symbol }}</td>
           </tr>

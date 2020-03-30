@@ -131,6 +131,11 @@ export class ChartInputsComponent implements OnInit {
     }
   }
 
+  setSymbolID(id: number): void {
+    this.selectedSymbolID = id;
+    this._chartService.symbolRequest(this.symbols[id]);
+  }
+
   @HostListener("window:keydown", ["$event"])
   handleKeyDown(event: KeyboardEvent): void {
     if (this._isWorking) {
@@ -173,8 +178,9 @@ export class ChartInputsComponent implements OnInit {
           id = this.symbols.length - 1;
         }
 
-        this.selectedSymbolID = id;
-        this._chartService.symbolRequest(this.symbols[id]);
+        //this.selectedSymbolID = id;
+        //this._chartService.symbolRequest(this.symbols[id]);
+        this.setSymbolID(id);
         break;
       case 40:
         id = this.selectedSymbolID + 1;
@@ -182,8 +188,9 @@ export class ChartInputsComponent implements OnInit {
           id = 0;
         }
 
-        this.selectedSymbolID = id;
-        this._chartService.symbolRequest(this.symbols[id]);
+        //this.selectedSymbolID = id;
+        //this._chartService.symbolRequest(this.symbols[id]);
+        this.setSymbolID(id);
         break;
       case 37:
         this._chartService.backward();
@@ -219,10 +226,11 @@ export class ChartInputsComponent implements OnInit {
           this._key += (event.which - 48).toString();
           setTimeout(() => {
             if (this._key != "") {
-              this.selectedSymbolID = parseInt(this._key) - 1;
-              this._chartService.symbolRequest(
-                this.symbols[this.selectedSymbolID]
-              );
+              this.setSymbolID(parseInt(this._key) - 1);
+              //this.selectedSymbolID = parseInt(this._key) - 1;
+              //this._chartService.symbolRequest(
+              //this.symbols[this.selectedSymbolID]
+              //);
             }
             this._key = "";
           }, 200);
