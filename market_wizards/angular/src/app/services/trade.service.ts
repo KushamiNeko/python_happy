@@ -19,7 +19,7 @@ export class TradeService {
     return url;
   }
 
-  newRecord(transaction: object): Observable<string> {
+  newMarketOrder(transaction: object): Observable<string> {
     const headers = new HttpHeaders().set("Content-Type", "application/json");
 
     return this._http.post(this._requestUrl(), transaction, {

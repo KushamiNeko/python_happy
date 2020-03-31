@@ -88,6 +88,20 @@
   background-color: $paper-grey-200;
 }
 
+.trade-inputs-button-working {
+  background-color: $paper-yellow-900;
+}
+
+.trade-inputs-button-working:focus,
+.trade-inputs-button-working:hover {
+  background-color: $paper-yellow-700;
+}
+
+.trade-inputs-button-working:active {
+  color: black;
+  background-color: $paper-yellow-400;
+}
+
 .trade-inputs-separator {
   @include my-style-separator;
   background-color: white;

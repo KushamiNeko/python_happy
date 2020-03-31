@@ -1,13 +1,17 @@
 import base64
 import io
+import os
 import re
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from flask import request
 
 from fun.chart.preset import ChartPreset
+from fun.plotter.records import LeverageRecords
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
+from fun.trading.agent import TradingAgent
+from fun.trading.transaction import FuturesTransaction
 
 
 class ChartHandler:
@@ -94,6 +98,24 @@ class ChartHandler:
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
 
+    def _read_records(self, title: str) -> Optional[List[FuturesTransaction]]:
+        root = os.path.join(
+            cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+        )
+
+        agent = TradingAgent(root=root, new_user=True)
+        return agent.read_records(title)
+
+    def _render(self, preset: ChartPreset) -> io.BytesIO:
+        if self._show_records:
+            ts = self._read_records(self._book)
+            if ts is not None and len(ts) > 0:
+                preset.show_records(ts)
+        else:
+            preset.show_records(None)
+
+        return preset.render()
+
     def _function_slice(self) -> io.BytesIO:
         preset = self._store_read(
             self._store_key(), dtime=self._date, time_sliced=True,
@@ -102,7 +124,7 @@ class ChartHandler:
             preset = ChartPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
 
-        return preset.render()
+        return self._render(preset)
 
     def _function_simple(self) -> io.BytesIO:
         preset = self._store_read(self._store_key())
@@ -110,7 +132,7 @@ class ChartHandler:
             preset = ChartPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
 
-        return preset.render()
+        return self._render(preset)
 
     def _function_forward(self) -> io.BytesIO:
         preset = self._store_read(self._store_key())
@@ -118,7 +140,7 @@ class ChartHandler:
 
         preset.forward()
 
-        return preset.render()
+        return self._render(preset)
 
     def _function_backward(self) -> io.BytesIO:
         preset = self._store_read(self._store_key())
@@ -126,7 +148,7 @@ class ChartHandler:
 
         preset.backward()
 
-        return preset.render()
+        return self._render(preset)
 
     def _function_randomDate(self) -> io.BytesIO:
         pass

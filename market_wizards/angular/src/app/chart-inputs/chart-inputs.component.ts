@@ -111,7 +111,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   }
 
   dateChange(): void {
-    const regex = RegExp("^[0-9]{8}$");
+    const regex = RegExp("^[0-9]{4}|[0-9]{8}$");
     if (!regex.test(this.inputs["date"])) {
       this.errors["date"] = true;
     } else {
@@ -135,6 +135,11 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
     } else {
       this.errors["book"] = false;
     }
+  }
+
+  clickShowRecords(): void {
+    this.showRecords = !this.showRecords;
+    this._chartService.recordsRequest(this.showRecords);
   }
 
   setSymbolID(id: number): void {
@@ -174,6 +179,10 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
             !this.errors["freq"] &&
             !this.errors["book"]
           ) {
+            if (this.inputs["date"].length == 4) {
+              this.inputs["date"] += "1231";
+            }
+
             this._chartService.inputsRequest(
               this.inputs["date"],
               this.symbols[this.selectedSymbolID],
@@ -200,10 +209,61 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
         this.setSymbolID(id);
         break;
       case 37:
-        this._chartService.backward();
+        if (event.shiftKey || event.ctrlKey) {
+          if (event.shiftKey) {
+            this.inputs["date"] = `${parseInt(
+              this.inputs["date"].substring(0, 4)
+            ) - 1}${this.inputs["date"].substring(4)}`;
+          } else if (event.ctrlKey) {
+            this.inputs["date"] = `${parseInt(
+              this.inputs["date"].substring(0, 4)
+            ) - 1}1231`;
+          }
+
+          this._chartService.inputsRequest(
+            this.inputs["date"],
+            this.symbols[this.selectedSymbolID],
+            this.inputs["freq"],
+            this.inputs["book"]
+          );
+        } else {
+          this._chartService.backward();
+        }
         break;
       case 39:
-        this._chartService.forward();
+        if (event.shiftKey || event.ctrlKey) {
+          if (event.shiftKey) {
+            this.inputs["date"] = `${parseInt(
+              this.inputs["date"].substring(0, 4)
+            ) + 1}${this.inputs["date"].substring(4)}`;
+          } else if (event.ctrlKey) {
+            this.inputs["date"] = `${parseInt(
+              this.inputs["date"].substring(0, 4)
+            )}1231`;
+          }
+
+          const now = new Date();
+
+          const date = `${now.getFullYear()}${(now.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}${now
+            .getDate()
+            .toString()
+            .padStart(2, "0")}`;
+
+          if (parseInt(this.inputs["date"]) > parseInt(date)) {
+            this.inputs["date"] = date;
+          }
+
+          this._chartService.inputsRequest(
+            this.inputs["date"],
+            this.symbols[this.selectedSymbolID],
+            this.inputs["freq"],
+            this.inputs["book"]
+          );
+        } else {
+          this._chartService.forward();
+        }
         break;
       case 72:
         // h

@@ -1,6 +1,8 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
+  Output,
   OnInit,
   ViewChild,
   Input,
@@ -19,10 +21,12 @@ import { Subscription } from "rxjs";
 export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
   private _$inputs: Subscription;
   private _$quote: Subscription;
-  private _$isWorking: Subscription;
 
   @Input()
   isOpen: boolean = false;
+
+  @Output()
+  completed: EventEmitter<void> = new EventEmitter();
 
   @ViewChild("leverage")
   leverageRef: ElementRef;
@@ -46,6 +50,8 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     leverage: false
   };
 
+  isWorking = false;
+
   constructor(
     private _chartService: ChartService,
     private _tradeService: TradeService
@@ -68,16 +74,11 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     this._$quote = this._chartService.quote.subscribe(quote => {
       this.inputs["price"] = quote["close"];
     });
-
-    //this._$isWorking = this._chartService.isWorking.subscribe(isWorking => {
-    //this._isWorking = isWorking;
-    //});
   }
 
   ngOnDestroy(): void {
     this._$inputs.unsubscribe();
     this._$quote.unsubscribe();
-    //this._$isWorking.unsubscribe();
   }
 
   ngOnChanges(): void {
@@ -131,11 +132,19 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   newOrder(): void {
+    if (this.isWorking) {
+      return;
+    }
+
+    this.isWorking = true;
+
     if (this.stopOrder) {
     } else {
-      this._tradeService
-        .newRecord(this.inputs)
-        .subscribe(() => this._chartService.refresh());
+      this._tradeService.newMarketOrder(this.inputs).subscribe(() => {
+        this._chartService.refresh();
+        this.completed.emit();
+        this.isWorking = false;
+      });
     }
   }
 }

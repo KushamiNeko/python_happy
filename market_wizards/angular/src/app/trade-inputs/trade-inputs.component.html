@@ -86,7 +86,13 @@
     {{ stopOrder ? "stop order" : "market order" }}
   </button>
 
-  <button class="trade-inputs-button" (click)="newOrder()">
+  <button
+    [ngClass]="{
+      'trade-inputs-button': true,
+      'trade-inputs-button-working': isWorking
+    }"
+    (click)="newOrder()"
+  >
     ok
   </button>
 </div>
