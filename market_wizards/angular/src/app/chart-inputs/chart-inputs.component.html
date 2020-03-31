@@ -16,14 +16,15 @@
             }"
             (click)="setSymbolID(id)"
           >
-            <td>{{ symbol }}</td>
+            <td>{{ (id + 1).toString().padStart(2, "0") + ".  " + symbol }}</td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <span class="chart-inputs-separator"></span>
+
     <div class="chart-inputs-set">
-      <span class="chart-inputs-separator"></span>
       <input
         type="text"
         [ngClass]="{
@@ -42,6 +43,7 @@
         'chart-inputs-button': true,
         'chart-inputs-button-active': showRecords
       }"
+      style="margin-top: 0.5em;"
       (click)="showRecords = !showRecords"
     >
       show records
@@ -97,3 +99,4 @@
     </div>
   </div>
 </div>
+<app-modal [isOpen]="openTrade"></app-modal>

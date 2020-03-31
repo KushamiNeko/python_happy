@@ -1,0 +1,92 @@
+<div class="trade-inputs-container">
+  <div class="trade-inputs-set">
+    <span class="trade-inputs-label">Book</span>
+    <input
+      type="text"
+      [ngClass]="{
+        'trade-inputs-text': true,
+        'trade-inputs-disabled': stopOrder,
+        'trade-inputs-error': errors['book']
+      }"
+      [(ngModel)]="inputs['book']"
+      (ngModelChange)="bookChange()"
+      [disabled]="stopOrder"
+    />
+  </div>
+
+  <div class="trade-inputs-set">
+    <span class="trade-inputs-label">Date</span>
+    <input
+      type="text"
+      [ngClass]="{
+        'trade-inputs-text': true,
+        'trade-inputs-disabled': stopOrder,
+        'trade-inputs-error': errors['datetime']
+      }"
+      [(ngModel)]="inputs['datetime']"
+      (ngModelChange)="dateChange()"
+      [disabled]="stopOrder"
+    />
+  </div>
+
+  <div class="trade-inputs-set">
+    <span class="trade-inputs-label">Symbol</span>
+    <input
+      type="text"
+      [ngClass]="{
+        'trade-inputs-text': true,
+        'trade-inputs-error': errors['symbol']
+      }"
+      [(ngModel)]="inputs['symbol']"
+      (ngModelChange)="symbolChange()"
+    />
+  </div>
+
+  <div class="trade-inputs-set">
+    <span class="trade-inputs-label">Price</span>
+    <input
+      type="text"
+      [ngClass]="{
+        'trade-inputs-text': true,
+        'trade-inputs-error': errors['price']
+      }"
+      [(ngModel)]="inputs['price']"
+      (ngModelChange)="priceChange()"
+    />
+  </div>
+
+  <div class="trade-inputs-set">
+    <span class="trade-inputs-label">Leverage</span>
+    <input
+      #leverage
+      type="text"
+      [ngClass]="{
+        'trade-inputs-text': true,
+        'trade-inputs-error': errors['leverage']
+      }"
+      [(ngModel)]="inputs['leverage']"
+      (ngModelChange)="leverageChange()"
+    />
+  </div>
+
+  <div class="trade-inputs-set">
+    <span class="trade-inputs-label">Operation</span>
+    <button
+      #op
+      class="trade-inputs-button"
+      (click)="inputs['operation'] = inputs['operation'] == '+' ? '-' : '+'"
+    >
+      {{ inputs["operation"] == "+" ? "long" : "short" }}
+    </button>
+  </div>
+
+  <span class="trade-inputs-separator"></span>
+
+  <button class="trade-inputs-button" (click)="stopOrder = !stopOrder">
+    {{ stopOrder ? "stop order" : "market order" }}
+  </button>
+
+  <button class="trade-inputs-button" (click)="newOrder()">
+    ok
+  </button>
+</div>

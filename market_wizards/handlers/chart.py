@@ -1,23 +1,16 @@
-import io
 import base64
+import io
 import re
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple, Union
+from datetime import datetime
+from typing import Any, Dict, Optional
 
-import pandas as pd
-from flask import request, send_file
+from flask import request
 
 from fun.chart.preset import ChartPreset
-from fun.data.source import HOURLY, DAILY, WEEKLY, MONTHLY, FREQUENCY
-
-# import fun.trading.indicator as ind
-# from fun.chart.static import StaticChart
-# from fun.trading.agent import Agent
-# from fun.trading.source import Barchart, DataSource, Yahoo
-# from fun.trading.transaction import FuturesTransaction
+from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
 
 
-class PlotHandler:
+class ChartHandler:
 
     _store: Dict[str, ChartPreset] = {}
 
@@ -55,13 +48,6 @@ class PlotHandler:
         function = request.args.get("function")
         show_records = request.args.get("records") == "true"
         book = request.args.get("book")
-
-        # print(date)
-        # print(symbol)
-        # print(frequency)
-        # print(function)
-        # print(show_records)
-        # print(book)
 
         if re.match(r"^\d{8}$", date) is None:
             raise ValueError("invalid date")
@@ -105,8 +91,6 @@ class PlotHandler:
         self._show_records = show_records
         self._book = book
 
-        # print(self._store)
-
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
 
@@ -133,10 +117,6 @@ class PlotHandler:
         assert preset is not None
 
         preset.forward()
-        # ok = preset.forward()
-        # if not ok:
-        # preset = ChartPreset(preset.exetime(), self._symbol, self._frequency)
-        # self._store_write(self._store_key(), preset)
 
         return preset.render()
 
@@ -146,22 +126,15 @@ class PlotHandler:
 
         preset.backward()
 
-        # ok = preset.backward()
-        # if not ok:
-        # preset = ChartPreset(preset.exstime(), self._symbol, self._frequency)
-        # self._store_write(self._store_key(), preset)
-
         return preset.render()
 
     def _function_randomDate(self) -> io.BytesIO:
         pass
 
-    # def _function_inspect(self) -> Dict[str, str]:
     def _function_inspect(self) -> str:
         preset = self._store_read(self._store_key())
         if preset is None:
             return ""
-            # return {}
 
         x = request.args.get("x")
         y = request.args.get("y")
@@ -171,13 +144,11 @@ class PlotHandler:
 
         if x is None or y is None:
             return ""
-            # return {}
 
         info = preset.inspect(x, y, ax=ax, ay=ay)
         assert info is not None
 
         return "\n".join([f"{k}: {v}" for k, v in info.items()])
-        # return info
 
     def _function_quote(self) -> Dict[str, Any]:
         preset = self._store_read(self._store_key())
@@ -185,7 +156,6 @@ class PlotHandler:
             return {}
 
         return preset.quote()
-
 
     def response(self) -> Any:
         if self._function == "simple":
@@ -203,5 +173,4 @@ class PlotHandler:
         elif self._function == "randomDate":
             pass
 
-        # return send_file(buf, mimetype="image/png", cache_timeout=-1)
         return base64.b64encode(buf.getvalue()).decode("utf-8")

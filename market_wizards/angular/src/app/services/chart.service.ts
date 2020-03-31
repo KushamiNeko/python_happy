@@ -33,6 +33,8 @@ export class ChartService {
       .toString()
       .padStart(2, "0")}`;
 
+    this._book = this._date;
+
     console.log("chart service");
 
     this._getImage();
@@ -81,6 +83,7 @@ export class ChartService {
           this._date = data["date"];
 
           this.inputs.next({
+            symbol: this._symbol,
             date: this._date,
             freq: this._freq,
             book: this._book
@@ -99,6 +102,10 @@ export class ChartService {
   private _completed(): void {
     this._isWorking = false;
     this.isWorking.next(this._isWorking);
+  }
+
+  refresh(): void {
+    this._getImage();
   }
 
   forward(): void {

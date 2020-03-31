@@ -15,7 +15,7 @@ import { Subscription } from "rxjs";
   templateUrl: "./canvas.component.html",
   styleUrls: ["./canvas.component.scss"]
 })
-export class CanvasComponent implements OnInit {
+export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _coverColor = "rgba(0, 0, 0, 0.8)";
   private readonly _inspectColor = "rgba(255, 255, 255, 0.8)";
   private readonly _anchorColor = "rgba(255, 255, 255, 0.5)";

@@ -10,6 +10,7 @@ import { CanvasComponent } from "./canvas/canvas.component";
 import { ModalComponent } from "./modal/modal.component";
 import { ChartInputsComponent } from "./chart-inputs/chart-inputs.component";
 import { PracticeViewComponent } from "./practice-view/practice-view.component";
+import { TradeInputsComponent } from './trade-inputs/trade-inputs.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PracticeViewComponent } from "./practice-view/practice-view.component";
     CanvasComponent,
     ModalComponent,
     ChartInputsComponent,
-    PracticeViewComponent
+    PracticeViewComponent,
+    TradeInputsComponent
   ],
   imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule],
   providers: [],

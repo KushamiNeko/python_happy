@@ -7,7 +7,7 @@ import { Subscription } from "rxjs";
   templateUrl: "./chart-inputs.component.html",
   styleUrls: ["./chart-inputs.component.scss"]
 })
-export class ChartInputsComponent implements OnInit {
+export class ChartInputsComponent implements OnInit, OnDestroy {
   symbols = [
     "ES",
     "VIX",
@@ -62,6 +62,8 @@ export class ChartInputsComponent implements OnInit {
     book: ""
   };
 
+  openTrade = false;
+
   private _isWorking = false;
 
   private _key = "";
@@ -79,6 +81,10 @@ export class ChartInputsComponent implements OnInit {
       this.inputs["date"] = inputs["date"];
       this.inputs["freq"] = inputs["freq"];
       this.inputs["book"] = inputs["book"];
+
+      this.dateChange();
+      this.freqChange();
+      this.bookChange();
     });
 
     this._$isWorking = this._chartService.isWorking.subscribe(isWorking => {
@@ -123,7 +129,7 @@ export class ChartInputsComponent implements OnInit {
   }
 
   bookChange(): void {
-    const regex = RegExp("^[a-zA-Z0-9]+$");
+    const regex = RegExp("^[a-zA-Z0-9]*$");
     if (!regex.test(this.inputs["book"])) {
       this.errors["book"] = true;
     } else {
@@ -142,6 +148,10 @@ export class ChartInputsComponent implements OnInit {
       return;
     }
 
+    if (this.openTrade && event.which != 13 && event.which != 32) {
+      return;
+    }
+
     if (
       (this.isFocused["newSymbol"] || this.isFocused["inputs"]) &&
       event.which != 13
@@ -152,7 +162,8 @@ export class ChartInputsComponent implements OnInit {
     let id: number;
     switch (event.which) {
       case 13:
-        if (this.isFocused["newSymbol"]) {
+        if (this.openTrade) {
+        } else if (this.isFocused["newSymbol"]) {
           if (!this.errors["newSymbol"]) {
             this.symbols.push(this.newSymbol.toUpperCase());
             this.newSymbol = "";
@@ -178,8 +189,6 @@ export class ChartInputsComponent implements OnInit {
           id = this.symbols.length - 1;
         }
 
-        //this.selectedSymbolID = id;
-        //this._chartService.symbolRequest(this.symbols[id]);
         this.setSymbolID(id);
         break;
       case 40:
@@ -188,8 +197,6 @@ export class ChartInputsComponent implements OnInit {
           id = 0;
         }
 
-        //this.selectedSymbolID = id;
-        //this._chartService.symbolRequest(this.symbols[id]);
         this.setSymbolID(id);
         break;
       case 37:
@@ -214,11 +221,9 @@ export class ChartInputsComponent implements OnInit {
         break;
       case 32:
         // space
-        //if (_modal.isOpen) {
-        //_modal.close();
-        //} else {
-        //_modal.open();
-        //}
+        this.openTrade = !this.openTrade;
+        event.stopPropagation();
+        event.preventDefault();
         break;
       default:
         if (event.which >= 48 && event.which <= 57) {
@@ -227,10 +232,6 @@ export class ChartInputsComponent implements OnInit {
           setTimeout(() => {
             if (this._key != "") {
               this.setSymbolID(parseInt(this._key) - 1);
-              //this.selectedSymbolID = parseInt(this._key) - 1;
-              //this._chartService.symbolRequest(
-              //this.symbols[this.selectedSymbolID]
-              //);
             }
             this._key = "";
           }, 200);

@@ -2,7 +2,9 @@
 @import "../_common_scss/material_design_style/colors";
 
 .modal {
-  display: none;
+  //display: none;
+  @include layout-horizontal;
+  @include layout-around-justified;
   position: fixed;
   z-index: 5;
   left: 0;
@@ -15,6 +17,10 @@
 .modal-open {
   @include layout-horizontal;
   @include layout-around-justified;
+}
+
+.modal-close {
+  display: none;
 }
 
 .modal-content {
