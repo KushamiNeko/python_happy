@@ -1,0 +1,121 @@
+<div class="statistic-container">
+  <span class="statistic-title"
+    >{{ statistic["statistic_start"] }} ~ {{ statistic["statistic_end"] }}</span
+  >
+
+  <span class="statistic-separator"></span>
+
+  <table class="statistic-table statistic-label" align="center">
+    <tr>
+      <th class="statistic-table-cell">Operation</th>
+      <th class="statistic-table-cell">Number of Trades</th>
+      <th class="statistic-table-cell">Batting Average</th>
+      <th class="statistic-table-cell">Win Loss Ratio</th>
+      <th class="statistic-table-cell">Adj Win Loss Ratio</th>
+      <th class="statistic-table-cell">Win Holding Mean</th>
+      <th class="statistic-table-cell">Loss Holding Mean</th>
+      <th class="statistic-table-cell">Profit Mean</th>
+      <th class="statistic-table-cell">Loss Mean</th>
+      <th class="statistic-table-cell">Expected Value</th>
+    </tr>
+    <tr>
+      <th class="statistic-table-cell">Total</th>
+      <th class="statistic-table-cell">{{ statistic["total_trades"] }}</th>
+      <th class="statistic-table-cell">{{ statistic["batting_average"] }}</th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_win_loss_ratio"] }} /
+        {{ statistic["leveraged_win_loss_ratio"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_adjusted_win_loss_ratio"] }} /
+        {{ statistic["leveraged_adjusted_win_loss_ratio"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["winners_holding_mean"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["losers_holding_mean"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["winners_nominal_pl_mean"] }} /
+        {{ statistic["winners_leveraged_pl_mean"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["losers_nominal_pl_mean"] }} /
+        {{ statistic["losers_leveraged_pl_mean"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_expected_value"] }} /
+        {{ statistic["leveraged_expected_value"] }}
+      </th>
+    </tr>
+    <tr>
+      <th class="statistic-table-cell">Long</th>
+      <th class="statistic-table-cell">{{ statistic["total_long_trades"] }}</th>
+      <th class="statistic-table-cell">
+        {{ statistic["batting_average_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_win_loss_ratio_long"] }} /
+        {{ statistic["leveraged_win_loss_ratio_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_adjusted_win_loss_ratio_long"] }} /
+        {{ statistic["leveraged_adjusted_win_loss_ratio_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["winners_holding_mean_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["losers_holding_mean_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["winners_nominal_pl_mean_long"] }} /
+        {{ statistic["winners_leveraged_pl_mean_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["losers_nominal_pl_mean_long"] }} /
+        {{ statistic["losers_leveraged_pl_mean_long"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_expected_value_long"] }} /
+        {{ statistic["leveraged_expected_value_long"] }}
+      </th>
+    </tr>
+    <tr>
+      <th class="statistic-table-cell">Short</th>
+      <th class="statistic-table-cell">
+        {{ statistic["total_short_trades"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["batting_average_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_win_loss_ratio_short"] }} /
+        {{ statistic["leveraged_win_loss_ratio_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_adjusted_win_loss_ratio_short"] }} /
+        {{ statistic["leveraged_adjusted_win_loss_ratio_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["winners_holding_mean_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["losers_holding_mean_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["winners_nominal_pl_mean_short"] }} /
+        {{ statistic["winners_leveraged_pl_mean_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["losers_nominal_pl_mean_short"] }} /
+        {{ statistic["losers_leveraged_pl_mean_short"] }}
+      </th>
+      <th class="statistic-table-cell">
+        {{ statistic["nominal_expected_value_short"] }} /
+        {{ statistic["leveraged_expected_value_short"] }}
+      </th>
+    </tr>
+  </table>
+</div>

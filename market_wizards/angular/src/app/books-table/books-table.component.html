@@ -1,0 +1,33 @@
+<div class="sidebar-container">
+  <div class="books-table-container">
+    <div class="books-table-set">
+      <span class="books-table-label">Books</span>
+      <table
+        cellpadding="0"
+        cellspacing="0"
+        class="books-table-text books-table-table"
+      >
+        <tbody>
+          <tr
+            *ngFor="let book of books; let id = index"
+            [ngClass]="{
+              'books-table-table': true,
+              'books-table-table-active': selected.includes(id)
+            }"
+            (click)="selectBook(id)"
+          >
+            <td>{{ (id + 1).toString().padStart(2, "0") + ".  " + book }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button class="books-table-button" (click)="selectAll()">
+      all
+    </button>
+
+    <button class="books-table-button" (click)="selectNone()">
+      clear
+    </button>
+  </div>
+</div>

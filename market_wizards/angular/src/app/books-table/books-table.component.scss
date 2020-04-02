@@ -15,31 +15,32 @@
 }
 
 .sidebar-container {
-  @include layout-flex-2;
+  //@include layout-flex-2;
+  width: 20vw;
 }
 
-.chart-inputs-container {
+.books-table-container {
   @include layout-vertical;
   @include layout-around-justified;
 }
 
-.chart-inputs-separator {
+.books-table-separator {
   @include my-style-separator;
   background-color: white;
   width: 85%;
   color: white;
 }
 
-.chart-inputs-table {
+.books-table-table {
   @include noselect;
   cursor: pointer;
 }
 
-.chart-inputs-table-active {
+.books-table-table-active {
   color: $paper-amber-300;
 }
 
-.chart-inputs-set {
+.books-table-set {
   @include font-body1;
   @include layout-vertical;
   @include layout-around-justified;
@@ -47,7 +48,7 @@
   margin-bottom: 0.1em;
 }
 
-.chart-inputs-label {
+.books-table-label {
   @include font-body1;
   @include my-style-font-family;
   @include h-margin;
@@ -55,7 +56,7 @@
   margin-bottom: 0.1em;
 }
 
-.chart-inputs-text {
+.books-table-text {
   @include font-body1;
   @include my-style-font-family;
   @include h-margin;
@@ -68,12 +69,12 @@
   padding-right: 0.25em;
 }
 
-.chart-inputs-text:focus {
+.books-table-text:focus {
   color: black;
   background-color: $paper-grey-200;
 }
 
-.chart-inputs-button {
+.books-table-button {
   @include font-button;
   @include my-style-font-family;
   @include h-margin;
@@ -85,32 +86,32 @@
   margin-bottom: 0.25em;
 }
 
-.chart-inputs-button:focus,
-.chart-inputs-button:hover {
+.books-table-button:focus,
+.books-table-button:hover {
   background-color: $paper-grey-500;
 }
 
-.chart-inputs-button:active {
+.books-table-button:active {
   color: black;
   background-color: $paper-grey-200;
 }
 
-.chart-inputs-button-active,
-.chart-inputs-button-active:focus {
+.books-table-button-active,
+.books-table-button-active:focus {
   color: black;
   background-color: $paper-yellow-600;
 }
 
-.chart-inputs-button-active:hover {
+.books-table-button-active:hover {
   background-color: $paper-yellow-300;
 }
 
-.chart-inputs-error {
+.books-table-error {
   color: white;
   background-color: $paper-red-900;
 }
 
-.chart-inputs-error:focus {
+.books-table-error:focus {
   color: white;
   background-color: $paper-red-900;
 }

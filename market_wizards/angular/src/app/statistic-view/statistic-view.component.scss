@@ -1,0 +1,6 @@
+@import "../_common_scss/material_design_style/layout";
+
+.statistic-content {
+  @include layout-horizontal;
+  height: 97%;
+}

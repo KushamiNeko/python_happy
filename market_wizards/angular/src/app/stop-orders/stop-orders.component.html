@@ -1,0 +1,26 @@
+<div class="stop-orders-container">
+  <table class="stop-orders-table stop-orders-label" align="center">
+    <tr>
+      <th class="stop-orders-table-cell">Symbol</th>
+      <th class="stop-orders-table-cell">Price</th>
+      <th class="stop-orders-table-cell">Leverage</th>
+      <th class="stop-orders-table-cell">Operation</th>
+      <th></th>
+    </tr>
+    <tr *ngFor="let order of orders; let id = index">
+      <td class="stop-orders-table-cell">
+        {{ order["symbol"].toUpperCase() }}
+      </td>
+      <td class="stop-orders-table-cell">{{ order["price"] }}</td>
+      <td class="stop-orders-table-cell">{{ order["leverage"] }}</td>
+      <td class="stop-orders-table-cell">
+        {{ order["operation"] == "+" ? "L" : "S" }}
+      </td>
+      <td>
+        <button class="stop-orders-button" (click)="deleteOrder(id)">
+          X
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>

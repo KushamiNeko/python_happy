@@ -21,6 +21,7 @@ import { Subscription } from "rxjs";
 export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
   private _$inputs: Subscription;
   private _$quote: Subscription;
+  private _$isWorking: Subscription;
 
   @Input()
   isOpen: boolean = false;
@@ -72,13 +73,22 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     this._$quote = this._chartService.quote.subscribe(quote => {
-      this.inputs["price"] = quote["close"];
+      this.inputs["price"] = quote["close"]?.toFixed(2);
     });
+
+    this._$isWorking = this._tradeService.isWorking.subscribe(done => {
+      this._chartService.refresh();
+      this.completed.emit();
+      this.isWorking = done;
+    });
+
+    this._tradeService.readStopOrders();
   }
 
   ngOnDestroy(): void {
     this._$inputs.unsubscribe();
     this._$quote.unsubscribe();
+    this._$isWorking.unsubscribe();
   }
 
   ngOnChanges(): void {
@@ -139,12 +149,21 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     this.isWorking = true;
 
     if (this.stopOrder) {
+      this._tradeService.newStopOrder(this.inputs);
+      //this._tradeService.newStopOrder(this.inputs).subscribe(data => {
+      //console.log(data);
+
+      ////this._chartService.refresh();
+      ////this.completed.emit();
+      ////this.isWorking = false;
+      //});
     } else {
-      this._tradeService.newMarketOrder(this.inputs).subscribe(() => {
-        this._chartService.refresh();
-        this.completed.emit();
-        this.isWorking = false;
-      });
+      this._tradeService.newMarketOrder(this.inputs);
+      //this._tradeService.newMarketOrder(this.inputs).subscribe(() => {
+      //this._chartService.refresh();
+      //this.completed.emit();
+      //this.isWorking = false;
+      //});
     }
   }
 }

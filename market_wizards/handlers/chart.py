@@ -1,4 +1,5 @@
 import base64
+import random
 import io
 import os
 import re
@@ -8,7 +9,6 @@ from typing import Any, Dict, List, Optional, cast
 from flask import request
 
 from fun.chart.preset import ChartPreset
-from fun.plotter.records import LeverageRecords
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
 from fun.trading.agent import TradingAgent
 from fun.trading.transaction import FuturesTransaction
@@ -151,7 +151,26 @@ class ChartHandler:
         return self._render(preset)
 
     def _function_randomDate(self) -> io.BytesIO:
-        pass
+        random.seed()
+
+        year = random.randint(1999, datetime.now().year - 1)
+        month = random.randint(1, 12)
+
+        day: int
+        if month in (1, 3, 5, 7, 8, 10, 12):
+            day = random.randint(1, 31)
+        elif month in (4, 6, 9, 11):
+            day = random.randint(1, 30)
+        elif month == 2:
+            day = random.randint(1, 28)
+        else:
+            ValueError("invalid month")
+
+        dtime = datetime(year, month, day)
+
+        self._date = dtime
+
+        return self._function_slice()
 
     def _function_inspect(self) -> str:
         preset = self._store_read(self._store_key())
@@ -188,6 +207,8 @@ class ChartHandler:
             buf = self._function_forward()
         elif self._function == "backward":
             buf = self._function_backward()
+        elif self._function == "randomDate":
+            buf = self._function_randomDate()
         elif self._function == "inspect":
             return self._function_inspect()
         elif self._function == "quote":

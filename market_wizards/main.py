@@ -12,21 +12,22 @@ def welcome():
     return "welcome to the market wizards charts reader api"
 
 
-# @app.route("/view/practice")
-# def practice_view():
-# return minify.minifyWebString(render_template("views/practice/view.html"))
-
-
 @app.route("/service/chart", methods=["GET"])
 @cross_origin(allow_headers=["Content-Type"])
 def chart():
     return ChartHandler().response()
 
 
-@app.route("/service/trade", methods=["GET", "POST"])
+@app.route("/service/trade/order", methods=["GET", "POST", "DELETE"])
 @cross_origin(allow_headers=["Content-Type"])
-def trade():
-    return TradeHandler().response()
+def trade_order():
+    return TradeHandler().response_order()
+
+
+@app.route("/service/trade/statistic", methods=["GET"])
+@cross_origin(allow_headers=["Content-Type"])
+def trade_statistic():
+    return TradeHandler().response_statistic()
 
 
 if __name__ == "__main__":

@@ -138,8 +138,20 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   }
 
   clickShowRecords(): void {
+    if (this._isWorking) {
+      return;
+    }
+
     this.showRecords = !this.showRecords;
     this._chartService.recordsRequest(this.showRecords);
+  }
+
+  clickRandomDate(): void {
+    if (this._isWorking) {
+      return;
+    }
+
+    this._chartService.randomDateRequest();
   }
 
   setSymbolID(id: number): void {

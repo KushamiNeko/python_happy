@@ -1,6 +1,6 @@
 <div [ngClass]="{ modal: true, 'modal-close': !isOpen }">
   <div class="modal-content">
     <app-trade-inputs [isOpen]="isOpen" (completed)="isOpen = false"></app-trade-inputs>
-    <!--<div>trading orders</div>-->
+    <app-stop-orders></app-stop-orders>
   </div>
 </div>

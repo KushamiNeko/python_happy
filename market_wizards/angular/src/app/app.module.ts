@@ -11,6 +11,10 @@ import { ModalComponent } from "./modal/modal.component";
 import { ChartInputsComponent } from "./chart-inputs/chart-inputs.component";
 import { PracticeViewComponent } from "./practice-view/practice-view.component";
 import { TradeInputsComponent } from './trade-inputs/trade-inputs.component';
+import { StopOrdersComponent } from './stop-orders/stop-orders.component';
+import { StatisticViewComponent } from './statistic-view/statistic-view.component';
+import { BooksTableComponent } from './books-table/books-table.component';
+import { StatisticComponent } from './statistic/statistic.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +24,11 @@ import { TradeInputsComponent } from './trade-inputs/trade-inputs.component';
     ModalComponent,
     ChartInputsComponent,
     PracticeViewComponent,
-    TradeInputsComponent
+    TradeInputsComponent,
+    StopOrdersComponent,
+    StatisticViewComponent,
+    BooksTableComponent,
+    StatisticComponent
   ],
   imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule],
   providers: [],
