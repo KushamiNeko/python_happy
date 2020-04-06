@@ -1,0 +1,41 @@
+<div *ngIf="symbol == 'vix'" class="parameters-container">
+  <div class="parameters-title">{{ symbol.toUpperCase() }} Parameters</div>
+
+  <span class="parameters-separator"></span>
+
+  <div class="parameters-set">
+    <span class="parameters-label">Date</span>
+    <input
+      type="text"
+      [ngClass]="{
+        'parameters-text': true,
+        'parameters-error': errors['vixzone']
+      }"
+      [(ngModel)]="params['vixzone']"
+      (ngModelChange)="datetimeChange('vixzone')"
+    />
+  </div>
+
+  <div class="parameters-set">
+    <span class="parameters-label">Operation</span>
+    <button
+      #op
+      class="parameters-button"
+      (click)="params['vixop'] = params['vixop'] == 'long' ? 'short' : 'long'"
+    >
+      {{ params["vixop"] }}
+    </button>
+  </div>
+
+  <span class="parameters-separator"></span>
+
+  <button
+    [ngClass]="{
+      'parameters-button': true,
+      'parameters-button-working': isWorking
+    }"
+    (click)="setParameters()"
+  >
+    ok
+  </button>
+</div>

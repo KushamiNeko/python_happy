@@ -3,7 +3,7 @@ import { BehaviorSubject } from "rxjs";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class ChartService {
   image = new BehaviorSubject<string>("");
@@ -23,15 +23,14 @@ export class ChartService {
   private _url = "";
   private _isWorking = false;
 
+  private _parameters = {};
+
   constructor(private _http: HttpClient) {
     const now = new Date();
 
     this._date = `${now.getFullYear()}${(now.getMonth() + 1)
       .toString()
-      .padStart(2, "0")}${now
-      .getDate()
-      .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}`;
 
     this._book = this._date;
 
@@ -51,6 +50,10 @@ export class ChartService {
     url = `${url}?timestemp=${Math.round(now.getTime() / 1000)}`;
     url = `${url}&symbol=${this._symbol}&frequency=${this._freq}&function=${this._func}&date=${this._date}`;
     url = `${url}&book=${this._book}&records=${this._records.toString()}`;
+
+    for (const [key, value] of Object.entries(this._parameters)) {
+      url = `${url}&params_${key}=${value}`;
+    }
 
     return url;
   }
@@ -86,7 +89,7 @@ export class ChartService {
             symbol: this._symbol,
             date: this._date,
             freq: this._freq,
-            book: this._book
+            book: this._book,
           });
 
           this._completed();
@@ -153,6 +156,11 @@ export class ChartService {
 
   randomDateRequest(): void {
     this._func = "randomDate";
+    this._getImage();
+  }
+
+  parametersRequest(params: object): void {
+    this._parameters = params;
     this._getImage();
   }
 

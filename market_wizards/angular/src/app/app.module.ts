@@ -15,6 +15,7 @@ import { StopOrdersComponent } from './stop-orders/stop-orders.component';
 import { StatisticViewComponent } from './statistic-view/statistic-view.component';
 import { BooksTableComponent } from './books-table/books-table.component';
 import { StatisticComponent } from './statistic/statistic.component';
+import { ParametersComponent } from './parameters/parameters.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { StatisticComponent } from './statistic/statistic.component';
     StopOrdersComponent,
     StatisticViewComponent,
     BooksTableComponent,
-    StatisticComponent
+    StatisticComponent,
+    ParametersComponent
   ],
   imports: [BrowserModule, HttpClientModule, FormsModule, AppRoutingModule],
   providers: [],

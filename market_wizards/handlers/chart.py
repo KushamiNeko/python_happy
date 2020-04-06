@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, cast
 
 from flask import request
 
-from fun.chart.preset import ChartPreset
+from fun.chart.preset import CandleSticksPreset
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
 from fun.trading.agent import TradingAgent
 from fun.trading.transaction import FuturesTransaction
@@ -16,16 +16,16 @@ from fun.trading.transaction import FuturesTransaction
 
 class ChartHandler:
 
-    _store: Dict[str, ChartPreset] = {}
+    _store: Dict[str, CandleSticksPreset] = {}
 
     @classmethod
-    def _store_write(cls, key: str, preset: ChartPreset) -> None:
+    def _store_write(cls, key: str, preset: CandleSticksPreset) -> None:
         cls._store[key] = preset
 
     @classmethod
     def _store_read(
         cls, key: str, dtime: Optional[datetime] = None, time_sliced: bool = False,
-    ) -> Optional[ChartPreset]:
+    ) -> Optional[CandleSticksPreset]:
         preset = cls._store.get(key, None)
         if preset is not None:
             if time_sliced:
@@ -95,6 +95,8 @@ class ChartHandler:
         self._show_records = show_records
         self._book = book
 
+        self._params = {k.split("_")[-1]: v for k, v in request.args.items() if k.startswith("params_")}
+
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
 
@@ -106,7 +108,10 @@ class ChartHandler:
         agent = TradingAgent(root=root, new_user=True)
         return agent.read_records(title)
 
-    def _render(self, preset: ChartPreset) -> io.BytesIO:
+    def _render(self, preset: CandleSticksPreset) -> io.BytesIO:
+        if self._params is not None and len(self._params) != 0:
+            preset.set_parameters(self._params)
+
         if self._show_records:
             ts = self._read_records(self._book)
             if ts is not None and len(ts) > 0:
@@ -121,7 +126,7 @@ class ChartHandler:
             self._store_key(), dtime=self._date, time_sliced=True,
         )
         if preset is None:
-            preset = ChartPreset(self._date, self._symbol, self._frequency)
+            preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
 
         return self._render(preset)
@@ -129,7 +134,7 @@ class ChartHandler:
     def _function_simple(self) -> io.BytesIO:
         preset = self._store_read(self._store_key())
         if preset is None:
-            preset = ChartPreset(self._date, self._symbol, self._frequency)
+            preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
 
         return self._render(preset)
