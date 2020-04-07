@@ -5,7 +5,7 @@ import {
   OnInit,
   OnDestroy,
   AfterViewInit,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import { ChartService } from "../services/chart.service";
 import { Subscription } from "rxjs";
@@ -13,7 +13,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-canvas",
   templateUrl: "./canvas.component.html",
-  styleUrls: ["./canvas.component.scss"]
+  styleUrls: ["./canvas.component.scss"],
 })
 export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   private readonly _coverColor = "rgba(0, 0, 0, 0.8)";
@@ -37,12 +37,12 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     right: false,
     both: false,
     calc: false,
-    moving: false
+    moving: false,
   };
 
   private _anchor = {
     calcX: 0,
-    calcY: 0
+    calcY: 0,
   };
 
   //private _isWorking = false;
@@ -54,7 +54,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this._$image = this._chartService.image.subscribe(src => {
+    this._$image = this._chartService.image.subscribe((src) => {
       this._imageRef.nativeElement.src = src;
     });
   }
@@ -70,6 +70,10 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
 
   imageLoaded(): void {
     this._initCanvasSize();
+  }
+
+  isMoving(): boolean {
+    return this._triggers["moving"];
   }
 
   private _eventXOffset(event: MouseEvent): number {
@@ -225,17 +229,17 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     const offset = 20;
 
     if (this._eventXOffset(event) > this._inspectRef.nativeElement.width / 2) {
-      this._infoRef.nativeElement.style.left = `${event.clientX -
-        this._infoRef.nativeElement.clientWidth -
-        offset}px`;
+      this._infoRef.nativeElement.style.left = `${
+        event.clientX - this._infoRef.nativeElement.clientWidth - offset
+      }px`;
     } else {
       this._infoRef.nativeElement.style.left = `${event.clientX + offset}px`;
     }
 
     if (this._eventYOffset(event) > this._inspectRef.nativeElement.height / 2) {
-      this._infoRef.nativeElement.style.top = `${event.clientY -
-        this._infoRef.nativeElement.offsetHeight -
-        offset}px`;
+      this._infoRef.nativeElement.style.top = `${
+        event.clientY - this._infoRef.nativeElement.offsetHeight - offset
+      }px`;
     } else {
       this._infoRef.nativeElement.style.top = `${event.clientY + offset}px`;
     }
@@ -306,6 +310,7 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     this._triggers["right"] = false;
     this._triggers["both"] = false;
     this._triggers["calc"] = false;
+    this._triggers["moving"] = false;
   }
 
   @HostListener("window:mousemove", ["$event"])

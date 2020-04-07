@@ -19,26 +19,25 @@ class Processor(metaclass=ABCMeta):
     def _urls(self) -> Iterable[str]:
         raise NotImplementedError
 
-    def _download(self) -> None:
+    def download(self) -> None:
         count = 0
         for url in self._urls():
             subprocess.Popen(["google-chrome", url])
             count += 1
 
         pretty.color_print(
-            colors.PAPER_LIME_300, f"{count} files downloaded",
+            colors.PAPER_LIME_300, f"{count} files opened",
         )
 
-    @abstractmethod
-    def _rename(self) -> None:
-        raise NotImplementedError
-
-    def process(self) -> None:
-        self._download()
-        pretty.color_print(
+        pretty.color_input(
             colors.PAPER_BLUE_300,
             "download completed, press any key to rename and move the files",
         )
 
-        input()
-        self._rename()
+    @abstractmethod
+    def rename(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
+    def check(self) -> None:
+        raise NotImplementedError

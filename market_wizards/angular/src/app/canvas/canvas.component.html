@@ -8,4 +8,10 @@
   </div>
 </div>
 
-<div #info class="canvas-chart-info"></div>
+<div
+  #info
+  [ngClass]="{
+              'canvas-chart-info': true,
+              'canvas-chart-info-hidden': !isMoving()
+            }"
+></div>

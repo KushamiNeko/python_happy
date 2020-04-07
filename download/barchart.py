@@ -41,6 +41,11 @@ class BarchartProcessor(Processor):
             self._start = start_year
             self._end = end_year
 
+        pretty.color_print(
+            colors.PAPER_BROWN_200,
+            f"Barchart Processor\nstart year: {self._start}, end year: {self._end}",
+        )
+
         self._symbols = [
             "es",
             "nq",
@@ -73,7 +78,7 @@ class BarchartProcessor(Processor):
                 for m in months:
                     code = f"{symbol}{m}{y%100:02}"
 
-                    pretty.color_print(f"downloading: {code}", colors.PAPER_CYAN_300)
+                    pretty.color_print(colors.PAPER_CYAN_300, f"downloading: {code}")
 
                     if self._page == HISTORICAL_PAGE:
                         yield f"https://www.barchart.com/futures/quotes/{code}/historical-download"
@@ -84,7 +89,7 @@ class BarchartProcessor(Processor):
 
                 input()
 
-    def _rename(self) -> None:
+    def rename(self) -> None:
         for fs in os.listdir(self._src):
             match = re.match(
                 r"^([\w\d]{5})_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
@@ -103,11 +108,33 @@ class BarchartProcessor(Processor):
                 code = match.group(1).lower()
 
                 src = os.path.join(self._src, fs)
-                tar = os.path.join(self._tar, "continuous", f"{code}.csv")
+                tar = os.path.join(self._tar, "continuous", code[:2], f"{code}.csv")
 
                 assert os.path.exists(os.path.dirname(tar))
 
                 pretty.color_print(
-                    f"move file: {src} => {tar}", colors.PAPER_DEEP_PURPLE_200
+                    colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
                 )
-                # os.rename(src, tar)
+
+                os.rename(src, tar)
+
+    def check(self) -> None:
+        months: CONTRACT_MONTHS
+        for symbol in self._symbols:
+            if symbol == "cl":
+                months = ALL_CONTRACT_MONTHS
+            elif symbol == "gc":
+                months = EVEN_CONTRACT_MONTHS
+            else:
+                months = FINANCIAL_CONTRACT_MONTHS
+
+            for y in range(self._start, self._end + 1):
+                for m in months:
+                    code = f"{symbol}{m}{y%100:02}"
+
+                    tar = os.path.join(self._tar, "continuous", code[:2], f"{code}.csv")
+
+                    if not os.path.exists(tar):
+                        pretty.color_print(
+                            colors.PAPER_PINK_200, f"missing files: {tar}"
+                        )

@@ -22,7 +22,7 @@ class InvestingProcessor(Processor):
 
             yield url
 
-    def _rename(self) -> None:
+    def rename(self) -> None:
 
         files = [
             "STOXX 50 Volatility VSTOXX EUR Historical Data.csv",
@@ -44,6 +44,10 @@ class InvestingProcessor(Processor):
             assert os.path.exists(os.path.dirname(tar))
 
             pretty.color_print(
-                f"move file: {src} => {tar}", colors.PAPER_DEEP_PURPLE_200
+                colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
             )
-            # os.rename(src, tar)
+
+            os.rename(src, tar)
+
+    def check(self) -> None:
+        pass

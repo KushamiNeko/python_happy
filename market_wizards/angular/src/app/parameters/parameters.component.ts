@@ -48,6 +48,12 @@ export class ParametersComponent implements OnInit, OnDestroy {
     }
   }
 
+  vixzoneTrigger(): boolean {
+    let symbols = ["vix", "vxn", "rvx", "vstx", "jniv"];
+
+    return symbols.includes(this.symbol);
+  }
+
   setParameters(): void {
     this._chartService.parametersRequest(this.params);
   }

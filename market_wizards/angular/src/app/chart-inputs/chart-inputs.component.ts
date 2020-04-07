@@ -111,7 +111,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   }
 
   dateChange(): void {
-    const regex = RegExp("^[0-9]{4}|[0-9]{8}$");
+    const regex = RegExp("^(?:[0-9]{4}|[0-9]{8})$");
     if (!regex.test(this.inputs["date"])) {
       this.errors["date"] = true;
     } else {
