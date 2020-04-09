@@ -25,27 +25,19 @@ def args_parse() -> Dict[str, Any]:
     )
 
     parser.add_argument(
-        "--years",
-        metavar="",
-        nargs="?",
-        # const=f"{datetime.now().year}",
-        # default=f"{datetime.now().year}",
-        type=str,
-        help="years",
+        "--years", metavar="", nargs="?", type=str, help="years",
     )
 
     args = vars(parser.parse_args())
 
     assert args.get("operations") is not None
-    # assert args.get("years") is not None
-    # assert re.match(r"^(\d{4})(?:(?:\-|\~)(\d{4}))*$", years) is not None
 
     pretty.color_print(
-        colors.PAPER_ORANGE_200,
+        colors.PAPER_ORANGE_300,
         f"operations input: {', '.join(cast(List[str],args.get('operations')))}",
     )
 
-    pretty.color_print(colors.PAPER_ORANGE_200, f"years input: {args.get('years')}")
+    pretty.color_print(colors.PAPER_ORANGE_300, f"years input: {args.get('years')}")
 
     return args
 

@@ -33,6 +33,8 @@ class YahooProcessor(Processor):
         for i, symbol in enumerate(self._symbols):
             dtime = self._datetime_start[i]
 
+            pretty.color_print(colors.PAPER_CYAN_300, f"downloading: {symbol}")
+
             yield (
                 f"https://finance.yahoo.com/quote/{requests.utils.quote(symbol)}/history?"
                 + f"period1={int(dtime.timestamp())}&period2={int(datetime.utcnow().timestamp())}&interval=1d&filter=history&frequency=1d"

@@ -42,7 +42,7 @@ class BarchartProcessor(Processor):
             self._end = end_year
 
         pretty.color_print(
-            colors.PAPER_BROWN_200,
+            colors.PAPER_BROWN_300,
             f"Barchart Processor\nstart year: {self._start}, end year: {self._end}",
         )
 
@@ -113,7 +113,7 @@ class BarchartProcessor(Processor):
                 assert os.path.exists(os.path.dirname(tar))
 
                 pretty.color_print(
-                    colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
+                    colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
                 )
 
                 os.rename(src, tar)
@@ -136,5 +136,5 @@ class BarchartProcessor(Processor):
 
                     if not os.path.exists(tar):
                         pretty.color_print(
-                            colors.PAPER_PINK_200, f"missing files: {tar}"
+                            colors.PAPER_PINK_300, f"missing files: {tar}"
                         )

@@ -25,13 +25,9 @@ class Processor(metaclass=ABCMeta):
             subprocess.Popen(["google-chrome", url])
             count += 1
 
-        pretty.color_print(
-            colors.PAPER_LIME_300, f"{count} files opened",
-        )
-
         pretty.color_input(
-            colors.PAPER_BLUE_300,
-            "download completed, press any key to rename and move the files",
+            colors.PAPER_LIME_300,
+            "download completed, press any key to rename the files",
         )
 
     @abstractmethod

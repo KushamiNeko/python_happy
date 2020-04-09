@@ -20,6 +20,11 @@ class InvestingProcessor(Processor):
             r"https://www.investing.com/indices/nikkei-volatility-historical-data",
         ]:
 
+            pretty.color_print(
+                colors.PAPER_CYAN_300,
+                f"downloading: {url.split('/')[-1].split('-')[0]}",
+            )
+
             yield url
 
     def rename(self) -> None:
