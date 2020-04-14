@@ -108,6 +108,7 @@ export class ChartService {
   }
 
   refresh(): void {
+    this._func = "simple";
     this._getImage();
   }
 
