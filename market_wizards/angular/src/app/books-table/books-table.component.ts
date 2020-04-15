@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-books-table",
   templateUrl: "./books-table.component.html",
-  styleUrls: ["./books-table.component.scss"]
+  styleUrls: ["./books-table.component.scss"],
 })
 export class BooksTableComponent implements OnInit, OnDestroy {
   private _$books: Subscription;
@@ -17,12 +17,12 @@ export class BooksTableComponent implements OnInit, OnDestroy {
   constructor(private _tradeService: TradeService) {}
 
   ngOnInit(): void {
-    this._$books = this._tradeService.books.subscribe(books => {
+    this._$books = this._tradeService.books.subscribe((books) => {
       this.books = books;
 
-      if (this.selected.length == 0 && this.books.length > 0) {
-        this.selectBook(0);
-      }
+      //if (this.selected.length == 0 && this.books.length > 0) {
+      //this.selectBook(0);
+      //}
     });
 
     this._tradeService.findAllBooks();
@@ -41,7 +41,7 @@ export class BooksTableComponent implements OnInit, OnDestroy {
 
     if (this.selected.length > 0) {
       this._tradeService.readStatistic(
-        this.books.filter(x => this.selected.includes(this.books.indexOf(x)))
+        this.books.filter((x) => this.selected.includes(this.books.indexOf(x)))
       );
     }
   }
