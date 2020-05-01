@@ -1,0 +1,15 @@
+rule infer
+  command = /usr/bin/python3 -m pytype.single --imports_info $imports --module-name $module -V 3.7 -o $out --no-report-errors --nofail --quick $in
+  description = infer $module
+rule check
+  command = /usr/bin/python3 -m pytype.single --imports_info $imports --module-name $module -V 3.7 -o $out --analyze-annotated --nofail --quick $in
+  description = check $module
+build /home/neko/programming_projects/tools/python/happy/market_wizards/.pytype/pyi/market_wizards/handlers/chart.pyi: check /home/neko/programming_projects/tools/python/happy/market_wizards/handlers/chart.py
+  imports = /home/neko/programming_projects/tools/python/happy/market_wizards/.pytype/imports/market_wizards.handlers.chart.imports
+  module = market_wizards.handlers.chart
+build /home/neko/programming_projects/tools/python/happy/market_wizards/.pytype/pyi/market_wizards/handlers/__init__.pyi: check /home/neko/programming_projects/tools/python/happy/market_wizards/handlers/__init__.py
+  imports = /home/neko/programming_projects/tools/python/happy/market_wizards/.pytype/imports/market_wizards.handlers.__init__.imports
+  module = market_wizards.handlers.__init__
+build /home/neko/programming_projects/tools/python/happy/market_wizards/.pytype/pyi/market_wizards/handlers/trade.pyi: check /home/neko/programming_projects/tools/python/happy/market_wizards/handlers/trade.py
+  imports = /home/neko/programming_projects/tools/python/happy/market_wizards/.pytype/imports/market_wizards.handlers.trade.imports
+  module = market_wizards.handlers.trade

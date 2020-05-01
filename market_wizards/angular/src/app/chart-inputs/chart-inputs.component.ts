@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-chart-inputs",
   templateUrl: "./chart-inputs.component.html",
-  styleUrls: ["./chart-inputs.component.scss"]
+  styleUrls: ["./chart-inputs.component.scss"],
 })
 export class ChartInputsComponent implements OnInit, OnDestroy {
   symbols = [
@@ -41,7 +41,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
     //"GVZ",
     "DX",
     "E6",
-    "J6"
+    "J6",
   ];
 
   selectedSymbolID = 0;
@@ -52,18 +52,18 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
     newSymbol: false,
     date: false,
     freq: false,
-    book: false
+    book: false,
   };
 
   isFocused = {
     newSymbol: false,
-    inputs: false
+    inputs: false,
   };
 
   inputs = {
     date: "",
     freq: "",
-    book: ""
+    book: "",
   };
 
   openTrade = false;
@@ -81,7 +81,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log("chart inputs init");
-    this._$inputs = this._chartService.inputs.subscribe(inputs => {
+    this._$inputs = this._chartService.inputs.subscribe((inputs) => {
       this.inputs["date"] = inputs["date"];
       this.inputs["freq"] = inputs["freq"];
       this.inputs["book"] = inputs["book"];
@@ -91,7 +91,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       this.bookChange();
     });
 
-    this._$isWorking = this._chartService.isWorking.subscribe(isWorking => {
+    this._$isWorking = this._chartService.isWorking.subscribe((isWorking) => {
       this._isWorking = isWorking;
     });
   }
@@ -159,6 +159,10 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   }
 
   setSymbolID(id: number): void {
+    if (id >= this.symbols.length) {
+      return;
+    }
+
     this.selectedSymbolID = id;
     this._chartService.symbolRequest(this.symbols[id]);
   }
@@ -227,13 +231,13 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       case 37:
         if (event.shiftKey || event.ctrlKey) {
           if (event.shiftKey) {
-            this.inputs["date"] = `${parseInt(
-              this.inputs["date"].substring(0, 4)
-            ) - 1}${this.inputs["date"].substring(4)}`;
+            this.inputs["date"] = `${
+              parseInt(this.inputs["date"].substring(0, 4)) - 1
+            }${this.inputs["date"].substring(4)}`;
           } else if (event.ctrlKey) {
-            this.inputs["date"] = `${parseInt(
-              this.inputs["date"].substring(0, 4)
-            ) - 1}1231`;
+            this.inputs["date"] = `${
+              parseInt(this.inputs["date"].substring(0, 4)) - 1
+            }1231`;
           }
 
           this._chartService.inputsRequest(
@@ -249,9 +253,9 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       case 39:
         if (event.shiftKey || event.ctrlKey) {
           if (event.shiftKey) {
-            this.inputs["date"] = `${parseInt(
-              this.inputs["date"].substring(0, 4)
-            ) + 1}${this.inputs["date"].substring(4)}`;
+            this.inputs["date"] = `${
+              parseInt(this.inputs["date"].substring(0, 4)) + 1
+            }${this.inputs["date"].substring(4)}`;
           } else if (event.ctrlKey) {
             this.inputs["date"] = `${parseInt(
               this.inputs["date"].substring(0, 4)
@@ -262,10 +266,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
 
           const date = `${now.getFullYear()}${(now.getMonth() + 1)
             .toString()
-            .padStart(2, "0")}${now
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`;
+            .padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}`;
 
           if (parseInt(this.inputs["date"]) > parseInt(date)) {
             this.inputs["date"] = date;
@@ -310,7 +311,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
               this.setSymbolID(parseInt(this._key) - 1);
             }
             this._key = "";
-          }, 200);
+          }, 250);
           break;
         }
     }
