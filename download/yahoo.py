@@ -19,6 +19,18 @@ class YahooProcessor(Processor):
             "^sml",
             "^ovx",
             "^gvz",
+            "^hsi",
+            "^n225",
+            "ezu",
+            "eem",
+            "fxi",
+            "hyg",
+            "emb",
+            "iyr",
+            "rem",
+            "near",
+            "shv",
+            "lqd",
         ]
 
         self._datetime_start = [
@@ -27,9 +39,23 @@ class YahooProcessor(Processor):
             datetime.strptime("19890101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20100101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("19860101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("19650101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20030101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20040101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20130101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("20020101", "%Y%m%d").replace(tzinfo=timezone.utc),
         ]
 
     def _urls(self) -> Iterable[str]:
+        assert len(self._symbols) == len(self._datetime_start)
+
         for i, symbol in enumerate(self._symbols):
             dtime = self._datetime_start[i]
 
@@ -42,20 +68,33 @@ class YahooProcessor(Processor):
 
     def rename(self) -> None:
         for fs in os.listdir(self._src):
+            src = ""
+            tar = ""
+
             match = re.match(r"(\^(\w+)).csv", fs)
             if match is not None:
                 if match.group(1).lower() in self._symbols:
                     symbol = match.group(2).lower()
+                    if symbol == "n225":
+                        symbol = "nikk"
                     src = os.path.join(self._src, fs)
                     tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")
 
                     assert os.path.exists(os.path.dirname(tar))
+            else:
+                symbol = os.path.splitext(fs)[0].lower()
+                if symbol in self._symbols:
+                    src = os.path.join(self._src, fs)
+                    tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")
 
-                    pretty.color_print(
-                        colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}",
-                    )
+            assert src != ""
+            assert tar != ""
 
-                    os.rename(src, tar)
+            pretty.color_print(
+                colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}",
+            )
+
+            os.rename(src, tar)
 
     def check(self) -> None:
         pass

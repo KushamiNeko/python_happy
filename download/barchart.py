@@ -53,6 +53,7 @@ class BarchartProcessor(Processor):
             "fx",
             "nl",
             "np",
+            "no",
             "zn",
             "ge",
             "gg",

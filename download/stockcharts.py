@@ -15,6 +15,11 @@ class StockChartsProcessor(Processor):
             "$nyhilo",
             "$spxhilo",
             "$ndxhilo",
+            "$nikk",
+            "$hsi",
+            "ezu",
+            "eem",
+            "fxi",
             "!ryratmm",
         ]
 
