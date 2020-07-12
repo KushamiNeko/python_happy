@@ -61,6 +61,10 @@ class BarchartProcessor(Processor):
             "dx",
             "e6",
             "j6",
+            "a6",
+            "n6",
+            "d6",
+            "s6",
             "cl",
             "gc",
         ]

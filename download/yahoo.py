@@ -21,6 +21,7 @@ class YahooProcessor(Processor):
             "^gvz",
             "^hsi",
             "^n225",
+            "^gspc",
             "ezu",
             "eem",
             "fxi",
@@ -41,6 +42,7 @@ class YahooProcessor(Processor):
             datetime.strptime("20100101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("19860101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("19650101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("19270101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20030101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20040101", "%Y%m%d").replace(tzinfo=timezone.utc),
@@ -77,6 +79,9 @@ class YahooProcessor(Processor):
                     symbol = match.group(2).lower()
                     if symbol == "n225":
                         symbol = "nikk"
+                    elif symbol == "gspc":
+                        symbol = "spx"
+
                     src = os.path.join(self._src, fs)
                     tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")
 
