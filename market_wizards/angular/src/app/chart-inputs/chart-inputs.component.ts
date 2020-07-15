@@ -132,7 +132,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   }
 
   freqChange(): void {
-    const regex = RegExp("^[dw]{1}$");
+    const regex = RegExp("^[dwm]{1}$");
     if (!regex.test(this.inputs["freq"])) {
       this.errors["freq"] = true;
     } else {
@@ -303,6 +303,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
         break;
       case 77:
         // m
+        this._chartService.freqRequest("m");
         break;
       case 32:
         // space

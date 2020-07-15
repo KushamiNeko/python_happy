@@ -22,6 +22,7 @@ class YahooProcessor(Processor):
             "^hsi",
             "^n225",
             "^gspc",
+            "^ndx",
             "ezu",
             "eem",
             "fxi",
@@ -43,6 +44,7 @@ class YahooProcessor(Processor):
             datetime.strptime("19860101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("19650101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("19270101", "%Y%m%d").replace(tzinfo=timezone.utc),
+            datetime.strptime("19850101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20030101", "%Y%m%d").replace(tzinfo=timezone.utc),
             datetime.strptime("20040101", "%Y%m%d").replace(tzinfo=timezone.utc),
@@ -88,6 +90,9 @@ class YahooProcessor(Processor):
                     assert os.path.exists(os.path.dirname(tar))
             else:
                 symbol = os.path.splitext(fs)[0].lower()
+                if symbol not in self._symbols:
+                    continue
+
                 if symbol in self._symbols:
                     src = os.path.join(self._src, fs)
                     tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")
