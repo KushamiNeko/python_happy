@@ -3,86 +3,66 @@ import os
 import re
 import time
 from datetime import datetime
-from multiprocessing import Process
 from typing import List, Optional, cast
 
-import pandas as pd
-
-import fun.trading.indicator as ind
-from fun.chart.static import StaticChart
-from fun.trading.agent import Agent
-from fun.trading.source import AlphaVantage, Barchart, DataSource, Yahoo
+from fun.chart.base import LARGE_CHART
+from fun.chart.preset import CandleSticksPreset
+from fun.data.source import DAILY, WEEKLY
+from fun.trading.agent import TradingAgent
+from fun.trading.transaction import FuturesTransaction
 from fun.utils import colors, pretty
 
 
+def read_records(title: str) -> Optional[List[FuturesTransaction]]:
+    root = os.path.join(
+        cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+    )
+
+    agent = TradingAgent(root=root, new_user=True)
+    return agent.read_records(title)
+
+
 def plot_chart(
-    symbol: str, year: int, show_records: bool, outdir: Optional[str], version: int
+    symbol: str, year: int, book: str, show_records: bool, outdir: Optional[str]
 ) -> None:
 
-    src: DataSource
-    chart_type: str
-    f: str
+    date = datetime.strptime(f"{year+1}0101", "%Y%m%d")
 
-    match = re.match(r"^([a-zA-Z]+)([fghjkmnquvxz][0-9]+)?$", symbol)
-    assert match is not None
-    assert match.group(1) is not None
-
-    if match.group(2) is not None:
-        src = Barchart()
-        chart_type = "f"
-    else:
-        src = Yahoo()
-        chart_type = "f"
-
-    assert chart_type in ("f", "s")
-
-    e = datetime.strptime(f"{year+1}0101", "%Y%m%d")
-
-    agent = Agent("aa")
-    ts = agent.read_records(match.group(1), year, version)
+    ts = read_records(book)
     if not show_records:
         ts = None
 
-    ps: List[Process] = []
+    for frequency in (DAILY, WEEKLY):
+        fw = ""
+        if frequency == DAILY:
+            fw = "d"
+        elif frequency == WEEKLY:
+            fw = "w"
 
-    for freq in ("d", "w"):
-        s: datetime
-        if freq == "d":
-            s = datetime.strptime(f"{year}0101", "%Y%m%d")
-        if freq == "w":
-            s = datetime.strptime(f"{year-3}0101", "%Y%m%d")
+        assert fw != ""
 
-        df = src.read(s, e, symbol, freq)
+        preset = CandleSticksPreset(date, symbol, frequency, chart_size=LARGE_CHART)
 
-        df = ind.my_simple_moving_average(df)
-        if chart_type == "s":
-            df = ind.my_simple_moving_average_extend(df)
+        preset.show_records(ts)
+        preset.show_last_quote(False)
 
-        df = ind.my_bollinger_bands(df)
+        buffer = preset.render()
 
-        c = StaticChart(df[s:e])
+        path = f"{year}_{symbol}_{fw}.png"
 
-        path = f"{year}_{match.group(1)}_{freq}.png"
+        pretty.color_print(colors.PAPER_CYAN_300, f"symbol: {symbol}")
+        pretty.color_print(colors.PAPER_CYAN_300, f"year: {year}")
+        pretty.color_print(colors.PAPER_CYAN_300, f"book: {book}")
+        pretty.color_print(colors.PAPER_CYAN_300, f"records: {show_records}")
+        pretty.color_print(colors.PAPER_CYAN_300, f"outdir: {outdir}")
+        pretty.color_print(colors.PAPER_CYAN_300, f"file: {path}")
+
         if outdir is not None:
             assert os.path.exists(outdir)
             path = os.path.join(outdir, path)
 
-        args = (path, ts)
-
-        p = None
-
-        if chart_type == "f":
-            p = Process(target=c.futures_price, args=args)
-        if chart_type == "s":
-            p = Process(target=c.stocks_price, args=args)
-
-        assert p is not None
-
-        p.start()
-        ps.append(p)
-
-    for p in ps:
-        p.join()
+            with open(path, "wb") as f:
+                f.write(buffer.getbuffer())
 
 
 def main() -> None:
@@ -94,13 +74,13 @@ def main() -> None:
     parser.add_argument("--year", metavar="", type=str, help="the year of the chart")
 
     parser.add_argument(
-        "--version",
+        "--book",
         metavar="",
-        type=int,
+        type=str,
         nargs="?",
-        const=1,
-        default=1,
-        help="the version of the records",
+        const="",
+        default="",
+        help="the book of the records",
     )
 
     parser.add_argument("--outdir", metavar="", type=str, help="output folder")
@@ -119,20 +99,14 @@ def main() -> None:
 
     assert args.get("symbols") is not None
     assert args.get("year") is not None
-    assert args.get("version") is not None
+    assert args.get("book") is not None
     assert args.get("records") is not None
 
     symbols = cast(str, args.get("symbols"))
     year = cast(str, args.get("year"))
-    version = cast(int, args.get("version"))
+    book = cast(str, args.get("book"))
     show_records = args.get("records", False)
     outdir = args.get("outdir")
-
-    for symbol in symbols:
-        match = re.match(r"^([a-zA-Z]+)([fghjkmnquvxz][0-9]+)?$", symbol)
-        if match is None:
-            pretty.color_print(colors.PAPER_RED_400, f"invaid symbol: {symbol}")
-            exit(1)
 
     start: str
     end: str
@@ -147,41 +121,39 @@ def main() -> None:
 
     assert start is not None
 
-    if version < 0:
-        pretty.color_print(colors.PAPER_RED_400, f"invalid version: {version}")
-        exit(1)
-
-    assert version >= 0
+    if show_records is True:
+        if len(book.strip()) == 0:
+            pretty.color_print(colors.PAPER_RED_400, f"empty book")
+            exit(1)
 
     pretty.color_print(colors.PAPER_INDIGO_300, f"symbols: {', '.join(symbols)}")
     pretty.color_print(colors.PAPER_INDIGO_300, f"year: {year}")
-    pretty.color_print(colors.PAPER_INDIGO_300, f"version: {version}")
+    pretty.color_print(colors.PAPER_INDIGO_300, f"book: {book}")
     pretty.color_print(colors.PAPER_INDIGO_300, f"records: {show_records}")
     pretty.color_print(colors.PAPER_INDIGO_300, f"outdir: {outdir}")
 
     pretty.color_print(colors.PAPER_AMBER_300, "chart plotting start...")
     process_start = time.time()
 
-    ps: List[Process] = []
-
     for symbol in symbols:
         if end is None:
-            p = Process(
-                target=plot_chart,
-                args=(symbol, int(start), show_records, outdir, version),
+            plot_chart(
+                symbol=symbol,
+                year=int(start),
+                show_records=show_records,
+                outdir=outdir,
+                book=book,
             )
-            p.start()
-            ps.append(p)
+
         else:
             for i in range(int(start), int(end) + 1):
-                p = Process(
-                    target=plot_chart, args=(symbol, i, show_records, outdir, version)
+                plot_chart(
+                    symbol=symbol,
+                    year=i,
+                    show_records=show_records,
+                    outdir=outdir,
+                    book=book,
                 )
-                p.start()
-                ps.append(p)
-
-    for p in ps:
-        p.join()
 
     process_end = time.time()
     length = process_end - process_start
