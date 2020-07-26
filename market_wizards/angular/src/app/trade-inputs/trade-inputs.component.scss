@@ -27,6 +27,15 @@
   margin-bottom: 0.1em;
 }
 
+.trade-inputs-title {
+  @include font-body1;
+  @include my-style-font-family;
+  @include h-margin;
+  color: white;
+  margin-bottom: 0.1em;
+  font-weight: bold;
+}
+
 .trade-inputs-label {
   @include font-body1;
   @include my-style-font-family;

@@ -14,10 +14,16 @@
   outline: none;
 }
 
+.parameters-main-container {
+  @include layout-horizontal;
+  @include layout-around-justified;
+}
+
 .parameters-container {
   @include layout-vertical;
   @include layout-start-justified;
   z-index: 3;
+  min-width: 238px;
 }
 
 .parameters-separator {
@@ -34,7 +40,6 @@
   margin-top: 0.1em;
   margin-bottom: 0.1em;
 }
-
 
 .parameters-title {
   @include font-body1;
@@ -95,12 +100,15 @@
 
 .parameters-button-active,
 .parameters-button-active:focus {
-  color: black;
-  background-color: $paper-yellow-600;
+  // color: black;
+  // background-color: $paper-yellow-600;
+  background-color: $paper-pink-900;
 }
 
 .parameters-button-active:hover {
-  background-color: $paper-yellow-300;
+  // background-color: $paper-yellow-300;
+  color: black;
+  background-color: $paper-pink-600;
 }
 
 .parameters-error {
@@ -111,4 +119,8 @@
 .parameters-error:focus {
   color: white;
   background-color: $paper-red-900;
+}
+
+select {
+  height: 22px;
 }

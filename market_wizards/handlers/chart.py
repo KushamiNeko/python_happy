@@ -8,8 +8,14 @@ from typing import Any, Dict, List, Optional, cast
 
 from flask import request
 
-from fun.chart.preset import CandleSticksPreset
+from fun.chart.preset import BollingerBandsPreset, CandleSticksPreset
+from fun.chart.theme import Theme, MagicalTheme
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
+from fun.plotter.ibd import DistributionsDay
+from fun.plotter.indicator import SimpleMovingAverage, BollingerBand
+from fun.plotter.quote import LastQuote
+from fun.plotter.records import LeverageRecords
+from fun.plotter.zone import VolatilityZone
 from fun.trading.agent import TradingAgent
 from fun.trading.transaction import FuturesTransaction
 
@@ -68,7 +74,7 @@ class ChartHandler:
             "forward",
             "backward",
             "inspect",
-            "quote",
+            # "quote",
             "randomDate",
         ):
             raise ValueError("invalid function")
@@ -95,7 +101,11 @@ class ChartHandler:
         self._show_records = show_records
         self._book = book
 
-        self._params = {k.split("_")[-1]: v for k, v in request.args.items() if k.startswith("params_")}
+        self._params = {
+            k.split("_")[-1]: v
+            for k, v in request.args.items()
+            if k.startswith("params_")
+        }
 
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
@@ -109,23 +119,198 @@ class ChartHandler:
         return agent.read_records(title)
 
     def _render(self, preset: CandleSticksPreset) -> io.BytesIO:
-        if self._params is not None and len(self._params) != 0:
-            preset.set_parameters(self._params)
+        plotters = [
+            LastQuote(
+                quotes=preset.quotes(),
+                font_color=preset.theme().get_color("text"),
+                font_properties=preset.theme().get_font(
+                    preset.setting().text_fontsize(multiplier=1.5)
+                ),
+            ),
+            # DistributionsDay(
+            #         quotes=preset.quotes(),
+            #         frequency=self._frequency,
+            #         # reference_symbols=["nikk"],
+            #         font_color=preset.theme().get_color("text"),
+            #         distribution_color=preset.theme().get_color("distribution"),
+            #         invalid_distribution_color=preset.theme().get_color("invalid_distribution"),
+            #         font_properties=preset.theme().get_font(
+            #                 preset.setting().text_fontsize()
+            #         ),
+            #         info_font_properties=preset.theme().get_font(
+            #                 preset.setting().text_fontsize(multiplier=1.5)
+            #         ),
+            # )
+        ]
+
+        # if self._params is not None and len(self._params) != 0:
+        #     preset.set_parameters(self._params)
+
+        theme_set = self._params.get("themeSet", "").strip()
+        theme_setting = self._params.get("themeSetting", "").strip()
+        if theme_set != "" and theme_setting != "":
+            settings = theme_setting.split(",")
+
+            if theme_set == "KushamiNeko":
+                preset.new_theme(Theme())
+
+                for setting in settings:
+                    if setting == "MovingAverages":
+                        plotters.extend(
+                            [
+                                SimpleMovingAverage(
+                                    n=5,
+                                    quotes=preset.full_quotes(),
+                                    slice_start=preset.quotes().index[0],
+                                    slice_end=preset.quotes().index[-1],
+                                    line_color=preset.theme().get_color("sma0"),
+                                    line_alpha=preset.theme().get_alpha("sma"),
+                                    line_width=preset.setting().linewidth(),
+                                ),
+                                SimpleMovingAverage(
+                                    n=20,
+                                    quotes=preset.full_quotes(),
+                                    slice_start=preset.quotes().index[0],
+                                    slice_end=preset.quotes().index[-1],
+                                    line_color=preset.theme().get_color("sma1"),
+                                    line_alpha=preset.theme().get_alpha("sma"),
+                                    line_width=preset.setting().linewidth(),
+                                ),
+                            ]
+                        )
+                    elif setting == "BollingerBands":
+                        plotters.extend(
+                            [
+                                BollingerBand(
+                                    n=20,
+                                    m=1.5,
+                                    quotes=preset.full_quotes(),
+                                    slice_start=preset.quotes().index[0],
+                                    slice_end=preset.quotes().index[-1],
+                                    line_color=preset.theme().get_color("bb0"),
+                                    line_alpha=preset.theme().get_alpha("bb"),
+                                    line_width=preset.setting().linewidth(),
+                                ),
+                                BollingerBand(
+                                    n=20,
+                                    m=2.0,
+                                    quotes=preset.full_quotes(),
+                                    slice_start=preset.quotes().index[0],
+                                    slice_end=preset.quotes().index[-1],
+                                    line_color=preset.theme().get_color("bb1"),
+                                    line_alpha=preset.theme().get_alpha("bb"),
+                                    line_width=preset.setting().linewidth(),
+                                ),
+                                BollingerBand(
+                                    n=20,
+                                    m=2.5,
+                                    quotes=preset.full_quotes(),
+                                    slice_start=preset.quotes().index[0],
+                                    slice_end=preset.quotes().index[-1],
+                                    line_color=preset.theme().get_color("bb2"),
+                                    line_alpha=preset.theme().get_alpha("bb"),
+                                    line_width=preset.setting().linewidth(),
+                                ),
+                                BollingerBand(
+                                    n=20,
+                                    m=3.0,
+                                    quotes=preset.full_quotes(),
+                                    slice_start=preset.quotes().index[0],
+                                    slice_end=preset.quotes().index[-1],
+                                    line_color=preset.theme().get_color("bb3"),
+                                    line_alpha=preset.theme().get_alpha("bb"),
+                                    line_width=preset.setting().linewidth(),
+                                ),
+                            ]
+                        )
+
+                    elif setting == "DistributionDays":
+                        plotters.append(
+                            DistributionsDay(
+                                quotes=preset.quotes(),
+                                frequency=self._frequency,
+                                font_color=preset.theme().get_color("text"),
+                                distribution_color=preset.theme().get_color(
+                                    "distribution"
+                                ),
+                                invalid_distribution_color=preset.theme().get_color(
+                                    "invalid_distribution"
+                                ),
+                                font_properties=preset.theme().get_font(
+                                    preset.setting().text_fontsize()
+                                ),
+                                info_font_properties=preset.theme().get_font(
+                                    preset.setting().text_fontsize(multiplier=1.5)
+                                ),
+                            )
+                        )
+
+            elif theme_set == "Magical":
+                preset.new_theme(MagicalTheme())
+
+                try:
+                    numbers = [int(s) for s in settings]
+                    for n in numbers:
+                        plotters.append(
+                            SimpleMovingAverage(
+                                n=n,
+                                quotes=preset.full_quotes(),
+                                slice_start=preset.quotes().index[0],
+                                slice_end=preset.quotes().index[-1],
+                                line_color=preset.theme().get_color(f"sma{n}"),
+                                line_alpha=preset.theme().get_alpha("sma"),
+                                line_width=preset.setting().linewidth(),
+                            ),
+                        )
+                except ValueError:
+                    pass
+            else:
+                pass
+
+            # if theme_setting != "":
+            #     print(theme_setting)
+
+        if self._symbol in ("vix", "vxn", "rvx", "vstx", "jniv"):
+            # dtime = self._params.get("vixzone", None)
+            # op = self._params.get("vixop", None))
+            dtime = self._params.get("vixzone", "").strip()
+            op = self._params.get("vixop", "").strip()
+            # if dtime is not None and dtime.strip() != "" and op.strip() is not None and op != "":
+            if dtime != "" and op != "":
+                plotters.append(
+                    VolatilityZone(
+                        quotes=preset.quotes(),
+                        dtime=datetime.strptime(dtime, "%Y%m%d"),
+                        op=op,
+                    )
+                )
 
         if self._show_records:
             ts = self._read_records(self._book)
             if ts is not None and len(ts) > 0:
-                preset.show_records(ts)
-        else:
-            preset.show_records(None)
+                plotters.append(
+                    LeverageRecords(
+                        quotes=preset.quotes(),
+                        frequency=self._frequency,
+                        records=ts,
+                        font_color=preset.theme().get_color("text"),
+                        font_properties=preset.theme().get_font(
+                            preset.setting().text_fontsize()
+                        ),
+                    )
+                )
+        #         preset.show_records(ts)
+        # else:
+        #     preset.show_records(None)
 
-        return preset.render()
+        return preset.render(plotters=plotters)
 
     def _function_slice(self) -> io.BytesIO:
         preset = self._store_read(
             self._store_key(), dtime=self._date, time_sliced=True,
         )
         if preset is None:
+            # preset = BollingerBandsPreset(self._date, self._symbol, self._frequency)
             preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
 
@@ -134,6 +319,7 @@ class ChartHandler:
     def _function_simple(self) -> io.BytesIO:
         preset = self._store_read(self._store_key())
         if preset is None:
+            # preset = BollingerBandsPreset(self._date, self._symbol, self._frequency)
             preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
             self._store_write(self._store_key(), preset)
 
@@ -192,7 +378,9 @@ class ChartHandler:
             return ""
 
         info = preset.inspect(x, y, ax=ax, ay=ay)
-        assert info is not None
+        # assert info is not None
+        if info is None:
+            return ""
 
         return "\n".join([f"{k}: {v}" for k, v in info.items()])
 
@@ -201,7 +389,7 @@ class ChartHandler:
         if preset is None:
             return {}
 
-        return preset.quote()
+        return preset.last_quote()
 
     def response(self) -> Any:
         if self._function == "simple":
@@ -216,9 +404,14 @@ class ChartHandler:
             buf = self._function_randomDate()
         elif self._function == "inspect":
             return self._function_inspect()
-        elif self._function == "quote":
-            return self._function_quote()
+        # elif self._function == "quote":
+        #     return self._function_quote()
         elif self._function == "randomDate":
             pass
 
-        return base64.b64encode(buf.getvalue()).decode("utf-8")
+        # return base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        body = self._function_quote()
+        body["img"] = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        return body

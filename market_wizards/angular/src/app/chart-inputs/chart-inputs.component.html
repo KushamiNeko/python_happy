@@ -2,6 +2,24 @@
   <div class="chart-inputs-container">
     <div class="chart-inputs-set">
       <span class="chart-inputs-label">Symbols</span>
+      <select
+        class="chart-inputs-text"
+        (change)="symbolSetChange($event.target.value)"
+      >
+        <option
+          *ngFor="let key of symbolSetKeys(); let id = index"
+          key="{index}"
+          value="{{ key }}"
+        >
+          {{ key }}
+        </option>
+      </select>
+    </div>
+
+    <span class="chart-inputs-separator"></span>
+
+    <div class="chart-inputs-set">
+      <!-- <span class="chart-inputs-label">Symbols</span> -->
       <table
         cellpadding="0"
         cellspacing="0"

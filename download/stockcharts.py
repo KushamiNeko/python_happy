@@ -9,7 +9,7 @@ class StockChartsProcessor(Processor):
 
         self._symbols = [
             "$rvx",
-            "$tyvix",
+            # "$tyvix",
             "$vle",
             "$nahilo",
             "$nyhilo",
@@ -20,7 +20,7 @@ class StockChartsProcessor(Processor):
             "ezu",
             "eem",
             "fxi",
-            "!ryratmm",
+            # "!ryratmm",
         ]
 
     def _urls(self) -> Iterable[str]:

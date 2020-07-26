@@ -1,6 +1,10 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse,
+} from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -36,12 +40,13 @@ export class ChartService {
 
     console.log("chart service");
 
-    this._getImage();
+    // this._getImage();
   }
 
   private _requestUrl(): string {
     const origin = "http://127.0.0.1:5000";
     let url = `${origin}/service/chart`;
+
     //const origin = "http://localhost:8080";
     //let url = `${origin}/service/plot/practice`;
 
@@ -73,28 +78,31 @@ export class ChartService {
       "text/plain; charset=utf-8"
     );
 
-    this._http
-      .get(url, { headers, responseType: "text" })
-      .subscribe((data: string) => {
-        const src = `data:image/png;base64,${data}`;
-        this.image.next(src);
-
-        const qurl = this._url.replace(/function=[^&]+/, "function=quote");
-
-        this._http.get(qurl).subscribe((data: object) => {
-          this.quote.next(data);
-          this._date = data["date"];
-
-          this.inputs.next({
-            symbol: this._symbol,
-            date: this._date,
-            freq: this._freq,
-            book: this._book,
-          });
-
+    this._http.get(url).subscribe(
+      (data: object) => {
+        if (Object.keys(data).includes("error")) {
+          console.error(`${data["error"]}`);
           this._completed();
+          return;
+        }
+
+        const src = `data:image/png;base64,${data["img"]}`;
+        this.image.next(src);
+        this.quote.next(data);
+        this._date = data["date"];
+
+        this.inputs.next({
+          symbol: this._symbol,
+          date: this._date,
+          freq: this._freq,
+          book: this._book,
         });
-      });
+
+        this._completed();
+      },
+      (error: HttpErrorResponse) =>
+        console.error(`${error.status}: ${error.error}`)
+    );
   }
 
   private _startWorking(): void {
@@ -161,6 +169,8 @@ export class ChartService {
   }
 
   parametersRequest(params: object): void {
+    // console.log(params);
+    this._func = "slice";
     this._parameters = params;
     this._getImage();
   }

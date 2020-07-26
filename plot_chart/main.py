@@ -6,8 +6,11 @@ from datetime import datetime
 from typing import List, Optional, cast
 
 from fun.chart.base import LARGE_CHART
-from fun.chart.preset import CandleSticksPreset
+from fun.chart.preset import CandleSticksPreset, BollinggerBandsPreset
 from fun.data.source import DAILY, WEEKLY
+from fun.plotter.ibd import DistributionsDay
+from fun.plotter.records import LeverageRecords
+from fun.plotter.plotter import Plotter
 from fun.trading.agent import TradingAgent
 from fun.trading.transaction import FuturesTransaction
 from fun.utils import colors, pretty
@@ -28,10 +31,6 @@ def plot_chart(
 
     date = datetime.strptime(f"{year+1}0101", "%Y%m%d")
 
-    ts = read_records(book)
-    if not show_records:
-        ts = None
-
     for frequency in (DAILY, WEEKLY):
         fw = ""
         if frequency == DAILY:
@@ -41,13 +40,36 @@ def plot_chart(
 
         assert fw != ""
 
-        preset = CandleSticksPreset(date, symbol, frequency, chart_size=LARGE_CHART)
+        preset = BollinggerBandsPreset(date, symbol, frequency, chart_size=LARGE_CHART)
+        # preset = MovingAveragesPreset(date, symbol, frequency, chart_size=LARGE_CHART)
 
-        preset.show_records(ts)
-        preset.show_last_quote(False)
+        plotters: List[Plotter] = [
+            DistributionsDay(
+                quotes=preset.quotes(),
+                frequency=frequency,
+                font_color=preset.theme().get_color("text"),
+                distribution_color=preset.theme().get_color("distribution"),
+                font_properties=preset.theme().get_font(
+                    preset.setting().text_fontsize()
+                ),
+            )
+        ]
+        if show_records:
+            ts = read_records(book)
+            if ts is not None and len(ts) > 0:
+                plotters.append(
+                    LeverageRecords(
+                        quotes=preset.quotes(),
+                        frequency=frequency,
+                        records=ts,
+                        font_color=preset.theme().get_color("text"),
+                        font_properties=preset.theme().get_font(
+                            preset.setting().text_fontsize()
+                        ),
+                    )
+                )
 
-        buffer = preset.render()
-
+        buffer = preset.render(plotters=plotters)
         path = f"{year}_{symbol}_{fw}.png"
 
         pretty.color_print(colors.PAPER_CYAN_300, f"symbol: {symbol}")

@@ -8,78 +8,128 @@ import { Subscription } from "rxjs";
   styleUrls: ["./chart-inputs.component.scss"],
 })
 export class ChartInputsComponent implements OnInit, OnDestroy {
-  symbols = [
-    "ES",
-    "VIX",
-    "NQ",
-    "VXN",
-    "QR",
-    "RVX",
-    "VLE",
-    "SML",
-    "ZN",
-    //"TYVIX",
-    "FX",
-    "VSTX",
-    "NP",
-    //"NO",
-    //"NL",
-    "JNIV",
-    "SPX",
-    "NDX",
-    "NIKK",
-    "EZU",
-    "EEM",
-    "HSI",
-    "FXI",
-    "HYG",
-    //"SHYG",
-    "EMB",
-    "IYR",
-    //"REET",
-    "REM",
-    //"GSY",
-    "NEAR",
-    //"ICSH",
-    "SHV",
-    "LQD",
-    //"IEF",
-    "CL",
-    //"OVX",
-    "GC",
-    //"GVZ",
-    "DX",
-    "E6",
-    "J6",
-  ];
+  symbolSets: object = {
+    "Stock Indexes": [
+      "ES",
+      "VIX",
+      "NQ",
+      "VXN",
+      "QR",
+      "RVX",
+      "VLE",
+      "SML",
+      "ZN",
+      "NP",
+      "JNIV",
+      "FX",
+      "VSTX",
+      "SPX",
+      "NDX",
+      "NIKK",
+      "EZU",
+      "EEM",
+      "HSI",
+      "FXI",
+      "HYG",
+    ],
+    Bonds: [
+      "ZN",
+      "GE",
+      "TJ",
+      "GG",
+      "HYG",
+      //"SHYG",
+      "EMB",
+      "IYR",
+      //"REET",
+      "REM",
+      //"GSY",
+      "NEAR",
+      //"ICSH",
+      "SHV",
+      "LQD",
+      //"IEF",
+    ],
+    Currencies: ["DX", "E6", "J6", "A6", "S6", "D6", "N6"],
+    Commodities: ["CL", "OVX", "GC", "GVZ"],
+  };
 
-  selectedSymbolID = 0;
-  newSymbol = "";
-  showRecords = false;
+  selectedSymbolSetID: string = Object.keys(this.symbolSets)[0];
+  symbols: Array<string> = this.symbolSets[this.selectedSymbolSetID];
 
-  errors = {
+  // symbols = [
+  //   "ES",
+  //   "VIX",
+  //   "NQ",
+  //   "VXN",
+  //   "QR",
+  //   "RVX",
+  //   "VLE",
+  //   "SML",
+  //   "ZN",
+  //   //"TYVIX",
+  //   "FX",
+  //   "VSTX",
+  //   "NP",
+  //   //"NO",
+  //   //"NL",
+  //   "JNIV",
+  //   "SPX",
+  //   "NDX",
+  //   "NIKK",
+  //   "EZU",
+  //   "EEM",
+  //   "HSI",
+  //   "FXI",
+  //   "HYG",
+  //   //"SHYG",
+  //   "EMB",
+  //   "IYR",
+  //   //"REET",
+  //   "REM",
+  //   //"GSY",
+  //   "NEAR",
+  //   //"ICSH",
+  //   "SHV",
+  //   "LQD",
+  //   //"IEF",
+  //   "CL",
+  //   //"OVX",
+  //   "GC",
+  //   //"GVZ",
+  //   "DX",
+  //   "E6",
+  //   "J6",
+  // ];
+
+  selectedSymbolID: number = 0;
+
+  newSymbol: string = "";
+  showRecords: boolean = false;
+
+  errors: object = {
     newSymbol: false,
     date: false,
     freq: false,
     book: false,
   };
 
-  isFocused = {
+  isFocused: object = {
     newSymbol: false,
     inputs: false,
   };
 
-  inputs = {
+  inputs: object = {
     date: "",
     freq: "",
     book: "",
   };
 
-  openTrade = false;
+  openTrade: boolean = false;
 
-  private _isWorking = false;
+  private _isWorking: boolean = false;
 
-  private _key = "";
+  private _key: string = "";
 
   private _$inputs: Subscription;
   private _$isWorking: Subscription;
@@ -108,6 +158,18 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._$inputs.unsubscribe();
     this._$isWorking.unsubscribe();
+  }
+
+  symbolSetKeys(): Array<string> {
+    return Object.keys(this.symbolSets);
+  }
+
+  symbolSetChange(set: string): void {
+    this.selectedSymbolSetID = set;
+    this.symbols = this.symbolSets[set];
+    this.selectedSymbolID = 0;
+
+    this._chartService.symbolRequest(this.symbols[this.selectedSymbolID]);
   }
 
   newSymbolChange(): void {

@@ -1,6 +1,6 @@
 import os
 import re
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Iterable
 
 import requests
@@ -13,61 +13,38 @@ class YahooProcessor(Processor):
     def __init__(self) -> None:
         super().__init__()
 
-        self._symbols = [
-            "^vix",
-            "^vxn",
-            "^sml",
-            "^ovx",
-            "^gvz",
-            "^hsi",
-            "^n225",
-            "^gspc",
-            "^ndx",
-            "ezu",
-            "eem",
-            "fxi",
-            "hyg",
-            "emb",
-            "iyr",
-            "rem",
-            "near",
-            "shv",
-            "lqd",
-        ]
-
-        self._datetime_start = [
-            datetime.strptime("19900101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("19890101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20100101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("19860101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("19650101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("19270101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("19850101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20030101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20040101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20000101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20130101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20070101", "%Y%m%d").replace(tzinfo=timezone.utc),
-            datetime.strptime("20020101", "%Y%m%d").replace(tzinfo=timezone.utc),
-        ]
+        self._symbols = {
+            "^vix": "19900101",
+            "^vxn": "20000101",
+            "^sml": "19890101",
+            "^ovx": "20070101",
+            "^gvz": "20100101",
+            "^hsi": "19860101",
+            "^n225": "19650101",
+            "^gspc": "19270101",
+            "^ixic": "19710101",
+            "^nya": "19650101",
+            "^ndx": "19850101",
+            "ezu": "20000101",
+            "eem": "20030101",
+            "fxi": "20040101",
+            "hyg": "20070101",
+            "emb": "20070101",
+            "iyr": "20000101",
+            "rem": "20070101",
+            "near": "20130101",
+            "shv": "20070101",
+            "lqd": "20020101",
+        }
 
     def _urls(self) -> Iterable[str]:
-        assert len(self._symbols) == len(self._datetime_start)
-
-        for i, symbol in enumerate(self._symbols):
-            dtime = self._datetime_start[i]
-
+        for symbol, time in self._symbols.items():
+            dtime = datetime.strptime(time, "%Y%m%d").replace(tzinfo=timezone.utc)
             pretty.color_print(colors.PAPER_CYAN_300, f"downloading: {symbol}")
 
             yield (
                 f"https://finance.yahoo.com/quote/{requests.utils.quote(symbol)}/history?"
-                + f"period1={int(dtime.timestamp())}&period2={int(datetime.utcnow().timestamp())}&interval=1d&filter=history&frequency=1d"
+                + f"period1={int(dtime.timestamp())}&period2={int((datetime.utcnow() + timedelta(days=2)).timestamp())}&interval=1d&filter=history&frequency=1d"
             )
 
     def rename(self) -> None:
@@ -77,12 +54,14 @@ class YahooProcessor(Processor):
 
             match = re.match(r"(\^(\w+)).csv", fs)
             if match is not None:
-                if match.group(1).lower() in self._symbols:
+                if match.group(1).lower() in self._symbols.keys():
                     symbol = match.group(2).lower()
                     if symbol == "n225":
                         symbol = "nikk"
                     elif symbol == "gspc":
                         symbol = "spx"
+                    elif symbol == "ixic":
+                        symbol = "compq"
 
                     src = os.path.join(self._src, fs)
                     tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")
@@ -90,10 +69,10 @@ class YahooProcessor(Processor):
                     assert os.path.exists(os.path.dirname(tar))
             else:
                 symbol = os.path.splitext(fs)[0].lower()
-                if symbol not in self._symbols:
+                if symbol not in self._symbols.keys():
                     continue
 
-                if symbol in self._symbols:
+                if symbol in self._symbols.keys():
                     src = os.path.join(self._src, fs)
                     tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")
 

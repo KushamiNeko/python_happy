@@ -15,7 +15,10 @@ def welcome():
 @app.route("/service/chart", methods=["GET"])
 @cross_origin(allow_headers=["Content-Type"])
 def chart():
-    return ChartHandler().response()
+    try:
+        return ChartHandler().response()
+    except (ValueError, IndexError, NotImplementedError) as err:
+        return {"error": f"{type(err)}: {err}"}
 
 
 @app.route("/service/trade/order", methods=["GET", "POST", "DELETE"])
