@@ -66,11 +66,6 @@ export class ParametersComponent implements OnInit, OnDestroy {
     EntryNoticeDate: "",
     EntryPrepareDate: "",
     EntryOp: "long",
-    // settings: this.activatedSettings[this.selectedPreset]
-    //   .map((s) => {
-    //     return s.replace(" ", "");
-    //   })
-    //   .join(","),
   };
 
   errors = {
@@ -100,10 +95,6 @@ export class ParametersComponent implements OnInit, OnDestroy {
     this._$inputs.unsubscribe();
   }
 
-  // themeSetKeys(): Array<string> {
-  //   return Object.keys(this.presets);
-  // }
-
   objectKeys(obj: object): Array<string> {
     return Object.keys(obj);
   }
@@ -118,18 +109,6 @@ export class ParametersComponent implements OnInit, OnDestroy {
       this.params["Preset"] = this.selectedPreset;
 
       this.setParameters();
-
-      // this.generateSettingParams();
-
-      // this.params["settings"] = this.activatedSettings[
-      //   this.selectedPreset
-      // ]
-      //   .map((s) => {
-      //     return s.replace(" ", "");
-      //   })
-      //   .join(",");
-
-      // this._chartService.parametersRequest(this.params);
     }
   }
 
@@ -151,17 +130,6 @@ export class ParametersComponent implements OnInit, OnDestroy {
     this.activatedSettings[this.selectedPreset].sort();
 
     this.setParameters();
-    // this.generateSettingParams();
-
-    // this.params["settings"] = this.activatedSettings[
-    //   this.selectedPreset
-    // ]
-    //   .map((s) => {
-    //     return s.replace(" ", "");
-    //   })
-    //   .join(",");
-
-    // this._chartService.parametersRequest(this.params);
   }
 
   generateSettingParams(): void {
@@ -195,11 +163,6 @@ export class ParametersComponent implements OnInit, OnDestroy {
         return false;
     }
   }
-
-  // vixzoneTrigger(): boolean {
-  //   let symbols = ["vix", "vxn", "rvx", "vstx", "jniv", "vhsi", "vxfxi"];
-  //   return symbols.includes(this.symbol);
-  // }
 
   setParameters(): void {
     if (this._isWorking) {

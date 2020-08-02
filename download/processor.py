@@ -1,15 +1,16 @@
-import subprocess
 import os
+import subprocess
 from abc import ABCMeta, abstractmethod
 from typing import Iterable, cast
-from fun.utils import pretty, colors
+
+from fun.utils import colors, pretty
 
 
 class Processor(metaclass=ABCMeta):
     def __init__(self) -> None:
         self._src = os.path.join(cast(str, os.getenv("HOME")), "Downloads")
         self._tar = os.path.join(
-            cast(str, os.getenv("HOME")), "Documents", "data_source"
+                cast(str, os.getenv("HOME")), "Documents", "data_source"
         )
 
         assert os.path.exists(self._src)
@@ -26,8 +27,8 @@ class Processor(metaclass=ABCMeta):
             count += 1
 
         pretty.color_input(
-            colors.PAPER_LIME_300,
-            "download completed, press any key to rename the files",
+                colors.PAPER_LIME_300,
+                "download completed, press any key to rename the files",
         )
 
     @abstractmethod

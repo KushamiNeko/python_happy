@@ -6,11 +6,10 @@ from datetime import datetime
 from typing import List, Optional, cast
 
 from fun.chart.base import LARGE_CHART
-from fun.chart.preset import CandleSticksPreset, BollinggerBandsPreset
+from fun.chart.preset import CandleSticksPreset
 from fun.data.source import DAILY, WEEKLY
-from fun.plotter.ibd import DistributionsDay
-from fun.plotter.records import LeverageRecords
 from fun.plotter.plotter import Plotter
+from fun.plotter.records import LeverageRecords
 from fun.trading.agent import TradingAgent
 from fun.trading.transaction import FuturesTransaction
 from fun.utils import colors, pretty
@@ -18,7 +17,7 @@ from fun.utils import colors, pretty
 
 def read_records(title: str) -> Optional[List[FuturesTransaction]]:
     root = os.path.join(
-        cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+            cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
     )
 
     agent = TradingAgent(root=root, new_user=True)
@@ -26,10 +25,9 @@ def read_records(title: str) -> Optional[List[FuturesTransaction]]:
 
 
 def plot_chart(
-    symbol: str, year: int, book: str, show_records: bool, outdir: Optional[str]
+        symbol: str, year: int, book: str, show_records: bool, outdir: Optional[str]
 ) -> None:
-
-    date = datetime.strptime(f"{year+1}0101", "%Y%m%d")
+    date = datetime.strptime(f"{year + 1}0101", "%Y%m%d")
 
     for frequency in (DAILY, WEEKLY):
         fw = ""
@@ -40,36 +38,26 @@ def plot_chart(
 
         assert fw != ""
 
-        preset = BollinggerBandsPreset(date, symbol, frequency, chart_size=LARGE_CHART)
-        # preset = MovingAveragesPreset(date, symbol, frequency, chart_size=LARGE_CHART)
+        preset = CandleSticksPreset(date, symbol, frequency, chart_size=LARGE_CHART)
 
         plotters: List[Plotter] = [
-            DistributionsDay(
-                quotes=preset.quotes(),
-                frequency=frequency,
-                font_color=preset.theme().get_color("text"),
-                distribution_color=preset.theme().get_color("distribution"),
-                font_properties=preset.theme().get_font(
-                    preset.setting().text_fontsize()
-                ),
-            )
         ]
         if show_records:
             ts = read_records(book)
             if ts is not None and len(ts) > 0:
                 plotters.append(
-                    LeverageRecords(
-                        quotes=preset.quotes(),
-                        frequency=frequency,
-                        records=ts,
-                        font_color=preset.theme().get_color("text"),
-                        font_properties=preset.theme().get_font(
-                            preset.setting().text_fontsize()
-                        ),
-                    )
+                        LeverageRecords(
+                                quotes=preset.quotes(),
+                                frequency=frequency,
+                                records=ts,
+                                font_color=preset.theme().get_color("text"),
+                                font_properties=preset.theme().get_font(
+                                        preset.setting().text_fontsize()
+                                ),
+                        )
                 )
 
-        buffer = preset.render(plotters=plotters)
+        buffer = preset.render(additional_plotters=plotters)
         path = f"{year}_{symbol}_{fw}.png"
 
         pretty.color_print(colors.PAPER_CYAN_300, f"symbol: {symbol}")
@@ -88,7 +76,6 @@ def plot_chart(
 
 
 def main() -> None:
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--symbols", metavar="", nargs="+", type=str, help="symbols")
@@ -96,25 +83,25 @@ def main() -> None:
     parser.add_argument("--year", metavar="", type=str, help="the year of the chart")
 
     parser.add_argument(
-        "--book",
-        metavar="",
-        type=str,
-        nargs="?",
-        const="",
-        default="",
-        help="the book of the records",
+            "--book",
+            metavar="",
+            type=str,
+            nargs="?",
+            const="",
+            default="",
+            help="the book of the records",
     )
 
     parser.add_argument("--outdir", metavar="", type=str, help="output folder")
 
     parser.add_argument(
-        "--records",
-        metavar="",
-        type=bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="whether to show trading records on the chart",
+            "--records",
+            metavar="",
+            type=bool,
+            nargs="?",
+            const=True,
+            default=False,
+            help="whether to show trading records on the chart",
     )
 
     args = vars(parser.parse_args())
@@ -160,21 +147,21 @@ def main() -> None:
     for symbol in symbols:
         if end is None:
             plot_chart(
-                symbol=symbol,
-                year=int(start),
-                show_records=show_records,
-                outdir=outdir,
-                book=book,
+                    symbol=symbol,
+                    year=int(start),
+                    show_records=show_records,
+                    outdir=outdir,
+                    book=book,
             )
 
         else:
             for i in range(int(start), int(end) + 1):
                 plot_chart(
-                    symbol=symbol,
-                    year=i,
-                    show_records=show_records,
-                    outdir=outdir,
-                    book=book,
+                        symbol=symbol,
+                        year=i,
+                        show_records=show_records,
+                        outdir=outdir,
+                        book=book,
                 )
 
     process_end = time.time()

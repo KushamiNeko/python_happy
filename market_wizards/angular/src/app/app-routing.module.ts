@@ -7,11 +7,11 @@ import { StatisticViewComponent } from "./statistic-view/statistic-view.componen
 const routes: Routes = [
   { path: "", redirectTo: "/practice", pathMatch: "full" },
   { path: "practice", component: PracticeViewComponent },
-  { path: "statistic", component: StatisticViewComponent }
+  { path: "statistic", component: StatisticViewComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}

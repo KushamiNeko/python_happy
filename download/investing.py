@@ -23,8 +23,8 @@ class InvestingProcessor(Processor):
         ]:
 
             pretty.color_print(
-                colors.PAPER_CYAN_300,
-                f"downloading: {url.split('/')[-1].split('-')[0]}",
+                    colors.PAPER_CYAN_300,
+                    f"downloading: {url.split('/')[-1].split('-')[0]}",
             )
 
             yield url
@@ -32,10 +32,10 @@ class InvestingProcessor(Processor):
     def rename(self) -> None:
 
         table = {
-            "Nikkei Volatility Historical Data.csv": "jniv",
+            "Nikkei Volatility Historical Data.csv":              "jniv",
             "STOXX 50 Volatility VSTOXX EUR Historical Data.csv": "vstx",
-            "HSI Volatility Historical Data.csv": "vhsi",
-            "CBOE China Etf Volatility Historical Data.csv": "vxfxi",
+            "HSI Volatility Historical Data.csv":                 "vhsi",
+            "CBOE China Etf Volatility Historical Data.csv":      "vxfxi",
         }
 
         for fs in os.listdir(self._src):
@@ -49,7 +49,7 @@ class InvestingProcessor(Processor):
             assert os.path.exists(os.path.dirname(tar))
 
             pretty.color_print(
-                colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
+                    colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
             )
 
             os.rename(src, tar)

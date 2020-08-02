@@ -1,9 +1,8 @@
 import os
 
-import cv2
-
 import config
-from fun.utils import pretty, colors
+import cv2
+from fun.utils import colors, pretty
 
 
 class Chart:
@@ -70,15 +69,15 @@ class Charts:
 
         for i, symbol in enumerate(self._symbols):
             path = os.path.join(
-                config.ROOT,
-                symbol,
-                self._frequency,
-                f"{self._year}_{symbol}_{self._frequency}.png",
+                    config.ROOT,
+                    symbol,
+                    self._frequency,
+                    f"{self._year}_{symbol}_{self._frequency}.png",
             )
             if not os.path.exists(path):
                 pretty.color_print(
-                    colors.PAPER_RED_400,
-                    f"invalid symbol {symbol.upper()} with frequency {self._frequency.upper()}",
+                        colors.PAPER_RED_400,
+                        f"invalid symbol {symbol.upper()} with frequency {self._frequency.upper()}",
                 )
 
                 continue

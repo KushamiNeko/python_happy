@@ -59,51 +59,6 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   selectedSymbolSetID: string = Object.keys(this.symbolSets)[0];
   symbols: Array<string> = this.symbolSets[this.selectedSymbolSetID];
 
-  // symbols = [
-  //   "ES",
-  //   "VIX",
-  //   "NQ",
-  //   "VXN",
-  //   "QR",
-  //   "RVX",
-  //   "VLE",
-  //   "SML",
-  //   "ZN",
-  //   //"TYVIX",
-  //   "FX",
-  //   "VSTX",
-  //   "NP",
-  //   //"NO",
-  //   //"NL",
-  //   "JNIV",
-  //   "SPX",
-  //   "NDX",
-  //   "NIKK",
-  //   "EZU",
-  //   "EEM",
-  //   "HSI",
-  //   "FXI",
-  //   "HYG",
-  //   //"SHYG",
-  //   "EMB",
-  //   "IYR",
-  //   //"REET",
-  //   "REM",
-  //   //"GSY",
-  //   "NEAR",
-  //   //"ICSH",
-  //   "SHV",
-  //   "LQD",
-  //   //"IEF",
-  //   "CL",
-  //   //"OVX",
-  //   "GC",
-  //   //"GVZ",
-  //   "DX",
-  //   "E6",
-  //   "J6",
-  // ];
-
   selectedSymbolID: number = 0;
 
   newSymbol: string = "";

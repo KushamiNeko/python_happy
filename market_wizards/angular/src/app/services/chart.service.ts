@@ -39,16 +39,11 @@ export class ChartService {
     this._book = this._date;
 
     console.log("chart service");
-
-    // this._getImage();
   }
 
   private _requestUrl(): string {
     const origin = "http://127.0.0.1:5000";
     let url = `${origin}/service/chart`;
-
-    //const origin = "http://localhost:8080";
-    //let url = `${origin}/service/plot/practice`;
 
     const now = new Date();
 
@@ -169,7 +164,6 @@ export class ChartService {
   }
 
   parametersRequest(params: object): void {
-    // console.log(params);
     this._func = "slice";
     this._parameters = params;
     this._getImage();

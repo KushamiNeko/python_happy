@@ -45,8 +45,6 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
     calcY: 0,
   };
 
-  //private _isWorking = false;
-
   private _$image: Subscription;
 
   constructor(private _chartService: ChartService) {

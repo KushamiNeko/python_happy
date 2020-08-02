@@ -7,7 +7,7 @@ import {
   ViewChild,
   Input,
   OnDestroy,
-  OnChanges
+  OnChanges,
 } from "@angular/core";
 import { ChartService } from "../services/chart.service";
 import { TradeService } from "../services/trade.service";
@@ -16,7 +16,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-trade-inputs",
   templateUrl: "./trade-inputs.component.html",
-  styleUrls: ["./trade-inputs.component.scss"]
+  styleUrls: ["./trade-inputs.component.scss"],
 })
 export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
   private _$inputs: Subscription;
@@ -40,7 +40,7 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     symbol: "",
     price: "",
     leverage: "1",
-    operation: "+"
+    operation: "+",
   };
 
   errors = {
@@ -48,7 +48,7 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     datetime: false,
     symbol: false,
     price: false,
-    leverage: false
+    leverage: false,
   };
 
   isWorking = false;
@@ -62,7 +62,7 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
     console.log("trade inputs init");
-    this._$inputs = this._chartService.inputs.subscribe(inputs => {
+    this._$inputs = this._chartService.inputs.subscribe((inputs) => {
       this.inputs["symbol"] = inputs["symbol"];
       this.inputs["datetime"] = inputs["date"];
       this.inputs["book"] = inputs["book"];
@@ -72,11 +72,11 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
       this.bookChange();
     });
 
-    this._$quote = this._chartService.quote.subscribe(quote => {
+    this._$quote = this._chartService.quote.subscribe((quote) => {
       this.inputs["price"] = quote["close"]?.toFixed(2);
     });
 
-    this._$isWorking = this._tradeService.isWorking.subscribe(done => {
+    this._$isWorking = this._tradeService.isWorking.subscribe((done) => {
       this._chartService.refresh();
       this.completed.emit();
       this.isWorking = done;
@@ -152,20 +152,8 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
 
     if (this.stopOrder) {
       this._tradeService.newStopOrder(this.inputs);
-      //this._tradeService.newStopOrder(this.inputs).subscribe(data => {
-      //console.log(data);
-
-      ////this._chartService.refresh();
-      ////this.completed.emit();
-      ////this.isWorking = false;
-      //});
     } else {
       this._tradeService.newMarketOrder(this.inputs);
-      //this._tradeService.newMarketOrder(this.inputs).subscribe(() => {
-      //this._chartService.refresh();
-      //this.completed.emit();
-      //this.isWorking = false;
-      //});
     }
   }
 }

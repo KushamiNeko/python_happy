@@ -4,29 +4,27 @@ import argparse
 import os
 import re
 
+import config
 import cv2
 import numpy as np
-
-import config
 from chart import Charts
 from cover import Cover
-
-from fun.utils import pretty, colors
+from fun.utils import colors, pretty
 
 
 def parse_arg():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--symbols", metavar="", type=str, nargs="+", help="symbols to compare",
+            "--symbols", metavar="", type=str, nargs="+", help="symbols to compare",
     )
 
     parser.add_argument(
-        "--year", metavar="", type=str, help="year of the chart",
+            "--year", metavar="", type=str, help="year of the chart",
     )
 
     parser.add_argument(
-        "--frequency", metavar="", type=str, help="chart frequency",
+            "--frequency", metavar="", type=str, help="chart frequency",
     )
 
     args = vars(parser.parse_args())
@@ -54,7 +52,6 @@ def parse_arg():
 
 
 def main():
-
     symbols, year, frequency = parse_arg()
 
     charts = Charts(symbols, year, frequency)
@@ -73,7 +70,7 @@ def main():
         if k == 27:
             break
 
-        if k >= 49 and k <= 57:
+        if 49 <= k <= 57:
             i = k - 49
 
             if i >= charts.length:

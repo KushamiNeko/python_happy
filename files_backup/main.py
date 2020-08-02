@@ -15,7 +15,6 @@ SAFEGUARD = "/run/media/neko/IODATA/backups"
 
 
 def args_parse() -> Dict[str, Any]:
-
     global SAFEGUARD
 
     parser = argparse.ArgumentParser()
@@ -27,31 +26,31 @@ def args_parse() -> Dict[str, Any]:
     parser.add_argument("--syncfile", metavar="", type=str, help="configuration file")
 
     parser.add_argument(
-        "--refresh",
-        metavar="",
-        type=bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="full refresh copy",
+            "--refresh",
+            metavar="",
+            type=bool,
+            nargs="?",
+            const=True,
+            default=False,
+            help="full refresh copy",
     )
 
     parser.add_argument(
-        "--ensure",
-        metavar="",
-        type=bool,
-        nargs="?",
-        const=True,
-        default=False,
-        help="ensure the backup files",
+            "--ensure",
+            metavar="",
+            type=bool,
+            nargs="?",
+            const=True,
+            default=False,
+            help="ensure the backup files",
     )
 
     parser.add_argument(
-        "--safeguard",
-        metavar="",
-        type=str,
-        default=SAFEGUARD,
-        help="the destination path must under safeguard path",
+            "--safeguard",
+            metavar="",
+            type=str,
+            default=SAFEGUARD,
+            help="the destination path must under safeguard path",
     )
 
     args = vars(parser.parse_args())
@@ -67,8 +66,8 @@ def args_parse() -> Dict[str, Any]:
             pretty.color_print(colors.PAPER_INDIGO_300, f"to: {args.get('to')}")
         else:
             pretty.color_print(
-                colors.PAPER_RED_500,
-                "please specify flags of either SYNCFILE, or FROM and TO",
+                    colors.PAPER_RED_500,
+                    "please specify flags of either SYNCFILE, or FROM and TO",
             )
 
             exit(1)
@@ -85,7 +84,6 @@ def args_parse() -> Dict[str, Any]:
 
 
 def main() -> None:
-
     global SAFEGUARD
 
     args = args_parse()
@@ -98,10 +96,10 @@ def main() -> None:
 
     if not args.get("syncfile"):
         operation(
-            cast(str, args.get("from")).strip(),
-            cast(str, args.get("to")).strip(),
-            refresh_all=args.get("refresh", False),
-            ensure=args.get("ensure", False),
+                cast(str, args.get("from")).strip(),
+                cast(str, args.get("to")).strip(),
+                refresh_all=args.get("refresh", False),
+                ensure=args.get("ensure", False),
         )
 
     else:
@@ -115,10 +113,10 @@ def main() -> None:
                 dst = match.group(2).strip()
 
                 operation(
-                    src,
-                    dst,
-                    refresh_all=args.get("refresh", False),
-                    ensure=args.get("ensure", False),
+                        src,
+                        dst,
+                        refresh_all=args.get("refresh", False),
+                        ensure=args.get("ensure", False),
                 )
 
     end = time.time()
@@ -129,9 +127,8 @@ def main() -> None:
 
 
 def operation(
-    src: str, dst: str, refresh_all: bool = False, ensure: bool = False
+        src: str, dst: str, refresh_all: bool = False, ensure: bool = False
 ) -> None:
-
     if src == "" or dst == "":
         pretty.color_print(colors.PAPER_RED_500, "empty src or dst")
         exit(1)
@@ -181,7 +178,7 @@ def operation(
         info = sys.exc_info()
         traceback.print_tb(info[2])
         pretty.color_print(
-            colors.PAPER_RED_500, f"{type(info[1]).__name__}: {str(info[1])}"
+                colors.PAPER_RED_500, f"{type(info[1]).__name__}: {str(info[1])}"
         )
         exit(1)
 
@@ -246,7 +243,7 @@ def diff(src: str, tar: str) -> str:
     assert src != "" and tar != ""
 
     cmd = subprocess.run(
-        ["diff", "-rq", src, tar], capture_output=True, encoding="utf-8"
+            ["diff", "-rq", src, tar], capture_output=True, encoding="utf-8"
     )
 
     if cmd.returncode == 0:
@@ -258,7 +255,6 @@ def diff(src: str, tar: str) -> str:
 
 
 def cp(src: str, tar: str) -> None:
-
     global SAFEGUARD
 
     assert src != "" and tar != ""
@@ -273,7 +269,6 @@ def cp(src: str, tar: str) -> None:
 
 
 def rm(tar: str) -> None:
-
     global SAFEGUARD
 
     assert tar != ""

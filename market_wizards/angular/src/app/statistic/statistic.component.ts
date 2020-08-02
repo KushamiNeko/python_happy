@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-statistic",
   templateUrl: "./statistic.component.html",
-  styleUrls: ["./statistic.component.scss"]
+  styleUrls: ["./statistic.component.scss"],
 })
 export class StatisticComponent implements OnInit, OnDestroy {
   private _$statistic: Subscription;
@@ -15,7 +15,7 @@ export class StatisticComponent implements OnInit, OnDestroy {
   constructor(private _tradeService: TradeService) {}
 
   ngOnInit(): void {
-    this._$statistic = this._tradeService.statistic.subscribe(data => {
+    this._$statistic = this._tradeService.statistic.subscribe((data) => {
       this.statistic = data;
     });
   }

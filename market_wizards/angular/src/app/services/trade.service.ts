@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject } from "rxjs";
 
 @Injectable({
-  providedIn: "root"
+  providedIn: "root",
 })
 export class TradeService {
   isWorking = new BehaviorSubject<boolean>(false);
@@ -37,7 +37,7 @@ export class TradeService {
 
     this._http
       .post(`${this._requestUrl("order")}&order=market`, order, {
-        headers
+        headers,
         //responseType: "text"
       })
       .subscribe(() => {
@@ -57,10 +57,10 @@ export class TradeService {
 
     this._http
       .post(`${this._requestUrl("order")}&order=stop`, order, {
-        headers
+        headers,
         //responseType: "text"
       })
-      .subscribe(data => {
+      .subscribe((data) => {
         this.stopOrders.next(data["data"]);
         this._isWorking = false;
         this.isWorking.next(this._isWorking);
@@ -76,7 +76,7 @@ export class TradeService {
 
     this._http
       .delete(`${this._requestUrl("order")}&index=${index}`)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.stopOrders.next(data["data"]);
         this._isWorking = false;
         this.isWorking.next(this._isWorking);
@@ -92,7 +92,7 @@ export class TradeService {
 
     this._http
       .get(`${this._requestUrl("order")}&order=stop`)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.stopOrders.next(data["data"]);
         this._isWorking = false;
         this.isWorking.next(this._isWorking);
@@ -104,14 +104,10 @@ export class TradeService {
       return;
     }
 
-    // this._isWorking = true;
-
     this._http
       .get(`${this._requestUrl("order")}&order=stop`)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.stopOrders.next(data["data"]);
-        // this._isWorking = false;
-        // this.isWorking.next(this._isWorking);
       });
   }
 
@@ -124,7 +120,7 @@ export class TradeService {
 
     this._http
       .get(`${this._requestUrl("statistic")}&function=books`)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.books.next(data["data"]);
         this._isWorking = false;
         this.isWorking.next(this._isWorking);
@@ -149,7 +145,7 @@ export class TradeService {
           "statistic"
         )}&function=statistic&titles=${titles.join(",")}`
       )
-      .subscribe(data => {
+      .subscribe((data) => {
         this.statistic.next(data);
         this._isWorking = false;
         this.isWorking.next(this._isWorking);

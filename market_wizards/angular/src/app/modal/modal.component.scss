@@ -3,7 +3,6 @@
 @import "../_common_scss/my_style/my_style";
 
 .modal {
-  //display: none;
   @include layout-horizontal;
   @include layout-around-justified;
   position: fixed;
@@ -32,8 +31,6 @@
 }
 
 .modal-content {
-  // @include layout-horizontal;
-  // @include layout-around-justified;
   background-color: $paper-indigo-400;
   border-radius: 1.5em;
   margin: auto;

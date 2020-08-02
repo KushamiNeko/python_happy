@@ -5,7 +5,7 @@ import { Subscription } from "rxjs";
 @Component({
   selector: "app-stop-orders",
   templateUrl: "./stop-orders.component.html",
-  styleUrls: ["./stop-orders.component.scss"]
+  styleUrls: ["./stop-orders.component.scss"],
 })
 export class StopOrdersComponent implements OnInit, OnDestroy {
   private _$orders: Subscription;
@@ -14,7 +14,7 @@ export class StopOrdersComponent implements OnInit, OnDestroy {
   constructor(private _tradeService: TradeService) {}
 
   ngOnInit(): void {
-    this._$orders = this._tradeService.stopOrders.subscribe(orders => {
+    this._$orders = this._tradeService.stopOrders.subscribe((orders) => {
       this.orders = orders;
     });
   }

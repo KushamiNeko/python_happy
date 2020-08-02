@@ -8,38 +8,37 @@ from processor import Processor, ProcessorCSS, ProcessorDart, ProcessorTS
 
 
 def args_parse() -> Dict[str, Any]:
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--input", metavar="", type=str, help="the input directory")
 
     parser.add_argument(
-        "--operation",
-        metavar="",
-        nargs="*",
-        default=["scss", "dart"],
-        choices=["scss", "dart", "ts"],
-        help="processor",
+            "--operation",
+            metavar="",
+            nargs="*",
+            default=["scss", "dart"],
+            choices=["scss", "dart", "ts"],
+            help="processor",
     )
 
     parser.add_argument(
-        "--optimized",
-        metavar="",
-        nargs="?",
-        const=True,
-        default=False,
-        type=bool,
-        help="optimize the output file",
+            "--optimized",
+            metavar="",
+            nargs="?",
+            const=True,
+            default=False,
+            type=bool,
+            help="optimize the output file",
     )
 
     parser.add_argument(
-        "--interval",
-        metavar="",
-        nargs="?",
-        const=3,
-        default=3,
-        type=int,
-        help="sleep interval (seconds)",
+            "--interval",
+            metavar="",
+            nargs="?",
+            const=3,
+            default=3,
+            type=int,
+            help="sleep interval (seconds)",
     )
 
     args = vars(parser.parse_args())
@@ -54,13 +53,13 @@ def args_parse() -> Dict[str, Any]:
     pretty.color_print(colors.PAPER_INDIGO_300, f"input: {args.get('input')}")
 
     pretty.color_print(
-        colors.PAPER_INDIGO_300,
-        f"operation: {', '.join(cast(List[str],args.get('operation')))}",
+            colors.PAPER_INDIGO_300,
+            f"operation: {', '.join(cast(List[str], args.get('operation')))}",
     )
     pretty.color_print(colors.PAPER_INDIGO_300, f"optimized: {args.get('optimized')}")
 
     pretty.color_print(
-        colors.PAPER_INDIGO_300, f"interval: {args.get('interval')} seconds"
+            colors.PAPER_INDIGO_300, f"interval: {args.get('interval')} seconds"
     )
 
     return args

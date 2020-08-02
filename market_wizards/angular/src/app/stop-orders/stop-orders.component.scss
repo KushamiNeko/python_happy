@@ -32,7 +32,6 @@
   @include my-style-font-family;
   @include h-margin;
   color: white;
-  //margin-bottom: 0.1em;
 }
 
 .stop-orders-text {
@@ -48,31 +47,12 @@
   padding-right: 0.25em;
 }
 
-//.stop-orders-text:focus {
-//color: black;
-//background-color: $paper-grey-200;
-//}
-
-//.stop-orders-error {
-//color: white;
-//background-color: $paper-red-900;
-//}
-
-//.stop-orders-error:focus {
-//color: white;
-//background-color: $paper-red-900;
-//}
-
 @mixin button {
   @include font-button;
   @include my-style-font-family;
-  //@include h-margin;
   @include border-outline;
   color: white;
-  //background-color: $paper-blue-grey-700;
   background-color: rgba(255, 255, 255, 0);
-  //margin-top: 0.25em;
-  //margin-bottom: 0.25em;
 }
 
 .stop-orders-button {
@@ -88,31 +68,6 @@
   color: black;
   background-color: $paper-grey-200;
 }
-
-//.stop-orders-button-working {
-//background-color: $paper-yellow-900;
-//}
-
-//.stop-orders-button-working:focus,
-//.stop-orders-button-working:hover {
-//background-color: $paper-yellow-700;
-//}
-
-//.stop-orders-button-working:active {
-//color: black;
-//background-color: $paper-yellow-400;
-//}
-
-//.stop-orders-separator {
-//@include my-style-separator;
-//background-color: white;
-//width: 85%;
-//color: white;
-//}
-
-//.stop-orders-disabled {
-//background-color: $paper-grey-700;
-//}
 
 .stop-orders-table {
 }

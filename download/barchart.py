@@ -19,10 +19,10 @@ INTERACTIVE_PAGE = BARCHART_PAGE(1)
 
 class BarchartProcessor(Processor):
     def __init__(
-        self,
-        start_year: Optional[int] = None,
-        end_year: Optional[int] = None,
-        page: BARCHART_PAGE = HISTORICAL_PAGE,
+            self,
+            start_year: Optional[int] = None,
+            end_year: Optional[int] = None,
+            page: BARCHART_PAGE = HISTORICAL_PAGE,
     ) -> None:
         super().__init__()
 
@@ -42,8 +42,8 @@ class BarchartProcessor(Processor):
             self._end = end_year
 
         pretty.color_print(
-            colors.PAPER_BROWN_300,
-            f"Barchart Processor\nstart year: {self._start}, end year: {self._end}",
+                colors.PAPER_BROWN_300,
+                f"Barchart Processor\nstart year: {self._start}, end year: {self._end}",
         )
 
         self._symbols = [
@@ -81,7 +81,7 @@ class BarchartProcessor(Processor):
 
             for y in range(self._start, self._end + 1):
                 for m in months:
-                    code = f"{symbol}{m}{y%100:02}"
+                    code = f"{symbol}{m}{y % 100:02}"
 
                     pretty.color_print(colors.PAPER_CYAN_300, f"downloading: {code}")
 
@@ -97,13 +97,13 @@ class BarchartProcessor(Processor):
     def rename(self) -> None:
         for fs in os.listdir(self._src):
             match = re.match(
-                r"^([\w\d]{5})_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
-                fs,
+                    r"^([\w\d]{5})_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
+                    fs,
             )
             if match is None:
                 match = re.match(
-                    r"^([\w\d]{5})_[^_]+_[^_]+_[^_]+_([^_]+)(?:_[^_]+)*_\d{2}_\d{2}_\d{4}.csv$",
-                    fs,
+                        r"^([\w\d]{5})_[^_]+_[^_]+_[^_]+_([^_]+)(?:_[^_]+)*_\d{2}_\d{2}_\d{4}.csv$",
+                        fs,
                 )
 
                 if match is None:
@@ -118,7 +118,7 @@ class BarchartProcessor(Processor):
                 assert os.path.exists(os.path.dirname(tar))
 
                 pretty.color_print(
-                    colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
+                        colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
                 )
 
                 os.rename(src, tar)
@@ -135,11 +135,11 @@ class BarchartProcessor(Processor):
 
             for y in range(self._start, self._end + 1):
                 for m in months:
-                    code = f"{symbol}{m}{y%100:02}"
+                    code = f"{symbol}{m}{y % 100:02}"
 
                     tar = os.path.join(self._tar, "continuous", code[:2], f"{code}.csv")
 
                     if not os.path.exists(tar):
                         pretty.color_print(
-                            colors.PAPER_PINK_300, f"missing files: {tar}"
+                                colors.PAPER_PINK_300, f"missing files: {tar}"
                         )

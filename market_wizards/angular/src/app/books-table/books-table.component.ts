@@ -19,10 +19,6 @@ export class BooksTableComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this._$books = this._tradeService.books.subscribe((books) => {
       this.books = books;
-
-      //if (this.selected.length == 0 && this.books.length > 0) {
-      //this.selectBook(0);
-      //}
     });
 
     this._tradeService.findAllBooks();

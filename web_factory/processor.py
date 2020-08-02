@@ -125,18 +125,18 @@ class Processor(metaclass=ABCMeta):
         cmd: subprocess.CompletedProcess
         if self._optimized:
             cmd = subprocess.run(
-                self._optimized_command(src, dst), capture_output=True, encoding="utf-8"
+                    self._optimized_command(src, dst), capture_output=True, encoding="utf-8"
             )
         else:
             cmd = subprocess.run(
-                self._command(src, dst), capture_output=True, encoding="utf-8"
+                    self._command(src, dst), capture_output=True, encoding="utf-8"
             )
 
         self._cache_refresh(src)
 
         if cmd.returncode != 0:
             pretty.color_print(
-                colors.PAPER_RED_400, f"\nmessage: {cmd.stdout}\nerror: {cmd.stderr}"
+                    colors.PAPER_RED_400, f"\nmessage: {cmd.stdout}\nerror: {cmd.stderr}"
             )
 
     def _is_shadow_file(self, src: str) -> bool:

@@ -1,31 +1,28 @@
 import argparse
 import re
-from datetime import datetime
-from typing import Any, Dict, List, cast, Tuple
+from typing import Any, Dict, List, Tuple, cast
 
 from barchart import BarchartProcessor
-from stockcharts import StockChartsProcessor
 from fun.utils import colors, pretty
 from investing import InvestingProcessor
-from processor import Processor
+from stockcharts import StockChartsProcessor
 from yahoo import YahooProcessor
 
 
 def args_parse() -> Dict[str, Any]:
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--operations",
-        metavar="",
-        nargs="*",
-        default=["download", "rename"],
-        choices=["download", "rename", "check"],
-        help="operations",
+            "--operations",
+            metavar="",
+            nargs="*",
+            default=["download", "rename"],
+            choices=["download", "rename", "check"],
+            help="operations",
     )
 
     parser.add_argument(
-        "--years", metavar="", nargs="?", type=str, help="years",
+            "--years", metavar="", nargs="?", type=str, help="years",
     )
 
     args = vars(parser.parse_args())
@@ -33,8 +30,8 @@ def args_parse() -> Dict[str, Any]:
     assert args.get("operations") is not None
 
     pretty.color_print(
-        colors.PAPER_ORANGE_300,
-        f"operations input: {', '.join(cast(List[str],args.get('operations')))}",
+            colors.PAPER_ORANGE_300,
+            f"operations input: {', '.join(cast(List[str], args.get('operations')))}",
     )
 
     pretty.color_print(colors.PAPER_ORANGE_300, f"years input: {args.get('years')}")

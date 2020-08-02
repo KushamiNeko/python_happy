@@ -22,7 +22,7 @@ class TestMain(unittest.TestCase):
 
         for command in commands:
             cmd = subprocess.run(
-                command, capture_output=True, encoding="utf-8", shell=True
+                    command, capture_output=True, encoding="utf-8", shell=True
             )
             if cmd.returncode != 0:
                 print(cmd.stderr)
@@ -34,11 +34,11 @@ class TestMain(unittest.TestCase):
             if os.path.isdir(path):
 
                 if os.path.basename(path).startswith(".") or os.path.basename(
-                    path
+                        path
                 ).startswith("_"):
                     for fs in os.listdir(path):
                         pretty.color_print(
-                            colors.PAPER_AMBER_300, f"testing: {os.path.join(path, fs)}"
+                                colors.PAPER_AMBER_300, f"testing: {os.path.join(path, fs)}"
                         )
                         self.assertTrue(tar_ext not in fs)
 
@@ -52,7 +52,7 @@ class TestMain(unittest.TestCase):
                     pretty.color_print(colors.PAPER_AMBER_300, f"testing: {path}")
 
                     if os.path.basename(path).startswith(".") or os.path.basename(
-                        path
+                            path
                     ).startswith("_"):
 
                         self.assertFalse(os.path.exists(path))
