@@ -93,6 +93,8 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(): void {
     console.log("trade inputs open");
+
+    this._tradeService.refreshStopOrders();
     this.leverageRef?.nativeElement.focus();
   }
 

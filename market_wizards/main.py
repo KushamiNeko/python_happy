@@ -17,7 +17,7 @@ def welcome():
 def chart():
     try:
         return ChartHandler().response()
-    except (ValueError, IndexError, NotImplementedError) as err:
+    except (ValueError, IndexError, NotImplementedError, AssertionError) as err:
         return {"error": f"{type(err)}: {err}"}
 
 

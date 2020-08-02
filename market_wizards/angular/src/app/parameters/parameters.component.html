@@ -1,14 +1,14 @@
 <div class="parameters-main-container">
   <div class="parameters-container">
-    <span class="parameters-title">Theme Parameters</span>
+    <span class="parameters-title">Preset Parameters</span>
     <span class="parameters-separator"></span>
     <div class="parameters-set">
       <select
         class="parameters-text"
-        (change)="themeSetChange($event.target.value)"
+        (change)="presetChange($event.target.value)"
       >
         <option
-          *ngFor="let key of themeSetKeys(); let id = index"
+          *ngFor="let key of objectKeys(presets); let id = index"
           key="{index}"
           value="{{ key }}"
         >
@@ -18,35 +18,50 @@
     </div>
     <div class="parameters-set">
       <button
-        *ngFor="let value of themeSets[selectedThemeSet]"
+        *ngFor="let value of presets[selectedPreset]"
         [ngClass]="{
           'parameters-button': true,
-          'parameters-button-active': activatedThemeSetting[
-            selectedThemeSet
+          'parameters-button-active': activatedSettings[
+            selectedPreset
           ].includes(value)
         }"
-        (click)="activateThemeSetting(value)"
+        (click)="activateSetting(value)"
       >
         {{ value }}
       </button>
     </div>
   </div>
 
-  <div *ngIf="vixzoneTrigger()" class="parameters-container">
-    <div class="parameters-title">{{ symbol.toUpperCase() }} Parameters</div>
+  
+
+  <div class="parameters-container">
+    <div class="parameters-title">Entry Zone Parameters</div>
 
     <span class="parameters-separator"></span>
 
     <div class="parameters-set">
-      <span class="parameters-label">Date</span>
+      <span class="parameters-label">Notice Signal Date</span>
       <input
         type="text"
         [ngClass]="{
           'parameters-text': true,
-          'parameters-error': errors['vixzone']
+          'parameters-error': errors['EntryNoticeDate']
         }"
-        [(ngModel)]="params['vixzone']"
-        (ngModelChange)="datetimeChange('vixzone')"
+        [(ngModel)]="params['EntryNoticeDate']"
+        (ngModelChange)="datetimeChange('EntryNoticeDate')"
+      />
+    </div>
+
+    <div class="parameters-set">
+      <span class="parameters-label">Prepare Signal Date</span>
+      <input
+        type="text"
+        [ngClass]="{
+          'parameters-text': true,
+          'parameters-error': errors['EntryPrepareDate']
+        }"
+        [(ngModel)]="params['EntryPrepareDate']"
+        (ngModelChange)="datetimeChange('EntryPrepareDate')"
       />
     </div>
 
@@ -55,9 +70,54 @@
       <button
         #op
         class="parameters-button"
-        (click)="params['vixop'] = params['vixop'] == 'long' ? 'short' : 'long'"
+        (click)="
+          params['EntryOp'] = params['EntryOp'] == 'long' ? 'short' : 'long'
+        "
       >
-        {{ params["vixop"] }}
+        {{ params["EntryOp"] }}
+      </button>
+    </div>
+
+    <span class="parameters-separator"></span>
+
+    <button
+      [ngClass]="{
+        'parameters-button': true,
+        'parameters-button-working': isWorking
+      }"
+      (click)="setParameters()"
+    >
+      ok
+    </button>
+  </div>
+
+  <div *ngIf="controlsTrigger('vixzone')" class="parameters-container">
+    <!-- <div class="parameters-title">{{ symbol.toUpperCase() }} Zone Parameters</div> -->
+    <div class="parameters-title">Volatility Zone Parameters</div>
+
+    <span class="parameters-separator"></span>
+
+    <div class="parameters-set">
+      <span class="parameters-label">Reference Date</span>
+      <input
+        type="text"
+        [ngClass]="{
+          'parameters-text': true,
+          'parameters-error': errors['VixReferenceDate']
+        }"
+        [(ngModel)]="params['VixReferenceDate']"
+        (ngModelChange)="datetimeChange('VixReferenceDate')"
+      />
+    </div>
+
+    <div class="parameters-set">
+      <span class="parameters-label">Operation</span>
+      <button
+        #op
+        class="parameters-button"
+        (click)="params['VixOp'] = params['VixOp'] == 'long' ? 'short' : 'long'"
+      >
+        {{ params["VixOp"] }}
       </button>
     </div>
 

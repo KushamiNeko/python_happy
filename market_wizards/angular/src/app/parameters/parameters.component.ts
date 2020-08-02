@@ -16,27 +16,39 @@ export class ParametersComponent implements OnInit, OnDestroy {
 
   symbol = "";
 
-  /////  Theme Control /////
+  /////  Preset Control /////
 
-  themeSets: object = {
-    KushamiNeko: ["Bollinger Bands", "Moving Averages", "Distribution Days"],
+  presets: object = {
+    KushamiNeko: [
+      "Bollinger Bands",
+      "Moving Averages",
+      "Vix Zone",
+      "Entry Zone",
+      "Volatility Summary",
+      "Distribution Days",
+    ],
     // Magical: [3, 5, 7, 10, 20, 30, 60, 100, 300],
     Magical: [3, 5, 7, 10, 20, 30, 60, 100, 300].map((n) => {
-      return `${n}`;
+      return `SMA ${n}`;
     }),
   };
 
-  selectedThemeSet: string = Object.keys(this.themeSets)[0];
+  selectedPreset: string = Object.keys(this.presets)[0];
 
-  activatedThemeSetting: object = {
-    KushamiNeko: ["Bollinger Bands", "Moving Averages"],
+  activatedSettings: object = {
+    KushamiNeko: [
+      "Bollinger Bands",
+      "Moving Averages",
+      "Vix Zone",
+      "Entry Zone",
+    ],
     // Magical: [5, 20, 60, 100, 300],
     Magical: [
-      ...this.themeSets["Magical"].filter((s) => {
+      ...this.presets["Magical"].filter((s) => {
         const init = [5, 20, 60, 100, 300];
 
         for (let i = 0; i < init.length; i++) {
-          const regex = RegExp(`^${init[i]}\s*.*$`);
+          const regex = RegExp(`^.*\s*${init[i]}\s*.*$`);
           if (regex.test(s)) {
             return true;
           }
@@ -45,27 +57,31 @@ export class ParametersComponent implements OnInit, OnDestroy {
     ],
   };
 
-  /////  Theme Control /////
+  /////  Preset Control /////
 
   params: object = {
-    vixzone: "",
-    vixop: "long",
-    themeSet: this.selectedThemeSet,
-    themeSetting: this.activatedThemeSetting[this.selectedThemeSet]
-      .map((s) => {
-        return s.replace(" ", "");
-      })
-      .join(","),
+    Preset: this.selectedPreset,
+    VixReferenceDate: "",
+    VixOp: "long",
+    EntryNoticeDate: "",
+    EntryPrepareDate: "",
+    EntryOp: "long",
+    // settings: this.activatedSettings[this.selectedPreset]
+    //   .map((s) => {
+    //     return s.replace(" ", "");
+    //   })
+    //   .join(","),
   };
 
   errors = {
-    vixzone: false,
+    VixReferenceDate: false,
   };
 
   isWorking = false;
 
   constructor(private _chartService: ChartService) {
     console.log("parameters construct");
+    this.generateSettingParams();
     this._chartService.parametersRequest(this.params);
   }
 
@@ -84,36 +100,45 @@ export class ParametersComponent implements OnInit, OnDestroy {
     this._$inputs.unsubscribe();
   }
 
-  themeSetKeys(): Array<string> {
-    return Object.keys(this.themeSets);
+  // themeSetKeys(): Array<string> {
+  //   return Object.keys(this.presets);
+  // }
+
+  objectKeys(obj: object): Array<string> {
+    return Object.keys(obj);
   }
 
-  themeSetChange(set: string): void {
-    if (this._isWorking) {
-      return;
-    }
-    
-    if (Object.keys(this.themeSets).includes(set)) {
-      this.selectedThemeSet = set;
-      this.params["themeSet"] = this.selectedThemeSet;
-      this.params["themeSetting"] = this.activatedThemeSetting[
-        this.selectedThemeSet
-      ]
-        .map((s) => {
-          return s.replace(" ", "");
-        })
-        .join(",");
-
-      this._chartService.parametersRequest(this.params);
-    }
-  }
-
-  activateThemeSetting(setting: any): void {
+  presetChange(preset: string): void {
     if (this._isWorking) {
       return;
     }
 
-    const set = this.activatedThemeSetting[this.selectedThemeSet];
+    if (Object.keys(this.presets).includes(preset)) {
+      this.selectedPreset = preset;
+      this.params["Preset"] = this.selectedPreset;
+
+      this.setParameters();
+
+      // this.generateSettingParams();
+
+      // this.params["settings"] = this.activatedSettings[
+      //   this.selectedPreset
+      // ]
+      //   .map((s) => {
+      //     return s.replace(" ", "");
+      //   })
+      //   .join(",");
+
+      // this._chartService.parametersRequest(this.params);
+    }
+  }
+
+  activateSetting(setting: any): void {
+    if (this._isWorking) {
+      return;
+    }
+
+    const set = this.activatedSettings[this.selectedPreset];
     if (!set.includes(setting)) {
       set.push(setting);
     } else {
@@ -123,17 +148,33 @@ export class ParametersComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.activatedThemeSetting[this.selectedThemeSet].sort();
+    this.activatedSettings[this.selectedPreset].sort();
 
-    this.params["themeSetting"] = this.activatedThemeSetting[
-      this.selectedThemeSet
-    ]
-      .map((s) => {
-        return s.replace(" ", "");
-      })
-      .join(",");
+    this.setParameters();
+    // this.generateSettingParams();
 
-    this._chartService.parametersRequest(this.params);
+    // this.params["settings"] = this.activatedSettings[
+    //   this.selectedPreset
+    // ]
+    //   .map((s) => {
+    //     return s.replace(" ", "");
+    //   })
+    //   .join(",");
+
+    // this._chartService.parametersRequest(this.params);
+  }
+
+  generateSettingParams(): void {
+    for (let i = 0; i < this.presets[this.selectedPreset].length; i++) {
+      let key = this.presets[this.selectedPreset][i];
+      this.params[key.split(" ").join("")] = this.activatedSettings[
+        this.selectedPreset
+      ]
+        .includes(key)
+        .toString();
+    }
+
+    console.log(this.params);
   }
 
   datetimeChange(param: string): void {
@@ -145,17 +186,27 @@ export class ParametersComponent implements OnInit, OnDestroy {
     }
   }
 
-  vixzoneTrigger(): boolean {
-    let symbols = ["vix", "vxn", "rvx", "vstx", "jniv"];
-
-    return symbols.includes(this.symbol);
+  controlsTrigger(setting: string): boolean {
+    switch (setting) {
+      case "vixzone":
+        let symbols = ["vix", "vxn", "rvx", "vstx", "jniv", "vhsi", "vxfxi"];
+        return symbols.includes(this.symbol);
+      default:
+        return false;
+    }
   }
+
+  // vixzoneTrigger(): boolean {
+  //   let symbols = ["vix", "vxn", "rvx", "vstx", "jniv", "vhsi", "vxfxi"];
+  //   return symbols.includes(this.symbol);
+  // }
 
   setParameters(): void {
     if (this._isWorking) {
       return;
     }
 
+    this.generateSettingParams();
     this._chartService.parametersRequest(this.params);
   }
 }

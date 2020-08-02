@@ -99,6 +99,22 @@ export class TradeService {
       });
   }
 
+  refreshStopOrders(): void {
+    if (this._isWorking) {
+      return;
+    }
+
+    // this._isWorking = true;
+
+    this._http
+      .get(`${this._requestUrl("order")}&order=stop`)
+      .subscribe(data => {
+        this.stopOrders.next(data["data"]);
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
+      });
+  }
+
   findAllBooks(): void {
     if (this._isWorking) {
       return;
