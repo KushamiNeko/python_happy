@@ -2,7 +2,7 @@ import os
 from typing import Iterable
 
 from fun.utils import colors, pretty
-from processor import Processor
+from happy.download.processor import Processor
 
 
 class InvestingProcessor(Processor):

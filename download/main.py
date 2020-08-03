@@ -2,11 +2,11 @@ import argparse
 import re
 from typing import Any, Dict, List, Tuple, cast
 
-from barchart import BarchartProcessor
 from fun.utils import colors, pretty
-from investing import InvestingProcessor
-from stockcharts import StockChartsProcessor
-from yahoo import YahooProcessor
+from happy.download.barchart import BarchartFuturesProcessor, BarchartStocksProcessor
+from happy.download.investing import InvestingProcessor
+from happy.download.stockcharts import StockChartsProcessor
+from happy.download.yahoo import YahooProcessor
 
 
 def args_parse() -> Dict[str, Any]:
@@ -69,7 +69,8 @@ if __name__ == "__main__":
         start, end = parse_years_input(years)
 
     ps = [
-        BarchartProcessor(start_year=start, end_year=end),
+        BarchartFuturesProcessor(start_year=start, end_year=end),
+        BarchartStocksProcessor(),
         YahooProcessor(),
         InvestingProcessor(),
         StockChartsProcessor(),

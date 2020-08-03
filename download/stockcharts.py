@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from processor import Processor
+from happy.download.processor import Processor
 
 
 class StockChartsProcessor(Processor):
@@ -9,17 +9,17 @@ class StockChartsProcessor(Processor):
 
         self._symbols = [
             "$rvx",
-            # "$tyvix",
             "$vle",
             "$nahilo",
             "$nyhilo",
             "$spxhilo",
             "$ndxhilo",
-            "$nikk",
-            "$hsi",
-            "ezu",
-            "eem",
-            "fxi",
+            # "$nikk",
+            # "$hsi",
+            # "ezu",
+            # "eem",
+            # "fxi",
+            # "$tyvix",
             # "!ryratmm",
         ]
 

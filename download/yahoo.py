@@ -5,12 +5,17 @@ from typing import Iterable
 
 import requests
 from fun.utils import colors, pretty
-from processor import Processor
+from happy.download.processor import Processor
 
 
 class YahooProcessor(Processor):
     def __init__(self) -> None:
         super().__init__()
+
+        pretty.color_print(
+                colors.PAPER_BROWN_300,
+                f"Yahoo Processor",
+        )
 
         self._symbols = {
             "^vix":  "19900101",
@@ -24,6 +29,7 @@ class YahooProcessor(Processor):
             "^ixic": "19710101",
             "^nya":  "19650101",
             "^ndx":  "19850101",
+            "^ndxe": "20060101",
             "ezu":   "20000101",
             "eem":   "20030101",
             "fxi":   "20040101",
@@ -49,6 +55,14 @@ class YahooProcessor(Processor):
             )
 
     def rename(self) -> None:
+
+        symbol_table = {
+            "n225": "nikk",
+            "gspc": "spx",
+            "ixic": "compq",
+            "ndxe": "ndxew",
+        }
+
         for fs in os.listdir(self._src):
             src = ""
             tar = ""
@@ -57,12 +71,14 @@ class YahooProcessor(Processor):
             if match is not None:
                 if match.group(1).lower() in self._symbols.keys():
                     symbol = match.group(2).lower()
-                    if symbol == "n225":
-                        symbol = "nikk"
-                    elif symbol == "gspc":
-                        symbol = "spx"
-                    elif symbol == "ixic":
-                        symbol = "compq"
+                    symbol = symbol_table.get(symbol, symbol)
+
+                    # if symbol == "n225":
+                    #     symbol = "nikk"
+                    # elif symbol == "gspc":
+                    #     symbol = "spx"
+                    # elif symbol == "ixic":
+                    #     symbol = "compq"
 
                     src = os.path.join(self._src, fs)
                     tar = os.path.join(self._tar, "yahoo", f"{symbol}.csv")

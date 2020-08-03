@@ -24,6 +24,10 @@ export class ParametersComponent implements OnInit, OnDestroy {
       "Moving Averages",
       "Vix Zone",
       "Entry Zone",
+      "Volatility Level",
+      "EW Relative Strength",
+      "Advance Decline",
+      // "Advance Decline Volume",
       "Volatility Summary",
       "Distribution Days",
     ],
@@ -41,6 +45,7 @@ export class ParametersComponent implements OnInit, OnDestroy {
       "Moving Averages",
       "Vix Zone",
       "Entry Zone",
+      "Volatility Level",
     ],
     // Magical: [5, 20, 60, 100, 300],
     Magical: [

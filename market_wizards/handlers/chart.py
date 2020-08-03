@@ -137,10 +137,20 @@ class ChartHandler:
         )
 
     def _render(self, preset: CandleSticksPreset) -> io.BytesIO:
+        plotters = []
 
         self._check_orders(title=self._book, preset=preset)
 
-        plotters = []
+        orders = self._agent.read_orders()
+        if orders is not None and len(orders) > 0:
+            plotters.append(
+                    StopOrder(
+                            quotes=preset.quotes(),
+                            orders=orders,
+                    )
+            )
+
+        preset.make_controller(self._params)
 
         if self._show_records:
             ts = self._read_records(self._book)
@@ -157,16 +167,6 @@ class ChartHandler:
                         )
                 )
 
-        orders = self._agent.read_orders()
-        if orders is not None and len(orders) > 0:
-            plotters.append(
-                    StopOrder(
-                            quotes=preset.quotes(),
-                            orders=orders,
-                    )
-            )
-
-        preset.make_controller(self._params)
         return preset.render(additional_plotters=plotters)
 
     def _function_slice(self) -> io.BytesIO:
