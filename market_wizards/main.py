@@ -1,8 +1,11 @@
+import sys
+import traceback
+
 from flask import Flask
 from flask_cors import cross_origin
-
-from handlers.chart import ChartHandler
-from handlers.trade import TradeHandler
+from fun.utils import colors, pretty
+from happy.market_wizards.handlers.chart import ChartHandler
+from happy.market_wizards.handlers.trade import TradeHandler
 
 app = Flask(__name__)
 
@@ -18,6 +21,11 @@ def chart():
     try:
         return ChartHandler().response()
     except (ValueError, IndexError, NotImplementedError, AssertionError) as err:
+        info = sys.exc_info()
+        traceback.print_tb(info[2])
+        pretty.color_print(
+                colors.PAPER_RED_500, f"{type(info[1]).__name__}: {str(info[1])}"
+        )
         return {"error": f"{type(err)}: {err}"}
 
 

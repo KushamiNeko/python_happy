@@ -26,7 +26,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       "ZN",
       "HYG",
       "NIKK",
-      "TOPIX",
+      // "TOPIX",
       "NP",
       "JNIV",
       "EZU",

@@ -3,7 +3,7 @@ import subprocess
 import unittest
 
 from fun.utils import colors, pretty
-from main import processorFactory
+from happy.web_factory.main import processorFactory
 
 
 class TestMain(unittest.TestCase):

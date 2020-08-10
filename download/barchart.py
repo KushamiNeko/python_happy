@@ -177,8 +177,10 @@ class BarchartStocksProcessor(Processor):
             "$addq": "addq",
             # "nshf": "addn",
             # "qshf": "addq",
-            # "avdn": "nyud",
-            # "avdq": "naud",
+            "$avdn": "avdn",
+            "$avdq": "avdq",
+            "$addt": "addt",
+            "$avdt": "avdt",
         }
 
     def _urls(self) -> Iterable[str]:

@@ -7,9 +7,9 @@ import re
 import config
 import cv2
 import numpy as np
-from chart import Charts
-from cover import Cover
 from fun.utils import colors, pretty
+from happy.compare_charts.chart import Charts
+from happy.compare_charts.cover import Cover
 
 
 def parse_arg():

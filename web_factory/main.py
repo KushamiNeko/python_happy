@@ -4,7 +4,7 @@ from time import sleep
 from typing import Any, Dict, List, cast
 
 from fun.utils import colors, pretty
-from processor import Processor, ProcessorCSS, ProcessorDart, ProcessorTS
+from happy.web_factory.processor import Processor, ProcessorCSS, ProcessorDart, ProcessorTS
 
 
 def args_parse() -> Dict[str, Any]:
