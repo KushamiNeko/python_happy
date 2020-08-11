@@ -13,33 +13,32 @@ class YahooProcessor(Processor):
         super().__init__()
 
         pretty.color_print(
-                colors.PAPER_BROWN_300,
-                f"Yahoo Processor",
+            colors.PAPER_BROWN_300, f"Yahoo Processor",
         )
 
         self._symbols = {
-            "^vix":  "19900101",
-            "^vxn":  "20000101",
-            "^sml":  "19890101",
-            "^ovx":  "20070101",
-            "^gvz":  "20100101",
-            "^hsi":  "19860101",
+            "^vix": "19900101",
+            "^vxn": "20000101",
+            "^sml": "19890101",
+            "^ovx": "20070101",
+            "^gvz": "20100101",
+            "^hsi": "19860101",
             "^n225": "19650101",
             "^gspc": "19270101",
             "^ixic": "19710101",
-            "^nya":  "19650101",
-            "^ndx":  "19850101",
+            "^nya": "19650101",
+            "^ndx": "19850101",
             "^ndxe": "20060101",
-            "ezu":   "20000101",
-            "eem":   "20030101",
-            "fxi":   "20040101",
-            "hyg":   "20070101",
-            "emb":   "20070101",
-            "iyr":   "20000101",
-            "rem":   "20070101",
-            "near":  "20130101",
-            "shv":   "20070101",
-            "lqd":   "20020101",
+            "ezu": "20000101",
+            "eem": "20030101",
+            "fxi": "20040101",
+            "hyg": "20070101",
+            "emb": "20070101",
+            "iyr": "20000101",
+            "rem": "20070101",
+            "near": "20130101",
+            "shv": "20070101",
+            "lqd": "20020101",
         }
 
     def _urls(self) -> Iterable[str]:
@@ -48,10 +47,18 @@ class YahooProcessor(Processor):
             pretty.color_print(colors.PAPER_CYAN_300, f"downloading: {symbol}")
 
             yield (
-                    f"https://finance.yahoo.com/quote/{requests.utils.quote(symbol)}/history?"
-                    + f"period1={int(dtime.timestamp())}&"
-                    + f"period2={int((datetime.utcnow() + timedelta(days=2)).timestamp())}&"
-                    + f"interval=1d&filter=history&frequency=1d"
+                f"https://finance.yahoo.com/quote/{requests.utils.quote(symbol)}/history?"
+                + f"period1={int(dtime.timestamp())}&"
+                + f"period2={int((datetime.utcnow() + timedelta(days=2)).timestamp())}&"
+                + f"interval=1d&filter=history&frequency=1d"
+            )
+
+    def download(self) -> None:
+        super().download()
+
+        if self._download_count != len(self._symbols):
+            pretty.color_print(
+                colors.PAPER_RED_400, f"download operation miss some files"
             )
 
     def rename(self) -> None:
@@ -97,10 +104,20 @@ class YahooProcessor(Processor):
             assert tar != ""
 
             pretty.color_print(
-                    colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}",
+                colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}",
             )
 
             os.rename(src, tar)
+            self._rename_count += 1
+
+        pretty.color_print(
+            colors.PAPER_LIGHT_GREEN_A200, f"rename {self._rename_count} files"
+        )
+
+        if self._download_count != self._rename_count:
+            pretty.color_print(
+                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+            )
 
     def check(self) -> None:
         pass

@@ -13,6 +13,9 @@ class Processor(metaclass=ABCMeta):
                 cast(str, os.getenv("HOME")), "Documents", "data_source"
         )
 
+        self._download_count = 0
+        self._rename_count = 0
+
         assert os.path.exists(self._src)
         assert os.path.exists(self._tar)
 
@@ -23,9 +26,17 @@ class Processor(metaclass=ABCMeta):
     def download(self) -> None:
         count = 0
         for url in self._urls():
-            subprocess.Popen(["google-chrome", url])
+            # subprocess.Popen(["google-chrome", url])
+            subprocess.Popen(["firefox", url])
             count += 1
 
+        self._download_count = count
+
+        pretty.color_input(
+                colors.PAPER_LIGHT_GREEN_A200,
+                f"download {self._download_count} files",
+        )
+        
         pretty.color_input(
                 colors.PAPER_LIME_300,
                 "download completed, press any key to rename the files",

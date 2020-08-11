@@ -19,10 +19,10 @@ INTERACTIVE_PAGE = BARCHART_PAGE(1)
 
 class BarchartFuturesProcessor(Processor):
     def __init__(
-            self,
-            start_year: Optional[int] = None,
-            end_year: Optional[int] = None,
-            page: BARCHART_PAGE = HISTORICAL_PAGE,
+        self,
+        start_year: Optional[int] = None,
+        end_year: Optional[int] = None,
+        page: BARCHART_PAGE = HISTORICAL_PAGE,
     ) -> None:
         super().__init__()
 
@@ -42,8 +42,8 @@ class BarchartFuturesProcessor(Processor):
             self._end = end_year
 
         pretty.color_print(
-                colors.PAPER_BROWN_300,
-                f"Barchart Processor\nstart year: {self._start}, end year: {self._end}",
+            colors.PAPER_BROWN_300,
+            f"Barchart Processor\nstart year: {self._start}, end year: {self._end}",
         )
 
         self._symbols = [
@@ -101,16 +101,24 @@ class BarchartFuturesProcessor(Processor):
 
                 input()
 
+    def download(self) -> None:
+        super().download()
+
+        if self._download_count != len(self._symbols):
+            pretty.color_print(
+                colors.PAPER_RED_400, f"download operation miss some files"
+            )
+
     def rename(self) -> None:
         for fs in os.listdir(self._src):
             match = re.match(
-                    r"^([\w\d]{5})_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
-                    fs,
+                r"^([\w\d]{5})_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
+                fs,
             )
             if match is None:
                 match = re.match(
-                        r"^([\w\d]{5})_[^_]+_[^_]+_[^_]+_([^_]+)(?:_[^_]+)*_\d{2}_\d{2}_\d{4}.csv$",
-                        fs,
+                    r"^([\w\d]{5})_[^_]+_[^_]+_[^_]+_([^_]+)(?:_[^_]+)*_\d{2}_\d{2}_\d{4}.csv$",
+                    fs,
                 )
 
                 if match is None:
@@ -125,10 +133,21 @@ class BarchartFuturesProcessor(Processor):
                 assert os.path.exists(os.path.dirname(tar))
 
                 pretty.color_print(
-                        colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
+                    colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
                 )
 
                 os.rename(src, tar)
+
+                self._rename_count += 1
+
+        pretty.color_print(
+            colors.PAPER_LIGHT_GREEN_A200, f"rename {self._rename_count} files"
+        )
+
+        if self._download_count != self._rename_count:
+            pretty.color_print(
+                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+            )
 
     def check(self) -> None:
         months: CONTRACT_MONTHS
@@ -148,15 +167,12 @@ class BarchartFuturesProcessor(Processor):
 
                     if not os.path.exists(tar):
                         pretty.color_print(
-                                colors.PAPER_PINK_300, f"missing files: {tar}"
+                            colors.PAPER_PINK_300, f"missing files: {tar}"
                         )
 
 
 class BarchartStocksProcessor(Processor):
-    def __init__(
-            self,
-            page: BARCHART_PAGE = HISTORICAL_PAGE,
-    ) -> None:
+    def __init__(self, page: BARCHART_PAGE = HISTORICAL_PAGE,) -> None:
         super().__init__()
 
         assert page in (HISTORICAL_PAGE, INTERACTIVE_PAGE)
@@ -164,12 +180,11 @@ class BarchartStocksProcessor(Processor):
         self._page = page
 
         pretty.color_print(
-                colors.PAPER_BROWN_300,
-                f"Barchart Stocks Processor",
+            colors.PAPER_BROWN_300, f"Barchart Stocks Processor",
         )
 
         self._symbols_table = {
-            "$iqx":  "spxew",
+            "$iqx": "spxew",
             "$slew": "smlew",
             "$sdew": "midew",
             "$topx": "topix",
@@ -198,8 +213,8 @@ class BarchartStocksProcessor(Processor):
     def rename(self) -> None:
         for fs in os.listdir(self._src):
             match = re.match(
-                    r"^(\$[\w]+)_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
-                    fs,
+                r"^(\$[\w]+)_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
+                fs,
             )
             if match is None:
                 continue
@@ -216,7 +231,7 @@ class BarchartStocksProcessor(Processor):
                 assert os.path.exists(os.path.dirname(tar))
 
                 pretty.color_print(
-                        colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
+                    colors.PAPER_DEEP_PURPLE_300, f"move file: {src} => {tar}"
                 )
 
                 os.rename(src, tar)
@@ -226,6 +241,5 @@ class BarchartStocksProcessor(Processor):
             tar = os.path.join(self._tar, "barchart", symbol, f"{symbol}.csv")
 
             if not os.path.exists(tar):
-                pretty.color_print(
-                        colors.PAPER_PINK_300, f"missing files: {tar}"
-                )
+                pretty.color_print(colors.PAPER_PINK_300, f"missing files: {tar}")
+

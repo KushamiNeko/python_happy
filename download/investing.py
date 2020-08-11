@@ -9,10 +9,10 @@ class InvestingProcessor(Processor):
     def __init__(self) -> None:
         super().__init__()
 
-        self._symbols = [
-            "vstx",
-            "jniv",
-        ]
+        # self._symbols = [
+        #     "vstx",
+        #     "jniv",
+        # ]
 
     def _urls(self) -> Iterable[str]:
         for url in [
@@ -23,19 +23,27 @@ class InvestingProcessor(Processor):
         ]:
 
             pretty.color_print(
-                    colors.PAPER_CYAN_300,
-                    f"downloading: {url.split('/')[-1].split('-')[0]}",
+                colors.PAPER_CYAN_300,
+                f"downloading: {url.split('/')[-1].split('-')[0]}",
             )
 
             yield url
 
+    def download(self) -> None:
+        super().download()
+
+        if self._download_count != len(list(self._urls)):
+            pretty.color_print(
+                colors.PAPER_RED_400, f"download operation miss some files"
+            )
+
     def rename(self) -> None:
 
         table = {
-            "Nikkei Volatility Historical Data.csv":              "jniv",
+            "Nikkei Volatility Historical Data.csv": "jniv",
             "STOXX 50 Volatility VSTOXX EUR Historical Data.csv": "vstx",
-            "HSI Volatility Historical Data.csv":                 "vhsi",
-            "CBOE China Etf Volatility Historical Data.csv":      "vxfxi",
+            "HSI Volatility Historical Data.csv": "vhsi",
+            "CBOE China Etf Volatility Historical Data.csv": "vxfxi",
         }
 
         for fs in os.listdir(self._src):
@@ -49,10 +57,20 @@ class InvestingProcessor(Processor):
             assert os.path.exists(os.path.dirname(tar))
 
             pretty.color_print(
-                    colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
+                colors.PAPER_DEEP_PURPLE_200, f"move file: {src} => {tar}"
             )
 
             os.rename(src, tar)
+            self._rename_count += 1
+
+        pretty.color_print(
+            colors.PAPER_LIGHT_GREEN_A200, f"rename {self._rename_count} files"
+        )
+
+        if self._download_count != self._rename_count:
+            pretty.color_print(
+                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+            )
 
     def check(self) -> None:
         pass
