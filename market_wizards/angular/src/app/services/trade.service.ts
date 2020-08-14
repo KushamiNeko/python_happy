@@ -26,6 +26,11 @@ export class TradeService {
     return url;
   }
 
+  _completed(): void {
+    this._isWorking = false;
+    this.isWorking.next(this._isWorking);
+  }
+
   newMarketOrder(order: object): void {
     if (this._isWorking) {
       return;
@@ -40,9 +45,17 @@ export class TradeService {
         headers,
         //responseType: "text"
       })
-      .subscribe(() => {
-        this._isWorking = false;
-        this.isWorking.next(this._isWorking);
+      .subscribe((data: object) => {
+        if (Object.keys(data).includes("error")) {
+          // console.error(`${data["error"]}`);
+          alert(`${data["error"]}`);
+          this._completed();
+          return;
+        }
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
+
+        this._completed();
       });
   }
 
@@ -61,9 +74,16 @@ export class TradeService {
         //responseType: "text"
       })
       .subscribe((data) => {
+        if (Object.keys(data).includes("error")) {
+          alert(`${data["error"]}`);
+          this._completed();
+          return;
+        }
+
         this.stopOrders.next(data["data"]);
-        this._isWorking = false;
-        this.isWorking.next(this._isWorking);
+        this._completed();
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
       });
   }
 
@@ -77,9 +97,16 @@ export class TradeService {
     this._http
       .delete(`${this._requestUrl("order")}&index=${index}`)
       .subscribe((data) => {
+        if (Object.keys(data).includes("error")) {
+          alert(`${data["error"]}`);
+          this._completed();
+          return;
+        }
+
         this.stopOrders.next(data["data"]);
-        this._isWorking = false;
-        this.isWorking.next(this._isWorking);
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
+        this._completed();
       });
   }
 
@@ -93,9 +120,16 @@ export class TradeService {
     this._http
       .get(`${this._requestUrl("order")}&order=stop`)
       .subscribe((data) => {
+        if (Object.keys(data).includes("error")) {
+          alert(`${data["error"]}`);
+          this._completed();
+          return;
+        }
+
         this.stopOrders.next(data["data"]);
-        this._isWorking = false;
-        this.isWorking.next(this._isWorking);
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
+        this._completed();
       });
   }
 
@@ -107,6 +141,12 @@ export class TradeService {
     this._http
       .get(`${this._requestUrl("order")}&order=stop`)
       .subscribe((data) => {
+        if (Object.keys(data).includes("error")) {
+          alert(`${data["error"]}`);
+          // this._completed();
+          return;
+        }
+
         this.stopOrders.next(data["data"]);
       });
   }
@@ -121,9 +161,16 @@ export class TradeService {
     this._http
       .get(`${this._requestUrl("statistic")}&function=books`)
       .subscribe((data) => {
+        if (Object.keys(data).includes("error")) {
+          alert(`${data["error"]}`);
+          this._completed();
+          return;
+        }
+
         this.books.next(data["data"]);
-        this._isWorking = false;
-        this.isWorking.next(this._isWorking);
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
+        this._completed();
       });
   }
 
@@ -146,9 +193,16 @@ export class TradeService {
         )}&function=statistic&titles=${titles.join(",")}`
       )
       .subscribe((data) => {
+        if (Object.keys(data).includes("error")) {
+          alert(`${data["error"]}`);
+          this._completed();
+          return;
+        }
+
         this.statistic.next(data);
-        this._isWorking = false;
-        this.isWorking.next(this._isWorking);
+        // this._isWorking = false;
+        // this.isWorking.next(this._isWorking);
+        this._completed();
       });
   }
 

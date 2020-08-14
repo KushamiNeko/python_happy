@@ -22,12 +22,12 @@ export class ParametersComponent implements OnInit, OnDestroy {
     KushamiNeko: [
       "Bollinger Bands",
       "Moving Averages",
-      "Vix Zone",
+      "Volatility Zone",
       "Entry Zone",
-      "Volatility Level",
       "EW Relative Strength",
       "Advance Decline",
-      "Volatility Size",
+      "Volatility Level",
+      "Volatility Real Body Size",
       "Volatility Summary",
       "Distribution Days",
     ],
@@ -43,7 +43,7 @@ export class ParametersComponent implements OnInit, OnDestroy {
     KushamiNeko: [
       "Bollinger Bands",
       "Moving Averages",
-      "Vix Zone",
+      "Volatility Zone",
       "Entry Zone",
       "Volatility Level",
     ],
@@ -104,17 +104,21 @@ export class ParametersComponent implements OnInit, OnDestroy {
     return Object.keys(obj);
   }
 
-  presetChange(preset: string): void {
+  // presetChange(preset: string): void {
+  presetChange(): void {
     if (this._isWorking) {
       return;
     }
 
-    if (Object.keys(this.presets).includes(preset)) {
-      this.selectedPreset = preset;
-      this.params["Preset"] = this.selectedPreset;
+    let index = Object.keys(this.presets).indexOf(this.selectedPreset);
 
+
+    // if (Object.keys(this.presets).includes(preset)) {
+    //   this.selectedPreset = preset;
+      this.selectedPreset = Object.keys(this.presets)[(index+1)%Object.keys(this.presets).length];
+      this.params["Preset"] = this.selectedPreset;
       this.setParameters();
-    }
+    // }
   }
 
   activateSetting(setting: any): void {

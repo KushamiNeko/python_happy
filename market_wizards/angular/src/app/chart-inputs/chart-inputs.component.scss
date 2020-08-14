@@ -33,6 +33,7 @@
 .chart-inputs-table {
   @include noselect;
   cursor: pointer;
+  width: 212px;
 }
 
 .chart-inputs-table-active {

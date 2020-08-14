@@ -76,7 +76,8 @@ export class ChartService {
     this._http.get(url).subscribe(
       (data: object) => {
         if (Object.keys(data).includes("error")) {
-          console.error(`${data["error"]}`);
+          // console.error(`${data["error"]}`);
+          alert(`${data["error"]}`);
           this._completed();
           return;
         }
@@ -96,7 +97,8 @@ export class ChartService {
         this._completed();
       },
       (error: HttpErrorResponse) =>
-        console.error(`${error.status}: ${error.error}`)
+        // console.error(`${error.status}: ${error.error}`)
+        alert(`${error.status}: ${error.error}`)
     );
   }
 

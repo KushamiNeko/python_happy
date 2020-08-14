@@ -32,7 +32,7 @@ class InvestingProcessor(Processor):
     def download(self) -> None:
         super().download()
 
-        if self._download_count != len(list(self._urls)):
+        if self._download_count != len(list(self._urls())):
             pretty.color_print(
                 colors.PAPER_RED_400, f"download operation miss some files"
             )

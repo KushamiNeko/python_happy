@@ -2,7 +2,7 @@
   <div class="chart-inputs-container">
     <div class="chart-inputs-set">
       <span class="chart-inputs-label">Symbols</span>
-      <select
+      <!-- <select
         class="chart-inputs-text"
         (change)="symbolSetChange($event.target.value)"
       >
@@ -13,7 +13,10 @@
         >
           {{ key }}
         </option>
-      </select>
+      </select> -->
+      <button class="chart-inputs-button" (click)="clickSymbolSet()">
+        {{ selectedSymbolSetID }}
+      </button>
     </div>
 
     <span class="chart-inputs-separator"></span>

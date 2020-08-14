@@ -3,7 +3,7 @@
     <span class="parameters-title">Preset Parameters</span>
     <span class="parameters-separator"></span>
     <div class="parameters-set">
-      <select
+      <!-- <select
         class="parameters-text"
         (change)="presetChange($event.target.value)"
       >
@@ -14,8 +14,20 @@
         >
           {{ key }}
         </option>
-      </select>
+      </select> -->
+
+      <button
+      [ngClass]="{
+        'parameters-button': true,
+        'parameters-button-working': isWorking
+      }"
+      (click)="presetChange()"
+    >
+      {{selectedPreset}}
+    </button>
+
     </div>
+    <span class="parameters-separator"></span>
     <div class="parameters-set">
       <button
         *ngFor="let value of presets[selectedPreset]"

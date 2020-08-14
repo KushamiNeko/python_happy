@@ -125,6 +125,13 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
     return Object.keys(this.symbolSets);
   }
 
+  clickSymbolSet(): void {
+    let id = this.symbolSetKeys().indexOf(this.selectedSymbolSetID);
+    this.symbolSetChange(
+      this.symbolSetKeys()[(id + 1) % this.symbolSetKeys().length]
+    );
+  }
+
   symbolSetChange(set: string): void {
     this.selectedSymbolSetID = set;
     this.symbols = this.symbolSets[set];

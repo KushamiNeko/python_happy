@@ -6,7 +6,7 @@ from flask import request
 from fun.trading.agent import TradingAgent
 
 _ROOT = os.path.join(
-        cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+    cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
 )
 
 
@@ -14,7 +14,29 @@ class TradeHandler:
     def _new_market_order(self) -> Dict[str, str]:
         entity = request.get_json()
         agent = TradingAgent(root=_ROOT, new_user=True)
-        ts = agent.new_record(entity["book"], entity, new_book=True)
+
+        title = entity["book"]
+        side = entity["side"]
+        book = f"{title}_{side}"
+
+        open_leverage = agent.open_positions_leverage(title=book)
+        if open_leverage is None:
+            open_leverage = 0
+
+        if side == "short":
+            open_leverage *= -1
+            if entity["operation"] == "+":
+                entity["operation"] = "-"
+            else:
+                entity["operation"] = "+"
+
+        leverage = float(f"{entity['operation']}{entity['leverage']}")
+        if (side == "long" and open_leverage + leverage < 0) or (
+            side == "short" and open_leverage + leverage > 0
+        ):
+            raise ValueError("invalid leverage")
+
+        ts = agent.new_record(book, entity, new_book=True)
 
         return ts.to_entity()
 

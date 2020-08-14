@@ -7,19 +7,20 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, cast
 
 from flask import request
-from fun.chart.preset import (
-    CandleSticksPreset,
-)
+
+from fun.chart.preset import CandleSticksPreset
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
-from fun.plotter.records import LeverageRecords
+from fun.plotter.plotter import Plotter
+from fun.plotter.records import LeverageRecords, LongShortLeverageRecords
 from fun.plotter.stop import StopOrder
 from fun.trading.agent import TradingAgent
-from fun.trading.transaction import FuturesTransaction
+
+# from fun.trading.transaction import FuturesTransaction
 
 
 class ChartHandler:
     _root: str = os.path.join(
-            cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+        cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
     )
 
     _agent: TradingAgent = TradingAgent(root=_root, new_user=True)
@@ -32,7 +33,7 @@ class ChartHandler:
 
     @classmethod
     def _store_read(
-            cls, key: str, dtime: Optional[datetime] = None, time_sliced: bool = False,
+        cls, key: str, dtime: Optional[datetime] = None, time_sliced: bool = False,
     ) -> Optional[CandleSticksPreset]:
         preset = cls._store.get(key, None)
         if preset is not None:
@@ -71,12 +72,12 @@ class ChartHandler:
             raise ValueError("invalid frequency")
 
         if function not in (
-                "simple",
-                "slice",
-                "forward",
-                "backward",
-                "inspect",
-                "randomDate",
+            "simple",
+            "slice",
+            "forward",
+            "backward",
+            "inspect",
+            "randomDate",
         ):
             raise ValueError("invalid function")
 
@@ -111,9 +112,8 @@ class ChartHandler:
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
 
-    def _read_records(self, title: str) -> Optional[List[FuturesTransaction]]:
-
-        return self._agent.read_records(title)
+    # def _read_records(self, title: str) -> Optional[List[FuturesTransaction]]:
+    #     return self._agent.read_records(title)
 
     def _check_orders(self, title: str, preset: CandleSticksPreset) -> None:
 
@@ -124,54 +124,69 @@ class ChartHandler:
         ]
 
         self._agent.check_orders(
-                title=title,
-                dtime=preset.quotes().index[-1].to_pydatetime(),
-                price=max(prices),
-                new_book=True,
+            title=title,
+            dtime=preset.quotes().index[-1].to_pydatetime(),
+            price=max(prices),
+            new_book=True,
         )
         self._agent.check_orders(
-                title=title,
-                dtime=preset.quotes().index[-1].to_pydatetime(),
-                price=min(prices),
-                new_book=True,
+            title=title,
+            dtime=preset.quotes().index[-1].to_pydatetime(),
+            price=min(prices),
+            new_book=True,
         )
 
     def _render(self, preset: CandleSticksPreset) -> io.BytesIO:
-        plotters = []
+        plotters: List[Plotter] = []
 
         self._check_orders(title=self._book, preset=preset)
 
         orders = self._agent.read_orders()
         if orders is not None and len(orders) > 0:
-            plotters.append(
-                    StopOrder(
-                            quotes=preset.quotes(),
-                            orders=orders,
-                    )
-            )
+            plotters.append(StopOrder(quotes=preset.quotes(), orders=orders,))
 
         preset.make_controller(self._params)
 
         if self._show_records:
-            ts = self._read_records(self._book)
-            if ts is not None and len(ts) > 0:
-                plotters.append(
-                        LeverageRecords(
-                                quotes=preset.quotes(),
-                                frequency=self._frequency,
-                                records=ts,
-                                font_color=preset.theme().get_color("text"),
-                                font_properties=preset.theme().get_font(
-                                        preset.setting().text_fontsize()
-                                ),
-                        )
+            # ts = self._read_records(self._book)
+            # if ts is not None and len(ts) > 0:
+
+            plotters.append(
+                # LeverageRecords(
+                #     quotes=preset.quotes(),
+                #     frequency=self._frequency,
+                #     # records=ts,
+                #     book_title=self._book,
+                #     agent=self._agent,
+                #     font_color=preset.theme().get_color("text"),
+                #     font_properties=preset.theme().get_font(
+                #         preset.setting().text_fontsize()
+                #     ),
+                # )
+                LongShortLeverageRecords(
+                    dtime=preset.quotes().index[-1].to_pydatetime(),
+                    virtual_close=preset.quotes().iloc[-1].loc["close"],
+                    quotes=preset.quotes(),
+                    frequency=self._frequency,
+                    long_book_title=f"{self._book}_long",
+                    short_book_title=f"{self._book}_short",
+                    agent=self._agent,
+                    font_color=preset.theme().get_color("text"),
+                    font_properties=preset.theme().get_font(
+                        preset.setting().text_fontsize()
+                    ),
+                    info_font_color=preset.theme().get_color("text"),
+                    info_font_properties=preset.theme().get_font(
+                        preset.setting().text_fontsize(multiplier=1.5)
+                    ),
                 )
+            )
 
         return preset.render(additional_plotters=plotters)
 
     def _function_slice(self) -> io.BytesIO:
         preset = self._store_read(
-                self._store_key(), dtime=self._date, time_sliced=True,
+            self._store_key(), dtime=self._date, time_sliced=True,
         )
         if preset is None:
             preset = CandleSticksPreset(self._date, self._symbol, self._frequency)

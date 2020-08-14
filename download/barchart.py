@@ -236,6 +236,17 @@ class BarchartStocksProcessor(Processor):
 
                 os.rename(src, tar)
 
+                self._rename_count += 1
+
+        pretty.color_print(
+            colors.PAPER_LIGHT_GREEN_A200, f"rename {self._rename_count} files"
+        )
+
+        if self._download_count != self._rename_count:
+            pretty.color_print(
+                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+            )
+
     def check(self) -> None:
         for symbol in self._symbols_table.keys():
             tar = os.path.join(self._tar, "barchart", symbol, f"{symbol}.csv")

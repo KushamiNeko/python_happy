@@ -73,12 +73,22 @@
 
   <div class="trade-inputs-set">
     <span class="trade-inputs-label">Operation</span>
+
+    <button
+      #op
+      class="trade-inputs-button"
+      (click)="inputs['side'] = inputs['side'] == 'long' ? 'short' : 'long'"
+    >
+      {{ inputs["side"] }}
+    </button>
+
     <button
       #op
       class="trade-inputs-button"
       (click)="inputs['operation'] = inputs['operation'] == '+' ? '-' : '+'"
     >
-      {{ inputs["operation"] == "+" ? "long" : "short" }}
+      <!-- {{ inputs["operation"] == "+" ? "long" : "short" }} -->
+      {{ inputs["operation"] == "+" ? "increase" : "decrease" }}
     </button>
   </div>
 
