@@ -13,9 +13,9 @@
         {{ order["symbol"].toUpperCase() }}
       </td>
       <td class="stop-orders-table-cell">{{ order["price"] }}</td>
-      <td class="stop-orders-table-cell"></td>
+      <td class="stop-orders-table-cell">{{order["side"]}}</td>
       <td class="stop-orders-table-cell">
-        {{ order["operation"] == "+" ? "L" : "S" }}
+        {{ order["operation"] }}
       </td>
       <td class="stop-orders-table-cell">{{ order["leverage"] }}</td>
       <td>

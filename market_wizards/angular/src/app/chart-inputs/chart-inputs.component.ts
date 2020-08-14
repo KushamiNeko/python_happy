@@ -63,7 +63,7 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
   selectedSymbolSetID: string = Object.keys(this.symbolSets)[0];
   symbols: Array<string> = this.symbolSets[this.selectedSymbolSetID];
 
-  selectedSymbolID: number = 0;
+  selectedSymbolID: number = 2;
 
   newSymbol: string = "";
   showRecords: boolean = false;

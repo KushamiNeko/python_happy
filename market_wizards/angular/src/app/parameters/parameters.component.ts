@@ -27,7 +27,7 @@ export class ParametersComponent implements OnInit, OnDestroy {
       "EW Relative Strength",
       "Advance Decline",
       "Volatility Level",
-      "Volatility Real Body Size",
+      "Volatility Body Size",
       "Volatility Summary",
       "Distribution Days",
     ],
