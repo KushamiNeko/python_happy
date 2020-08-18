@@ -40,7 +40,7 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     symbol: "",
     price: "",
     leverage: "1",
-    side: "long",
+    account: "trading",
     operation: "+",
   };
 

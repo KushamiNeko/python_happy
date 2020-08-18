@@ -20,16 +20,19 @@ export class ParametersComponent implements OnInit, OnDestroy {
 
   presets: object = {
     KushamiNeko: [
-      "Bollinger Bands",
       "Moving Averages",
+      "Bollinger Bands",
+      "Moving Averages 60",
+      "Moving Averages Plus",
+      "Volume",
       "Volatility Zone",
       "Entry Zone",
+      "Trading Level",
       "EW Relative Strength",
       "Advance Decline",
-      "Volatility Level",
-      "Volatility Body Size",
       "Volatility Summary",
       "Distribution Days",
+      "Volatility Body Size",
     ],
     // Magical: [3, 5, 7, 10, 20, 30, 60, 100, 300],
     Magical: [3, 5, 7, 10, 20, 30, 60, 100, 300].map((n) => {
@@ -41,11 +44,11 @@ export class ParametersComponent implements OnInit, OnDestroy {
 
   activatedSettings: object = {
     KushamiNeko: [
-      "Bollinger Bands",
       "Moving Averages",
+      "Bollinger Bands",
       "Volatility Zone",
       "Entry Zone",
-      "Volatility Level",
+      "Trading Level",
     ],
     // Magical: [5, 20, 60, 100, 300],
     Magical: [

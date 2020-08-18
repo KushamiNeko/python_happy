@@ -18,7 +18,7 @@ export class ChartService {
 
   private _date: string;
 
-  private _symbol = "es";
+  private _symbol = "spx";
   private _freq = "d";
   private _func = "slice";
   private _book = "";

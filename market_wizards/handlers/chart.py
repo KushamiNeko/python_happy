@@ -168,8 +168,8 @@ class ChartHandler:
                     virtual_close=preset.quotes().iloc[-1].loc["close"],
                     quotes=preset.quotes(),
                     frequency=self._frequency,
-                    long_book_title=f"{self._book}_long",
-                    short_book_title=f"{self._book}_short",
+                    trading_book_title=f"{self._book}_trading",
+                    hedging_book_title=f"{self._book}_hedging",
                     agent=self._agent,
                     font_color=preset.theme().get_color("text"),
                     font_properties=preset.theme().get_font(

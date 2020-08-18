@@ -20,40 +20,42 @@ class TradeHandler:
         # agent = TradingAgent(root=_ROOT, new_user=True)
 
         title = entity["book"]
-        side = entity["side"]
-        book = f"{title}_{side}"
+        # side = entity["side"]
+        account = entity["account"]
+        # book = f"{title}_{side}"
+        book = f"{title}_{account}"
 
         entity["book"] = book
 
-        open_leverage = agent.open_positions_leverage(title=book)
-        if open_leverage is None:
-            open_leverage = 0
+        # open_leverage = agent.open_positions_leverage(title=book)
+        # if open_leverage is None:
+        #     open_leverage = 0
 
-        if side == "short":
-            open_leverage *= -1
-            if entity["operation"] == "+":
-                entity["operation"] = "-"
-            else:
-                entity["operation"] = "+"
+        # if side == "short":
+        #     open_leverage *= -1
+        #     if entity["operation"] == "+":
+        #         entity["operation"] = "-"
+        #     else:
+        #         entity["operation"] = "+"
 
-        if not allow_negative_leverage:
-            leverage = float(f"{entity['operation']}{entity['leverage']}")
-            if (side == "long" and open_leverage + leverage < 0) or (
-                side == "short" and open_leverage + leverage > 0
-            ):
-                raise ValueError("invalid leverage")
+        # if not allow_negative_leverage:
+        #     leverage = float(f"{entity['operation']}{entity['leverage']}")
+        #     if (side == "long" and open_leverage + leverage < 0) or (
+        #         side == "short" and open_leverage + leverage > 0
+        #     ):
+        #         raise ValueError("invalid leverage")
 
         return entity
 
     def _long_short_entity_adjustment(
         self, entities: List[Dict[str, str]]
     ) -> List[Dict[str, str]]:
-        for entity in entities:
-            if entity["side"] == "short":
-                if entity["operation"] == "-":
-                    entity["operation"] = "+"
-                else:
-                    entity["operation"] = "-"
+        # for entity in entities:
+        #     if entity["side"] == "short":
+        #         if entity["operation"] == "-":
+        #             entity["operation"] = "+"
+        #         else:
+        #             entity["operation"] = "-"
 
         return entities
 

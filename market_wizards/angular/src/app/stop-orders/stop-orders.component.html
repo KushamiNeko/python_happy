@@ -3,7 +3,7 @@
     <tr>
       <th class="stop-orders-table-cell">Symbol</th>
       <th class="stop-orders-table-cell">Price</th>
-      <th class="stop-orders-table-cell">Side</th>
+      <th class="stop-orders-table-cell">Account</th>
       <th class="stop-orders-table-cell">Operation</th>
       <th class="stop-orders-table-cell">Leverage</th>
       <th></th>
@@ -13,7 +13,7 @@
         {{ order["symbol"].toUpperCase() }}
       </td>
       <td class="stop-orders-table-cell">{{ order["price"] }}</td>
-      <td class="stop-orders-table-cell">{{order["side"]}}</td>
+      <td class="stop-orders-table-cell">{{order["account"]}}</td>
       <td class="stop-orders-table-cell">
         {{ order["operation"] }}
       </td>
