@@ -11,7 +11,7 @@ from flask import request
 from fun.chart.preset import CandleSticksPreset
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
 from fun.plotter.plotter import Plotter
-from fun.plotter.records import LeverageRecords, LongShortLeverageRecords
+from fun.plotter.records import LeverageRecords, TradingHedgingLeverageRecords
 from fun.plotter.stop import StopOrder
 from fun.trading.agent import TradingAgent
 
@@ -163,7 +163,7 @@ class ChartHandler:
                 #         preset.setting().text_fontsize()
                 #     ),
                 # )
-                LongShortLeverageRecords(
+                TradingHedgingLeverageRecords(
                     dtime=preset.quotes().index[-1].to_pydatetime(),
                     virtual_close=preset.quotes().iloc[-1].loc["close"],
                     quotes=preset.quotes(),
@@ -171,7 +171,7 @@ class ChartHandler:
                     trading_book_title=f"{self._book}_trading",
                     hedging_book_title=f"{self._book}_hedging",
                     agent=self._agent,
-                    font_color=preset.theme().get_color("text"),
+                    # font_color=preset.theme().get_color("text"),
                     font_properties=preset.theme().get_font(
                         preset.setting().text_fontsize()
                     ),
@@ -221,7 +221,7 @@ class ChartHandler:
     def _function_randomDate(self) -> io.BytesIO:
         random.seed()
 
-        year = random.randint(1999, datetime.now().year - 1)
+        year = random.randint(1990, datetime.now().year - 1)
         month = random.randint(1, 12)
 
         day: int

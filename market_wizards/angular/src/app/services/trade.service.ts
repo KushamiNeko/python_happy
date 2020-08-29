@@ -17,7 +17,9 @@ export class TradeService {
   constructor(private _http: HttpClient) {}
 
   private _requestUrl(gate: string): string {
-    const origin = "http://127.0.0.1:5000";
+    // const origin = "http://127.0.0.1:5000";
+    const origin = `${window.location.protocol}//${window.location.hostname}:5000`;
+
     let url = `${origin}/service/trade/${gate}`;
 
     const now = new Date();

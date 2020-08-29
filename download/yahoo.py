@@ -20,6 +20,8 @@ class YahooProcessor(Processor):
             "^vix": "19900101",
             "^vxn": "20000101",
             "^sml": "19890101",
+            "^rut": "19880101",
+            "^dji": "19860101",
             "^ovx": "20070101",
             "^gvz": "20100101",
             "^hsi": "19860101",
@@ -39,6 +41,10 @@ class YahooProcessor(Processor):
             "near": "20130101",
             "shv": "20070101",
             "lqd": "20020101",
+            # "jpyusd=x": "19970101",
+            # "eurusd=x": "20040101",
+            # "jpy=x": "19970101",
+            # "eur=x": "20040101",
         }
 
     def _urls(self) -> Iterable[str]:
@@ -68,6 +74,10 @@ class YahooProcessor(Processor):
             "gspc": "spx",
             "ixic": "compq",
             "ndxe": "ndxew",
+            "jpyusd=x": "jpyusd",
+            "eurusd=x": "eurusd",
+            "jpy=x": "usdjpy",
+            "eur=x": "usdeur",
         }
 
         for fs in os.listdir(self._src):

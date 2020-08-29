@@ -42,7 +42,8 @@ export class ChartService {
   }
 
   private _requestUrl(): string {
-    const origin = "http://127.0.0.1:5000";
+    // const origin = "http://127.0.0.1:5000";
+    const origin = `${window.location.protocol}//${window.location.hostname}:5000`;
     let url = `${origin}/service/chart`;
 
     const now = new Date();
@@ -52,10 +53,33 @@ export class ChartService {
     url = `${url}&book=${this._book}&records=${this._records.toString()}`;
 
     for (const [key, value] of Object.entries(this._parameters)) {
-      url = `${url}&params_${key}=${value}`;
+      let v = value;
+      v = this._parametersAdjustment(key, value);
+      url = `${url}&params_${key}=${v}`;
+
+      // url = `${url}&params_${key}=${value}`;
     }
 
     return url;
+  }
+
+  _parametersAdjustment(key: string, value: any): any {
+    let volatility = ["vix", "vxn", "rvx", "jniv", "vstx", "vhsi", "vxfxi", "ovx", "gvz"];
+
+    if (volatility.includes(this._symbol)) {
+      let activated = ["BollingerBands"];
+      let deactivated = ["MovingAverages60", "MovingAverages100", "MovingAverages300"];
+
+      if (activated.includes(key)) {
+        return "true";
+      } 
+      
+      if (deactivated.includes(key)) {
+        return "false";
+      }     
+    }
+
+    return value;
   }
 
   private _getImage(): void {

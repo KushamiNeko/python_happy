@@ -20,17 +20,19 @@ export class ParametersComponent implements OnInit, OnDestroy {
 
   presets: object = {
     KushamiNeko: [
+      "CandleSticks",
       "Moving Averages",
       "Bollinger Bands",
       "Moving Averages 60",
-      "Moving Averages Plus",
-      "Volume",
-      "Volatility Zone",
-      "Entry Zone",
-      "Trading Level",
+      "Moving Averages 100",
+      "Moving Averages 300",
       "EW Relative Strength",
       "Advance Decline",
       "Volatility Summary",
+      "Volatility Zone",
+      "Entry Zone",
+      "Trading Level",
+      "Volume",
       "Distribution Days",
       "Volatility Body Size",
     ],
@@ -44,10 +46,14 @@ export class ParametersComponent implements OnInit, OnDestroy {
 
   activatedSettings: object = {
     KushamiNeko: [
+      "CandleSticks",
       "Moving Averages",
-      "Bollinger Bands",
+      // "Bollinger Bands",
+      "Moving Averages 60",
+      "Moving Averages 100",
+      "Moving Averages 300",
       "Volatility Zone",
-      "Entry Zone",
+      // "Entry Zone",
       "Trading Level",
     ],
     // Magical: [5, 20, 60, 100, 300],
@@ -182,6 +188,8 @@ export class ParametersComponent implements OnInit, OnDestroy {
     }
 
     this.generateSettingParams();
+    // this.settingAdjustment();
+
     this._chartService.parametersRequest(this.params);
   }
 }

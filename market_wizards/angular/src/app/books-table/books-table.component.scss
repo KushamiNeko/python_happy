@@ -34,6 +34,7 @@
 .books-table-table {
   @include noselect;
   cursor: pointer;
+  width: 212px;
 }
 
 .books-table-table-active {
