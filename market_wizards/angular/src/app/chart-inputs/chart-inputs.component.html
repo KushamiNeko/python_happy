@@ -14,7 +14,11 @@
           {{ key }}
         </option>
       </select> -->
-      <button class="chart-inputs-button" (click)="clickSymbolSet()">
+      <button
+        class="chart-inputs-button"
+        (click)="clickSymbolSetForward()"
+        (contextmenu)="clickSymbolSetBackward($event)"
+      >
         {{ selectedSymbolSetID }}
       </button>
     </div>
@@ -63,7 +67,7 @@
         'chart-inputs-button': true,
         'chart-inputs-button-active': showRecords
       }"
-      style="margin-top: 0.5em;"
+      style="margin-top: 0.5em"
       (click)="clickShowRecords()"
     >
       show records

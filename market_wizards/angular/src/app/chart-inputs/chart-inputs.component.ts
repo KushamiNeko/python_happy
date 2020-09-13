@@ -41,6 +41,30 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       // "FXI",
       // "VXFXI",
     ],
+    Currencies: [
+      // "USD",
+      "DXY",
+      "JPYUSD",
+      "EURUSD",
+      "GBPUSD",
+      "AUDUSD",
+      "CADUSD",
+      "CHFUSD",
+      "NZDUSD",
+      "EURJPY",
+      "EURGBP",
+      "EURAUD",
+      "EURCAD",
+      "EURCHF",
+      "DX", 
+      "J6", 
+      "E6", 
+      "B6",
+      "A6", 
+      "D6", 
+      "S6", 
+      "N6",
+    ],
     Bonds: [
       "ZN",
       "GE",
@@ -58,23 +82,6 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       "SHV",
       "LQD",
       //"IEF",
-    ],
-    Currencies: [
-      "DX", 
-      "JPYUSD",
-      "J6", 
-      "EURUSD",
-      "E6", 
-      "GBPUSD",
-      "B6",
-      "AUDUSD",
-      "A6", 
-      "CADUSD",
-      "D6", 
-      "CHFUSD",
-      "S6", 
-      // "NZDUSD",
-      // "N6",
     ],
     Commodities: [
       "GC", 
@@ -149,10 +156,25 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
     return Object.keys(this.symbolSets);
   }
 
-  clickSymbolSet(): void {
+  clickSymbolSetForward(): void {
     let id = this.symbolSetKeys().indexOf(this.selectedSymbolSetID);
     this.symbolSetChange(
       this.symbolSetKeys()[(id + 1) % this.symbolSetKeys().length]
+    );
+  }
+
+  clickSymbolSetBackward(event: Event): void {
+    event.preventDefault();
+
+    let id = this.symbolSetKeys().indexOf(this.selectedSymbolSetID);
+    id -= 1;
+
+    if (id < 0) {
+      id = this.symbolSetKeys().length-1;
+    }
+
+    this.symbolSetChange(
+      this.symbolSetKeys()[id],
     );
   }
 

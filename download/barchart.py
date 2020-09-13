@@ -198,6 +198,19 @@ class BarchartStocksProcessor(Processor):
             "$avdq": "avdq",
             "$addt": "addt",
             "$avdt": "avdt",
+            "$dxy": "dxy",
+            "^eurusd": "eurusd",
+            "^jpyusd": "jpyusd",
+            "^audusd": "audusd",
+            "^gbpusd": "gbpusd",
+            "^cadusd": "cadusd",
+            "^chfusd": "chfusd",
+            "^nzdusd": "nzdusd",
+            "^eurjpy": "eurjpy",
+            "^eurgbp": "eurgbp",
+            "^euraud": "euraud",
+            "^eurcad": "eurcad",
+            "^eurchf": "eurchf",
         }
 
     def _urls(self) -> Iterable[str]:
@@ -215,7 +228,8 @@ class BarchartStocksProcessor(Processor):
     def rename(self) -> None:
         for fs in os.listdir(self._src):
             match = re.match(
-                r"^(\$[\w]+)_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
+                # r"^(\$[\w]+)_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
+                r"^([\$\^][\w]+)_([^_-]+)(?:-[^_-]+)*_[^_-]+-[^_-]+-\d{2}-\d{2}-\d{4}.csv$",
                 fs,
             )
             if match is None:
