@@ -33,12 +33,19 @@ export class TradeService {
     this.isWorking.next(this._isWorking);
   }
 
+  _updateOrderBook(order: object): object {
+    order["book"] = `${order["symbol"].toUpperCase()}${order["book"]}`;
+    return order;
+  }
+
   newMarketOrder(order: object): void {
     if (this._isWorking) {
       return;
     }
 
     this._isWorking = true;
+
+    order = this._updateOrderBook(order);
 
     const headers = new HttpHeaders().set("Content-Type", "application/json");
 
@@ -67,6 +74,8 @@ export class TradeService {
     }
 
     this._isWorking = true;
+
+    order = this._updateOrderBook(order);
 
     const headers = new HttpHeaders().set("Content-Type", "application/json");
 

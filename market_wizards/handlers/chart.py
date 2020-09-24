@@ -20,7 +20,11 @@ from fun.trading.agent import TradingAgent
 
 class ChartHandler:
     _root: str = os.path.join(
-        cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+        # cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+        cast(str, os.getenv("HOME")),
+        "Documents",
+        "database",
+        "market_wizards",
     )
 
     _agent: TradingAgent = TradingAgent(root=_root, new_user=True)
@@ -33,7 +37,10 @@ class ChartHandler:
 
     @classmethod
     def _store_read(
-        cls, key: str, dtime: Optional[datetime] = None, time_sliced: bool = False,
+        cls,
+        key: str,
+        dtime: Optional[datetime] = None,
+        time_sliced: bool = False,
     ) -> Optional[CandleSticksPreset]:
         preset = cls._store.get(key, None)
         if preset is not None:
@@ -128,22 +135,29 @@ class ChartHandler:
             dtime=preset.quotes().index[-1].to_pydatetime(),
             price=max(prices),
             new_book=True,
+            symbol=self._symbol,
         )
         self._agent.check_orders(
             title=title,
             dtime=preset.quotes().index[-1].to_pydatetime(),
             price=min(prices),
             new_book=True,
+            symbol=self._symbol,
         )
 
     def _render(self, preset: CandleSticksPreset) -> io.BytesIO:
         plotters: List[Plotter] = []
 
-        self._check_orders(title=self._book, preset=preset)
+        # self._check_orders(title=self._book, preset=preset)
 
         orders = self._agent.read_orders()
         if orders is not None and len(orders) > 0:
-            plotters.append(StopOrder(quotes=preset.quotes(), orders=orders,))
+            plotters.append(
+                StopOrder(
+                    quotes=preset.quotes(),
+                    orders=orders,
+                )
+            )
 
         preset.make_controller(self._params)
 
@@ -186,7 +200,9 @@ class ChartHandler:
 
     def _function_slice(self) -> io.BytesIO:
         preset = self._store_read(
-            self._store_key(), dtime=self._date, time_sliced=True,
+            self._store_key(),
+            dtime=self._date,
+            time_sliced=True,
         )
         if preset is None:
             preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
@@ -207,6 +223,8 @@ class ChartHandler:
         assert preset is not None
 
         preset.forward()
+
+        self._check_orders(title=self._book, preset=preset)
 
         return self._render(preset)
 

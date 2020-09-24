@@ -74,7 +74,7 @@ export class TradeInputsComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     this._$quote = this._chartService.quote.subscribe((quote) => {
-      this.inputs["price"] = quote["close"]?.toFixed(2);
+      this.inputs["price"] = quote["close"]?.toFixed(8);
     });
 
     this._$isWorking = this._tradeService.isWorking.subscribe((done) => {

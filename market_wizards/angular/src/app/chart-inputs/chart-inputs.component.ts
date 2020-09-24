@@ -9,6 +9,33 @@ import { Subscription } from "rxjs";
 })
 export class ChartInputsComponent implements OnInit, OnDestroy {
   symbolSets: object = {
+    Currencies: [
+      // "USD",
+      "DXY",
+      // "JPYUSD",
+      "USDJPY",
+      "EURUSD",
+      "GBPUSD",
+      "AUDUSD",
+      // "CADUSD",
+      "USDCAD",
+      // "CHFUSD",
+      "USDCHF",
+      "NZDUSD",
+      "EURJPY",
+      "EURGBP",
+      "EURAUD",
+      "EURCAD",
+      "EURCHF",
+      "DX",
+      "J6",
+      "E6",
+      "B6",
+      "A6",
+      "D6",
+      "S6",
+      "N6",
+    ],
     "Stock Indexes": [
       "SPX",
       // "SPXEW",
@@ -41,30 +68,6 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       // "FXI",
       // "VXFXI",
     ],
-    Currencies: [
-      // "USD",
-      "DXY",
-      "JPYUSD",
-      "EURUSD",
-      "GBPUSD",
-      "AUDUSD",
-      "CADUSD",
-      "CHFUSD",
-      "NZDUSD",
-      "EURJPY",
-      "EURGBP",
-      "EURAUD",
-      "EURCAD",
-      "EURCHF",
-      "DX", 
-      "J6", 
-      "E6", 
-      "B6",
-      "A6", 
-      "D6", 
-      "S6", 
-      "N6",
-    ],
     Bonds: [
       "ZN",
       "GE",
@@ -84,9 +87,9 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
       //"IEF",
     ],
     Commodities: [
-      "GC", 
-      // "GVZ", 
-      "CL", 
+      "GC",
+      // "GVZ",
+      "CL",
       // "OVX",
     ],
   };
@@ -170,12 +173,10 @@ export class ChartInputsComponent implements OnInit, OnDestroy {
     id -= 1;
 
     if (id < 0) {
-      id = this.symbolSetKeys().length-1;
+      id = this.symbolSetKeys().length - 1;
     }
 
-    this.symbolSetChange(
-      this.symbolSetKeys()[id],
-    );
+    this.symbolSetChange(this.symbolSetKeys()[id]);
   }
 
   symbolSetChange(set: string): void {

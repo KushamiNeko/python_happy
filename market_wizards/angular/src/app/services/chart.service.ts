@@ -18,7 +18,8 @@ export class ChartService {
 
   private _date: string;
 
-  private _symbol = "spx";
+  // private _symbol = "spx";
+  private _symbol = "dxy";
   private _freq = "d";
   private _func = "slice";
   private _book = "";
@@ -36,7 +37,8 @@ export class ChartService {
       .toString()
       .padStart(2, "0")}${now.getDate().toString().padStart(2, "0")}`;
 
-    this._book = this._date;
+    // this._book = this._date;
+    this._book = "01";
 
     console.log("chart service");
   }
@@ -50,7 +52,10 @@ export class ChartService {
 
     url = `${url}?timestemp=${Math.round(now.getTime() / 1000)}`;
     url = `${url}&symbol=${this._symbol}&frequency=${this._freq}&function=${this._func}&date=${this._date}`;
-    url = `${url}&book=${this._book}&records=${this._records.toString()}`;
+    // url = `${url}&book=${this._book}&records=${this._records.toString()}`;
+    url = `${url}&book=${this._symbol.toUpperCase()}${
+      this._book
+    }&records=${this._records.toString()}`;
 
     for (const [key, value] of Object.entries(this._parameters)) {
       let v = value;
@@ -64,19 +69,33 @@ export class ChartService {
   }
 
   _parametersAdjustment(key: string, value: any): any {
-    let volatility = ["vix", "vxn", "rvx", "jniv", "vstx", "vhsi", "vxfxi", "ovx", "gvz"];
+    let volatility = [
+      "vix",
+      "vxn",
+      "rvx",
+      "jniv",
+      "vstx",
+      "vhsi",
+      "vxfxi",
+      "ovx",
+      "gvz",
+    ];
 
     if (volatility.includes(this._symbol)) {
       let activated = ["BollingerBands"];
-      let deactivated = ["MovingAverages60", "MovingAverages100", "MovingAverages300"];
+      let deactivated = [
+        "MovingAverages60",
+        "MovingAverages100",
+        "MovingAverages300",
+      ];
 
       if (activated.includes(key)) {
         return "true";
-      } 
-      
+      }
+
       if (deactivated.includes(key)) {
         return "false";
-      }     
+      }
     }
 
     return value;

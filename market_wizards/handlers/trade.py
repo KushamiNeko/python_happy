@@ -6,7 +6,8 @@ from flask import request
 from fun.trading.agent import TradingAgent
 
 _ROOT = os.path.join(
-    cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+    # cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
+    cast(str, os.getenv("HOME")), "Documents", "database", "market_wizards",
 )
 
 

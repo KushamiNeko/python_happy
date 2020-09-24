@@ -70,8 +70,8 @@ if __name__ == "__main__":
         start, end = parse_years_input(years)
 
     ps = [
-        BarchartFuturesProcessor(start_year=start, end_year=end),
         BarchartStocksProcessor(),
+        BarchartFuturesProcessor(start_year=start, end_year=end),
         YahooProcessor(),
         InvestingProcessor(),
         StockChartsProcessor(),
