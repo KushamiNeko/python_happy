@@ -7,7 +7,10 @@ from fun.trading.agent import TradingAgent
 
 _ROOT = os.path.join(
     # cast(str, os.getenv("HOME")), "Documents", "database", "testing", "json"
-    cast(str, os.getenv("HOME")), "Documents", "database", "market_wizards",
+    cast(str, os.getenv("HOME")),
+    "Documents",
+    "database",
+    "market_wizards",
 )
 
 
@@ -18,45 +21,18 @@ class TradeHandler:
         entity: Dict[str, str],
         allow_negative_leverage: bool = False,
     ) -> Dict[str, str]:
-        # agent = TradingAgent(root=_ROOT, new_user=True)
 
         title = entity["book"]
-        # side = entity["side"]
         account = entity["account"]
-        # book = f"{title}_{side}"
         book = f"{title}_{account}"
 
         entity["book"] = book
-
-        # open_leverage = agent.open_positions_leverage(title=book)
-        # if open_leverage is None:
-        #     open_leverage = 0
-
-        # if side == "short":
-        #     open_leverage *= -1
-        #     if entity["operation"] == "+":
-        #         entity["operation"] = "-"
-        #     else:
-        #         entity["operation"] = "+"
-
-        # if not allow_negative_leverage:
-        #     leverage = float(f"{entity['operation']}{entity['leverage']}")
-        #     if (side == "long" and open_leverage + leverage < 0) or (
-        #         side == "short" and open_leverage + leverage > 0
-        #     ):
-        #         raise ValueError("invalid leverage")
 
         return entity
 
     def _long_short_entity_adjustment(
         self, entities: List[Dict[str, str]]
     ) -> List[Dict[str, str]]:
-        # for entity in entities:
-        #     if entity["side"] == "short":
-        #         if entity["operation"] == "-":
-        #             entity["operation"] = "+"
-        #         else:
-        #             entity["operation"] = "-"
 
         return entities
 
@@ -64,30 +40,8 @@ class TradeHandler:
         entity = request.get_json()
         agent = TradingAgent(root=_ROOT, new_user=True)
 
-        # title = entity["book"]
-        # side = entity["side"]
-        # book = f"{title}_{side}"
+        # entity = self._long_short_trading_adjustment(agent=agent, entity=entity)
 
-        # open_leverage = agent.open_positions_leverage(title=book)
-        # if open_leverage is None:
-        #     open_leverage = 0
-
-        # if side == "short":
-        #     open_leverage *= -1
-        #     if entity["operation"] == "+":
-        #         entity["operation"] = "-"
-        #     else:
-        #         entity["operation"] = "+"
-
-        # leverage = float(f"{entity['operation']}{entity['leverage']}")
-        # if (side == "long" and open_leverage + leverage < 0) or (
-        #     side == "short" and open_leverage + leverage > 0
-        # ):
-        #     raise ValueError("invalid leverage")
-
-        entity = self._long_short_trading_adjustment(agent=agent, entity=entity)
-
-        # ts = agent.new_record(book, entity, new_book=True)
         ts = agent.new_record(entity["book"], entity, new_book=True)
 
         return ts.to_entity()
@@ -96,11 +50,10 @@ class TradeHandler:
         entity = request.get_json()
         agent = TradingAgent(root=_ROOT, new_user=True)
 
-        entity = self._long_short_trading_adjustment(agent=agent, entity=entity)
+        # entity = self._long_short_trading_adjustment(agent=agent, entity=entity)
 
         agent.new_order(entity)
 
-        # return {"data": [o.to_entity() for o in agent.read_orders()]}
         return self._read_stop_orders()
 
     def _delete_stop_order(self) -> Dict[str, List[Dict[str, str]]]:
@@ -122,10 +75,9 @@ class TradeHandler:
         agent = TradingAgent(root=_ROOT, new_user=True)
         entities = [o.to_entity() for o in agent.read_orders()]
 
-        entities = self._long_short_entity_adjustment(entities)
+        # entities = self._long_short_entity_adjustment(entities)
 
         return {"data": entities}
-        # return {"data": [o.to_entity() for o in agent.read_orders()]}
 
     def _statistic(self) -> Dict[str, str]:
         pass

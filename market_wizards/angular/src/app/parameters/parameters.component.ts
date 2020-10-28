@@ -22,10 +22,11 @@ export class ParametersComponent implements OnInit, OnDestroy {
     KushamiNeko: [
       "CandleSticks",
       "Moving Averages",
-      "Bollinger Bands",
+      "Moving Averages 10",
       "Moving Averages 60",
       "Moving Averages 100",
       "Moving Averages 300",
+      "Bollinger Bands",
       "EW Relative Strength",
       "Advance Decline",
       "Volatility Summary",
@@ -49,12 +50,13 @@ export class ParametersComponent implements OnInit, OnDestroy {
       "CandleSticks",
       "Moving Averages",
       // "Bollinger Bands",
+      // "Moving Averages 10",
       "Moving Averages 60",
       "Moving Averages 100",
       "Moving Averages 300",
-      "Volatility Zone",
+      // "Volatility Zone",
       // "Entry Zone",
-      "Trading Level",
+      // "Trading Level",
     ],
     // Magical: [5, 20, 60, 100, 300],
     Magical: [
@@ -121,12 +123,13 @@ export class ParametersComponent implements OnInit, OnDestroy {
 
     let index = Object.keys(this.presets).indexOf(this.selectedPreset);
 
-
     // if (Object.keys(this.presets).includes(preset)) {
     //   this.selectedPreset = preset;
-      this.selectedPreset = Object.keys(this.presets)[(index+1)%Object.keys(this.presets).length];
-      this.params["Preset"] = this.selectedPreset;
-      this.setParameters();
+    this.selectedPreset = Object.keys(this.presets)[
+      (index + 1) % Object.keys(this.presets).length
+    ];
+    this.params["Preset"] = this.selectedPreset;
+    this.setParameters();
     // }
   }
 

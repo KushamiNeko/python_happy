@@ -84,6 +84,7 @@ export class ChartService {
     if (volatility.includes(this._symbol)) {
       let activated = ["BollingerBands"];
       let deactivated = [
+        "MovingAverages10",
         "MovingAverages60",
         "MovingAverages100",
         "MovingAverages300",

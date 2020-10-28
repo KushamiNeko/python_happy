@@ -74,7 +74,7 @@ if __name__ == "__main__":
         BarchartFuturesProcessor(start_year=start, end_year=end),
         YahooProcessor(),
         InvestingProcessor(),
-        StockChartsProcessor(),
+        # StockChartsProcessor(),
     ]
 
     for p in ps:

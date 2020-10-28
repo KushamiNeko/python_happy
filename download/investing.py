@@ -19,7 +19,7 @@ class InvestingProcessor(Processor):
             r"https://www.investing.com/indices/nikkei-volatility-historical-data",
             r"https://www.investing.com/indices/stoxx-50-volatility-vstoxx-eur-historical-data",
             r"https://www.investing.com/indices/hsi-volatility-historical-data",
-            r"https://www.investing.com/indices/cboe-china-etf-volatility-historical-data",
+            # r"https://www.investing.com/indices/cboe-china-etf-volatility-historical-data",
             r"https://www.investing.com/indices/jpx-nikkei-400-historical-data",
         ]:
 
@@ -44,7 +44,7 @@ class InvestingProcessor(Processor):
             "Nikkei Volatility Historical Data.csv": "jniv",
             "STOXX 50 Volatility VSTOXX EUR Historical Data.csv": "vstx",
             "HSI Volatility Historical Data.csv": "vhsi",
-            "CBOE China Etf Volatility Historical Data.csv": "vxfxi",
+            # "CBOE China Etf Volatility Historical Data.csv": "vxfxi",
             "JPX-Nikkei 400 Historical Data.csv": "nk400",
         }
 

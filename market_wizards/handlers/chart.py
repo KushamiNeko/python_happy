@@ -166,34 +166,34 @@ class ChartHandler:
             # if ts is not None and len(ts) > 0:
 
             plotters.append(
-                # LeverageRecords(
-                #     quotes=preset.quotes(),
-                #     frequency=self._frequency,
-                #     # records=ts,
-                #     book_title=self._book,
-                #     agent=self._agent,
-                #     font_color=preset.theme().get_color("text"),
-                #     font_properties=preset.theme().get_font(
-                #         preset.setting().text_fontsize()
-                #     ),
-                # )
-                TradingHedgingLeverageRecords(
-                    dtime=preset.quotes().index[-1].to_pydatetime(),
-                    virtual_close=preset.quotes().iloc[-1].loc["close"],
+                LeverageRecords(
                     quotes=preset.quotes(),
                     frequency=self._frequency,
-                    trading_book_title=f"{self._book}_trading",
-                    hedging_book_title=f"{self._book}_hedging",
+                    # records=ts,
+                    book_title=self._book,
                     agent=self._agent,
-                    # font_color=preset.theme().get_color("text"),
+                    font_color=preset.theme().get_color("text"),
                     font_properties=preset.theme().get_font(
                         preset.setting().text_fontsize()
                     ),
-                    info_font_color=preset.theme().get_color("text"),
-                    info_font_properties=preset.theme().get_font(
-                        preset.setting().text_fontsize(multiplier=1.5)
-                    ),
                 )
+                # TradingHedgingLeverageRecords(
+                #     dtime=preset.quotes().index[-1].to_pydatetime(),
+                #     virtual_close=preset.quotes().iloc[-1].loc["close"],
+                #     quotes=preset.quotes(),
+                #     frequency=self._frequency,
+                #     trading_book_title=f"{self._book}_trading",
+                #     hedging_book_title=f"{self._book}_hedging",
+                #     agent=self._agent,
+                #     # font_color=preset.theme().get_color("text"),
+                #     font_properties=preset.theme().get_font(
+                #         preset.setting().text_fontsize()
+                #     ),
+                #     info_font_color=preset.theme().get_color("text"),
+                #     info_font_properties=preset.theme().get_font(
+                #         preset.setting().text_fontsize(multiplier=1.5)
+                #     ),
+                # )
             )
 
         return preset.render(additional_plotters=plotters)
