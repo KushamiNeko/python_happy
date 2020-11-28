@@ -8,6 +8,7 @@ from fun.futures.contract import (
     CONTRACT_MONTHS,
     EVEN_CONTRACT_MONTHS,
     FINANCIAL_CONTRACT_MONTHS,
+    month_from_futures_month_code,
 )
 from fun.utils import colors, pretty
 from happy.download.processor import Processor
@@ -22,6 +23,8 @@ class BarchartFuturesProcessor(Processor):
         self,
         start_year: Optional[int] = None,
         end_year: Optional[int] = None,
+        # start: Optional[int] = None,
+        # end: Optional[int] = None,
         page: BARCHART_PAGE = HISTORICAL_PAGE,
     ) -> None:
         super().__init__()
@@ -31,6 +34,7 @@ class BarchartFuturesProcessor(Processor):
         self._page = page
 
         if start_year is None or end_year is None:
+            # if start is None or end is None:
             self._start = datetime.now().year
 
             if datetime.now().month > 10:
@@ -40,6 +44,9 @@ class BarchartFuturesProcessor(Processor):
         else:
             self._start = start_year
             self._end = end_year
+
+            # self._start = start
+            # self._end = end
 
         pretty.color_print(
             colors.PAPER_BROWN_300,
@@ -51,9 +58,9 @@ class BarchartFuturesProcessor(Processor):
             "nq",
             "qr",
             "ym",
-            "nl",
+            # "nl",
             "np",
-            "no",
+            # "no",
             "fx",
             "zn",
             "ge",
@@ -108,7 +115,7 @@ class BarchartFuturesProcessor(Processor):
 
         if self._download_count != len(self._symbols):
             pretty.color_print(
-                colors.PAPER_RED_400, f"download operation miss some files"
+                colors.PAPER_RED_400, "download operation miss some files"
             )
 
     def rename(self) -> None:
@@ -148,7 +155,7 @@ class BarchartFuturesProcessor(Processor):
 
         if self._download_count != self._rename_count:
             pretty.color_print(
-                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+                colors.PAPER_RED_400, "rename operation miss some downloaded files"
             )
 
     def check(self) -> None:
@@ -174,7 +181,10 @@ class BarchartFuturesProcessor(Processor):
 
 
 class BarchartStocksProcessor(Processor):
-    def __init__(self, page: BARCHART_PAGE = HISTORICAL_PAGE,) -> None:
+    def __init__(
+        self,
+        page: BARCHART_PAGE = HISTORICAL_PAGE,
+    ) -> None:
         super().__init__()
 
         assert page in (HISTORICAL_PAGE, INTERACTIVE_PAGE)
@@ -182,7 +192,8 @@ class BarchartStocksProcessor(Processor):
         self._page = page
 
         pretty.color_print(
-            colors.PAPER_BROWN_300, f"Barchart Stocks Processor",
+            colors.PAPER_BROWN_300,
+            "Barchart Stocks Processor",
         )
 
         self._symbols_table = {
@@ -196,17 +207,21 @@ class BarchartStocksProcessor(Processor):
             # "$avdq": "avdq",
             # "$addt": "addt",
             # "$avdt": "avdt",
+            "^btcusd": "btcusd",
+            "^ethusd": "ethusd",
+            "^ltcusd": "ltcusd",
+            "^xrpusd": "xrpusd",
             "$dxy": "dxy",
             "^eurusd": "eurusd",
             "^usdjpy": "usdjpy",
-            "^jpyusd": "jpyusd",
-            "^audusd": "audusd",
+            # "^jpyusd": "jpyusd",
             "^gbpusd": "gbpusd",
+            "^audusd": "audusd",
             "^usdcad": "usdcad",
-            "^cadusd": "cadusd",
-            "^nzdusd": "nzdusd",
+            # "^cadusd": "cadusd",
             "^usdchf": "usdchf",
-            "^chfusd": "chfusd",
+            "^nzdusd": "nzdusd",
+            # "^chfusd": "chfusd",
             "^eurjpy": "eurjpy",
             "^eurgbp": "eurgbp",
             "^euraud": "euraud",
@@ -215,7 +230,7 @@ class BarchartStocksProcessor(Processor):
             "^gbpjpy": "gbpjpy",
             "^audjpy": "audjpy",
             "^cadjpy": "cadjpy",
-            "^nzdjpy": "nzdjpy",
+            # "^nzdjpy": "nzdjpy",
         }
 
     def _urls(self) -> Iterable[str]:
@@ -265,7 +280,7 @@ class BarchartStocksProcessor(Processor):
 
         if self._download_count != self._rename_count:
             pretty.color_print(
-                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+                colors.PAPER_RED_400, "rename operation miss some downloaded files"
             )
 
     def check(self) -> None:
@@ -274,4 +289,3 @@ class BarchartStocksProcessor(Processor):
 
             if not os.path.exists(tar):
                 pretty.color_print(colors.PAPER_PINK_300, f"missing files: {tar}")
-

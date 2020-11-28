@@ -3,10 +3,10 @@ import re
 from typing import Any, Dict, List, Tuple, cast
 
 from fun.utils import colors, pretty
-from happy.download.barchart import (BarchartFuturesProcessor,
-                                     BarchartStocksProcessor)
+from happy.download.barchart import BarchartFuturesProcessor, BarchartStocksProcessor
 from happy.download.investing import InvestingProcessor
-from happy.download.stockcharts import StockChartsProcessor
+
+# from happy.download.stockcharts import StockChartsProcessor
 from happy.download.yahoo import YahooProcessor
 
 
@@ -23,7 +23,11 @@ def args_parse() -> Dict[str, Any]:
     )
 
     parser.add_argument(
-        "--years", metavar="", nargs="?", type=str, help="years",
+        "--years",
+        metavar="",
+        nargs="?",
+        type=str,
+        help="years",
     )
 
     args = vars(parser.parse_args())

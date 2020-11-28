@@ -10,7 +10,7 @@ class Processor(metaclass=ABCMeta):
     def __init__(self) -> None:
         self._src = os.path.join(cast(str, os.getenv("HOME")), "Downloads")
         self._tar = os.path.join(
-                cast(str, os.getenv("HOME")), "Documents", "data_source"
+            cast(str, os.getenv("HOME")), "Documents", "data_source"
         )
 
         self._download_count = 0
@@ -33,13 +33,13 @@ class Processor(metaclass=ABCMeta):
         self._download_count = count
 
         pretty.color_input(
-                colors.PAPER_LIGHT_GREEN_A200,
-                f"download {self._download_count} files",
+            colors.PAPER_LIGHT_GREEN_A200,
+            f"download {self._download_count} files",
         )
-        
+
         pretty.color_input(
-                colors.PAPER_LIME_300,
-                "download completed, press any key to rename the files",
+            colors.PAPER_LIME_300,
+            "download completed, press any key to rename the files",
         )
 
     @abstractmethod

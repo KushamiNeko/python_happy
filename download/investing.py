@@ -16,11 +16,11 @@ class InvestingProcessor(Processor):
 
     def _urls(self) -> Iterable[str]:
         for url in [
-            r"https://www.investing.com/indices/nikkei-volatility-historical-data",
             r"https://www.investing.com/indices/stoxx-50-volatility-vstoxx-eur-historical-data",
+            r"https://www.investing.com/indices/jpx-nikkei-400-historical-data",
+            r"https://www.investing.com/indices/nikkei-volatility-historical-data",
             r"https://www.investing.com/indices/hsi-volatility-historical-data",
             # r"https://www.investing.com/indices/cboe-china-etf-volatility-historical-data",
-            r"https://www.investing.com/indices/jpx-nikkei-400-historical-data",
         ]:
 
             pretty.color_print(
@@ -35,17 +35,17 @@ class InvestingProcessor(Processor):
 
         if self._download_count != len(list(self._urls())):
             pretty.color_print(
-                colors.PAPER_RED_400, f"download operation miss some files"
+                colors.PAPER_RED_400, "download operation miss some files"
             )
 
     def rename(self) -> None:
 
         table = {
-            "Nikkei Volatility Historical Data.csv": "jniv",
             "STOXX 50 Volatility VSTOXX EUR Historical Data.csv": "vstx",
+            "JPX-Nikkei 400 Historical Data.csv": "nk400",
+            "Nikkei Volatility Historical Data.csv": "jniv",
             "HSI Volatility Historical Data.csv": "vhsi",
             # "CBOE China Etf Volatility Historical Data.csv": "vxfxi",
-            "JPX-Nikkei 400 Historical Data.csv": "nk400",
         }
 
         for fs in os.listdir(self._src):
@@ -71,7 +71,7 @@ class InvestingProcessor(Processor):
 
         if self._download_count != self._rename_count:
             pretty.color_print(
-                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+                colors.PAPER_RED_400, "rename operation miss some downloaded files"
             )
 
     def check(self) -> None:

@@ -14,7 +14,7 @@ class YahooProcessor(Processor):
 
         pretty.color_print(
             colors.PAPER_BROWN_300,
-            f"Yahoo Processor",
+            "Yahoo Processor",
         )
 
         self._symbols = {
@@ -97,7 +97,7 @@ class YahooProcessor(Processor):
 
         if self._download_count != len(self._symbols):
             pretty.color_print(
-                colors.PAPER_RED_400, f"download operation miss some files"
+                colors.PAPER_RED_400, "download operation miss some files"
             )
 
     def rename(self) -> None:
@@ -160,7 +160,7 @@ class YahooProcessor(Processor):
 
         if self._download_count != self._rename_count:
             pretty.color_print(
-                colors.PAPER_RED_400, f"rename operation miss some downloaded files"
+                colors.PAPER_RED_400, "rename operation miss some downloaded files"
             )
 
     def check(self) -> None:
