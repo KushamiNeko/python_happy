@@ -17,15 +17,14 @@
       </select> -->
 
       <button
-      [ngClass]="{
-        'parameters-button': true,
-        'parameters-button-working': isWorking
-      }"
-      (click)="presetChange()"
-    >
-      {{selectedPreset}}
-    </button>
-
+        [ngClass]="{
+          'parameters-button': true,
+          'parameters-button-working': isWorking
+        }"
+        (click)="presetChange()"
+      >
+        {{ selectedPreset }}
+      </button>
     </div>
     <span class="parameters-separator"></span>
     <div class="parameters-set">
