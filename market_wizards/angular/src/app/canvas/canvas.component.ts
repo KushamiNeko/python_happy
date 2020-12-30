@@ -211,17 +211,25 @@ export class CanvasComponent implements OnInit, OnDestroy, AfterViewInit {
         0
       );
 
-      this._infoRef.nativeElement.innerHTML = await this._chartService.inspectRequest(
-        x,
-        y,
-        ax,
-        ay
-      );
+      const info = await this._chartService.inspectRequest(x, y, ax, ay);
+
+      //this._infoRef.nativeElement.innerHTML = await this._chartService.inspectRequest(
+      //x,
+      //y,
+      //ax,
+      //ay
+      //);
+
+      this._infoRef.nativeElement.innerHTML = info["inspect"];
     } else {
-      this._infoRef.nativeElement.innerHTML = await this._chartService.inspectRequest(
-        x,
-        y
-      );
+      const info = await this._chartService.inspectRequest(x, y);
+
+      //this._infoRef.nativeElement.innerHTML = await this._chartService.inspectRequest(
+      //x,
+      //y
+      //);
+
+      this._infoRef.nativeElement.innerHTML = info["inspect"];
     }
 
     const offset = 20;

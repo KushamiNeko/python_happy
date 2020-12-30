@@ -112,10 +112,10 @@ export class ChartService {
     const url = this._requestUrl();
     this._url = url;
 
-    const headers = new HttpHeaders().set(
-      "Content-Type",
-      "text/plain; charset=utf-8"
-    );
+    //const headers = new HttpHeaders().set(
+      //"Content-Type",
+      //"text/plain; charset=utf-8"
+    //);
 
     this._http.get(url).subscribe(
       (data: object) => {
@@ -215,12 +215,13 @@ export class ChartService {
     this._getImage();
   }
 
+  //async inspectRequest(
   async inspectRequest(
     x: number,
     y: number,
     ax: number | null = null,
     ay: number | null = null
-  ): Promise<string> {
+  ): Promise<object> {
     let url = this._url.replace(/function=[^&]+/, "function=inspect");
     url = `${url}&x=${x}&y=${y}`;
 
@@ -228,15 +229,16 @@ export class ChartService {
       url = `${url}&ax=${ax}&ay=${ay}`;
     }
 
-    const headers = new HttpHeaders().set(
-      "Content-Type",
-      "text/plain; charset=utf-8"
-    );
+    //const headers = new HttpHeaders().set(
+      //"Content-Type",
+      //"text/plain; charset=utf-8"
+    //);
 
     if (!this._isWorking) {
-      return this._http.get(url, { headers, responseType: "text" }).toPromise();
+      //return this._http.get(url, { headers, responseType: "text" }).toPromise();
+      return this._http.get(url).toPromise();
     } else {
-      return "";
+      return {};
     }
   }
 }

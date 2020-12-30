@@ -41,13 +41,14 @@ class ChartHandler:
         key: str,
         dtime: Optional[datetime] = None,
         time_sliced: bool = False,
+        chart_range: Optional[str] = None,
     ) -> Optional[CandleSticksPreset]:
         preset = cls._store.get(key, None)
         if preset is not None:
             if time_sliced:
                 assert dtime is not None
 
-                preset.time_slice(dtime)
+                preset.time_slice(dtime, chart_range=chart_range)
 
         return preset
 
@@ -65,6 +66,7 @@ class ChartHandler:
         date = request.args.get("date")
         symbol = request.args.get("symbol")
         frequency = request.args.get("frequency")
+        chart_range = request.args.get("range")
         function = request.args.get("function")
         show_records = request.args.get("records") == "true"
         book = request.args.get("book")
@@ -105,6 +107,8 @@ class ChartHandler:
             self._frequency = MONTHLY
 
         assert self._frequency is not None
+
+        self._chart_range = chart_range if chart_range != "" else None
 
         self._function = function
         self._show_records = show_records
@@ -203,9 +207,12 @@ class ChartHandler:
             self._store_key(),
             dtime=self._date,
             time_sliced=True,
+            chart_range=self._chart_range,
         )
         if preset is None:
-            preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
+            preset = CandleSticksPreset(
+                self._date, self._symbol, self._frequency, chart_range=self._chart_range
+            )
             self._store_write(self._store_key(), preset)
 
         return self._render(preset)
@@ -213,7 +220,9 @@ class ChartHandler:
     def _function_simple(self) -> io.BytesIO:
         preset = self._store_read(self._store_key())
         if preset is None:
-            preset = CandleSticksPreset(self._date, self._symbol, self._frequency)
+            preset = CandleSticksPreset(
+                self._date, self._symbol, self._frequency, chart_range=self._chart_range
+            )
             self._store_write(self._store_key(), preset)
 
         return self._render(preset)
@@ -278,12 +287,25 @@ class ChartHandler:
 
         return "\n".join([f"{k}: {v}" for k, v in info.items()])
 
+        separator = "   "
+        quote_array = [f"{k.capitalize()}: {v}" for k, v in info.items()][:8]
+        diff_array = [f"{k}: {v}" for k, v in info.items()][8:]
+
+        return f"{separator.join(quote_array)}\n{separator.join(diff_array)}"
+
     def _function_quote(self) -> Dict[str, Any]:
         preset = self._store_read(self._store_key())
         if preset is None:
             return {}
 
         return preset.last_quote()
+
+    def _function_chart_range(self) -> str:
+        preset = self._store_read(self._store_key())
+        if preset is None:
+            return ""
+
+        return preset.chart_range()
 
     def response(self) -> Any:
         if self._function == "simple":
@@ -297,11 +319,16 @@ class ChartHandler:
         elif self._function == "randomDate":
             buf = self._function_randomDate()
         elif self._function == "inspect":
-            return self._function_inspect()
+            # return self._function_inspect()
+            return {
+                "inspect": self._function_inspect(),
+            }
         elif self._function == "randomDate":
             pass
 
         body = self._function_quote()
         body["img"] = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        body["range"] = self._function_chart_range()
 
         return body
