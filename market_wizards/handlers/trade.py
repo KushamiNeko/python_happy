@@ -107,6 +107,7 @@ class TradeHandler:
 
     def response_statistic(self) -> Any:
         function = request.args.get("function")
+
         assert function in ("books", "statistic")
 
         if function == "books":
@@ -121,9 +122,17 @@ class TradeHandler:
             titles = request.args.get("titles", None)
             assert titles is not None
 
+            start_date = request.args.get("startDate", None)
+            end_date = request.args.get("endDate", None)
+
+            start_date = None if start_date == "" else start_date
+            end_date = None if end_date == "" else end_date
+
             titles = titles.split(",")
             agent = TradingAgent(root=_ROOT, new_user=True)
-            return agent.read_statistic(titles)
+            return agent.read_statistic(
+                titles, start_date=start_date, end_date=end_date
+            )
 
         else:
             return "invalid function"
