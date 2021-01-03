@@ -4,7 +4,7 @@ import os
 import random
 import re
 from datetime import datetime
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, cast, Tuple
 
 from flask import request
 
@@ -267,10 +267,12 @@ class ChartHandler:
 
         return self._function_slice()
 
-    def _function_inspect(self) -> str:
+    # def _function_inspect(self) -> str:
+    def _function_inspect(self) -> Tuple[Optional[Dict[str, str]], Optional[str]]:
         preset = self._store_read(self._store_key())
         if preset is None:
-            return ""
+            # return ""
+            return (None, None)
 
         x = request.args.get("x")
         y = request.args.get("y")
@@ -279,19 +281,24 @@ class ChartHandler:
         ay = request.args.get("ay") if request.args.get("ay") != "" else None
 
         if x is None or y is None:
-            return ""
+            # return ""
+            return (None, None)
 
-        info = preset.inspect(x, y, ax=ax, ay=ay)
+        # info = preset.inspect(x, y, ax=ax, ay=ay)
+        info, note = preset.inspect(x, y, ax=ax, ay=ay)
         if info is None:
-            return ""
+            # return ""
+            return (None, None)
 
-        return "\n".join([f"{k}: {v}" for k, v in info.items()])
+        return (info, note)
 
-        separator = "   "
-        quote_array = [f"{k.capitalize()}: {v}" for k, v in info.items()][:8]
-        diff_array = [f"{k}: {v}" for k, v in info.items()][8:]
+        # return "\n".join([f"{k}: {v}" for k, v in info.items()])
 
-        return f"{separator.join(quote_array)}\n{separator.join(diff_array)}"
+        # separator = "   "
+        # quote_array = [f"{k.capitalize()}: {v}" for k, v in info.items()][:8]
+        # diff_array = [f"{k}: {v}" for k, v in info.items()][8:]
+
+        # return f"{separator.join(quote_array)}\n{separator.join(diff_array)}"
 
     def _function_quote(self) -> Dict[str, Any]:
         preset = self._store_read(self._store_key())
@@ -319,10 +326,16 @@ class ChartHandler:
         elif self._function == "randomDate":
             buf = self._function_randomDate()
         elif self._function == "inspect":
-            # return self._function_inspect()
+            info, note = self._function_inspect()
             return {
-                "inspect": self._function_inspect(),
+                "inspect": "\n".join([f"{k}: {v}" for k, v in info.items()])
+                if info is not None
+                else "",
+                "note": note if note is not None else "",
             }
+            # return {
+            # "inspect": self._function_inspect(),
+            # }
         elif self._function == "randomDate":
             pass
 
