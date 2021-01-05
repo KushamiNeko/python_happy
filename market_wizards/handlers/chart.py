@@ -90,7 +90,7 @@ class ChartHandler:
         ):
             raise ValueError("invalid function")
 
-        if show_records and re.match(r"^\w+$", book) is None:
+        if show_records and re.match(r"^[a-zA-Z0-9@]+$", book) is None:
             raise ValueError("invalid book")
 
         self._date = datetime.strptime(date, "%Y%m%d")
