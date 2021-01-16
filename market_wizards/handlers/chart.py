@@ -11,11 +11,9 @@ from flask import request
 from fun.chart.preset import CandleSticksPreset
 from fun.data.source import DAILY, FREQUENCY, HOURLY, MONTHLY, WEEKLY
 from fun.plotter.plotter import Plotter
-from fun.plotter.records import LeverageRecords, TradingHedgingLeverageRecords
+from fun.plotter.records import LeverageRecords
 from fun.plotter.stop import StopOrder
 from fun.trading.agent import TradingAgent
-
-# from fun.trading.transaction import FuturesTransaction
 
 
 class ChartHandler:
@@ -123,9 +121,6 @@ class ChartHandler:
     def _store_key(self) -> str:
         return f"{self._symbol}_{self._frequency}"
 
-    # def _read_records(self, title: str) -> Optional[List[FuturesTransaction]]:
-    #     return self._agent.read_records(title)
-
     def _check_orders(self, title: str, preset: CandleSticksPreset) -> None:
 
         prices = [
@@ -152,8 +147,6 @@ class ChartHandler:
     def _render(self, preset: CandleSticksPreset) -> io.BytesIO:
         plotters: List[Plotter] = []
 
-        # self._check_orders(title=self._book, preset=preset)
-
         orders = self._agent.read_orders()
         if orders is not None and len(orders) > 0:
             plotters.append(
@@ -166,14 +159,11 @@ class ChartHandler:
         preset.make_controller(self._params)
 
         if self._show_records:
-            # ts = self._read_records(self._book)
-            # if ts is not None and len(ts) > 0:
 
             plotters.append(
                 LeverageRecords(
                     quotes=preset.quotes(),
                     frequency=self._frequency,
-                    # records=ts,
                     book_title=self._book,
                     agent=self._agent,
                     font_color=preset.theme().get_color("text"),
@@ -211,7 +201,10 @@ class ChartHandler:
         )
         if preset is None:
             preset = CandleSticksPreset(
-                self._date, self._symbol, self._frequency, chart_range=self._chart_range
+                self._date,
+                self._symbol,
+                self._frequency,
+                chart_range=self._chart_range,
             )
             self._store_write(self._store_key(), preset)
 
@@ -221,7 +214,10 @@ class ChartHandler:
         preset = self._store_read(self._store_key())
         if preset is None:
             preset = CandleSticksPreset(
-                self._date, self._symbol, self._frequency, chart_range=self._chart_range
+                self._date,
+                self._symbol,
+                self._frequency,
+                chart_range=self._chart_range,
             )
             self._store_write(self._store_key(), preset)
 
@@ -267,11 +263,9 @@ class ChartHandler:
 
         return self._function_slice()
 
-    # def _function_inspect(self) -> str:
     def _function_inspect(self) -> Tuple[Optional[Dict[str, str]], Optional[str]]:
         preset = self._store_read(self._store_key())
         if preset is None:
-            # return ""
             return (None, None)
 
         x = request.args.get("x")
@@ -281,13 +275,10 @@ class ChartHandler:
         ay = request.args.get("ay") if request.args.get("ay") != "" else None
 
         if x is None or y is None:
-            # return ""
             return (None, None)
 
-        # info = preset.inspect(x, y, ax=ax, ay=ay)
         info, note = preset.inspect(x, y, ax=ax, ay=ay)
         if info is None:
-            # return ""
             return (None, None)
 
         return (info, note)
